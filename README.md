@@ -1,0 +1,2 @@
+# bugzilla
+Django Training Project

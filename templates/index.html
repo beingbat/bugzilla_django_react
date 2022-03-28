@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block content%}
+<br>
+
+<div class = "mx-4">
+  {% if user.is_authenticated %}
+    <h4>Username: {{user.username}}
+    <br>
+    {% if user.get_full_name|length > 0 %}
+      Name:{{user.full_name}}
+      <br>
+    {%endif%}
+    </h4>
+
+    {% if user.is_superuser %}
+      <h4>Hello Administrator!</h4>
+      <button class="mt-2 btn btn-light">
+        <a style="color:black; text-decoration:none;" href="{% url 'admin:index' %}">Manage</a>
+      </button>
+    {% elif user_type == 'man'%}
+    <h5>Hello Manager</h5>
+    <br>
+
+    <p><b>Add: </b></p>
+    <button class="mt-2 btn btn-light mx-2" >
+      <a style="color:black; text-decoration:none;" href="{% url 'dashboard' %}" >Project</a>
+    </button>
+
+    <button class="mt-2 btn btn-light" >
+      <a style="color:black; text-decoration:none;" href="{% url 'add-user'%}" >Employee</a>
+    </button>
+
+    <br>
+    <br>
+    <br>
+    <p><b>Manage: </b></p>
+    <button class="mt-2 btn btn-light mx-2" >
+      <a style="color:black; text-decoration:none;" href="{% url 'dashboard' %}" >Projects</a>
+    </button>
+
+    <button class="mt-2 btn btn-light" >
+      <a style="color:black; text-decoration:none;" href="{% url 'user-list' slug='dev'%}" >Developers</a>
+    </button>
+
+    <button class="mt-2 btn btn-light mx-2" >
+      <a style="color:black; text-decoration:none;" href="{% url 'user-list' slug='qae'%}" >QAEs</a>
+    </button>
+    <br>
+    <br>
+    <br>
+    {% else %}
+
+      {% if user_type == 'dev'%}
+        <p>Hello Developer!</p>
+        <p>Assigned Project: Dummy</p>
+        <button class="mt-2 btn btn-dark" >
+          <a style="color:white; text-decoration:none;" href="{% url 'dashboard' %}">View Project</a>
+        </button>
+      {% elif user_type == 'qae' %}
+        <p>Hello Quality Assurance Engineer!</p>
+        <button class="mt-2 btn btn-dark" >
+          <a style="color:white; text-decoration:none;" href="{% url 'dashboard' %}">Manage Reported Bugs or Features</a>
+        </button>
+        <button class="mt-2 btn btn-dark" >
+          <a style="color:white; text-decoration:none;" href="{% url 'dashboard' %}">View Assigned Project</a>
+        </button>
+        <button class="mt-2 btn btn-dark" >
+          <a style="color:white; text-decoration:none;" href="{% url 'dashboard' %}">View All Projects</a>
+        </button>
+        <br>
+
+      {% else %}
+        <p> Unkown User Type Detected </p>
+      {% endif %}
+
+    {% endif %}
+
+    <button class="mt-2 btn btn-dark" ><a style="color:white; text-decoration:none;" href="{% url 'logout' %}">Logout</a></button>
+
+  {% else %}
+
+    <h5>Please Login</h5>
+    <button class="mt-2 btn btn-outline btn-dark" >
+      <a style="color:white; text-decoration:none;" href="{% url 'login' %}" >Login</a>
+    </button>
+  {% endif %}
+
+</div>
+
+{% endblock %}

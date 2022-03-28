@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="mx-2">
+
+  {% if user.is_authenticated %}
+
+    <p class="mx-3 pt-2">Already logged in</p>
+    <button class="mx-3 mt-2 btn btn-light"><a style= "color:black;text-decoration:none;" href="{% url 'logout' %}">Logout?</a></button>
+    <button class="mt-2 btn btn-dark">
+      <a style="color:white;text-decoration:none;" href="{% url 'dashboard' %}">Home</a>
+    </button>
+
+  {% else %}
+
+    {% if form.errors %}
+      <p>Your username and password didn't match. Please try again.</p>
+    {% endif %}
+
+    {% if next %}
+      {% if user.is_authenticated %}
+        <p>Your account doesn't have access to this page. To proceed,
+        please login with an account that has access.</p>
+      {% else %}
+        <p>Please login to see this page.</p>
+      {% endif %}
+    {% endif %}
+
+    <form class="mx-3" method="post" action="{% url 'login' %}">
+      {% csrf_token %}
+      <table>
+        <tr>
+          <td>{{ form.username.label_tag }}</td>
+          <td>{{ form.username }}</td>
+        </tr>
+        <br>
+        <tr>
+          <td>{{ form.password.label_tag }}</td>
+          <td>{{ form.password }}</td>
+        </tr>
+      </table>
+      <br>
+
+      {% comment %} <input type="submit" value="login" /> {% endcomment %}
+      <button type="submit" value="login" class="mt-2 mx-1 btn btn-dark">Login</button>
+      <input type="hidden" name="next" value="{{ next }}" />
+    </form>
+
+    {% comment %} <p><a href="{% url 'password_reset' %}">Lost password?</a></p> {% endcomment %}
+{% comment %}
+    <button href="{% url 'password_reset' %}" class="mx-3  mt-2 btn btn-primary">Reset Password?</button> {% endcomment %}
+
+  {% endif %}
+
+</div>
+{% endblock %}

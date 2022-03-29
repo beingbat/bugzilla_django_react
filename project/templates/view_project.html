@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content%}
+  <div class="pt-4 mx-5">
+    <p><strong>Project Name:</strong> {{ project.name }}</p>
+    <p><strong>Project Description:</strong> {{ project.description }}</p>
+    <br>
+    <p><strong>Bugs:</strong> </p>
+    <br>
+    <br>
+    <p><strong>QAE Team on Project:</strong> </p>
+    <br>
+    <br>
+    <p><strong>Developers Team on Project:</strong> </p>
+    <br>
+    <a class="btn btn-dark"
+    href="{% url 'update-project' id=project.id%}"
+    >Edit</a>
+    <a class="btn btn-dark" href="{% url 'delete-project' id=project.id%}">Delete</a>
+    <br>
+    <a class="mt-3 btn btn-light" href="{% url 'list-project'%}">Go Back</a>
+
+  </div>
+
+{%endblock%}

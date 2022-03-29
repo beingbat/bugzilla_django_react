@@ -1,6 +1,6 @@
 from http.client import HTTPResponse
 from operator import index
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic.detail import DetailView
 from django.views.generic import ListView
 from userprofile.models import Profile
@@ -36,10 +36,10 @@ def add_user(request):
       if current_user.designation == 'man':
         if request.method == 'POST':
               user_form = ff.UserRegisterForm(request.POST)
-              cust_form = ff.ProfileForm(request.POST)
-              if user_form.is_valid() and cust_form.is_valid():
+              profile_form = ff.ProfileForm(request.POST)
+              if user_form.is_valid() and profile_form.is_valid():
                   user = user_form.save()
-                  profile = cust_form.save()
+                  profile = profile_form.save()
                   profile.user = user
                   profile.save()
                   messages.success(request, f'Account has been created! You can now log in.')
@@ -54,6 +54,41 @@ def add_user(request):
         raise Http404
     except:
       raise Http404
+
+
+
+@login_required
+@transaction.atomic
+def update_user(request, id):
+    # try:
+      current_user = Profile.objects.get(user=request.user)
+      if current_user.designation == 'man':
+        user = get_object_or_404(User, id=id)
+        profile = get_object_or_404(Profile, user=user)
+        if request.method == 'POST':
+          user_form = ff.UserUpdateForm(request.POST, instance=user)
+          profile_form = ff.ProfileForm(request.POST, instance=profile)
+          if user_form.is_valid() and profile_form.is_valid():
+              # user.username = user_form.cleaned_data['username']
+              # user.first_name = user_form.cleaned_data['last_name']
+              # user.last_name = user_form.cleaned_data['first_name']
+              # profile.designation = profile_form.cleaned_data['designation']
+              # user.save()
+              # profile.save()
+              user_form.save()
+              profile_form.save()
+              messages.success(request, f'Account has been created! You can now log in.')
+              return redirect('user-detail', user.id)
+          else:
+              messages.error(request, f'Please correct the errors.')
+        else:
+          user_form = ff.UserUpdateForm(instance = user)
+          profile_form = ff.ProfileForm(instance= profile)
+        return render(request, "user_update.html", {'user_form': user_form, 'profile_form': profile_form})
+      else:
+        raise Http404
+    # except:
+    #   raise Http404
 
 
 @login_required

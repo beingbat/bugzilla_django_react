@@ -6,10 +6,8 @@
     <p><strong>Name:</strong> {{ user_profile.user.get_full_name }}</p>
     <p><strong>Username:</strong> {{ user_profile.user.username }}</p>
 
-    <button class="btn btn-dark">
-      <a style = "color:white; text-decoration:none;" href="{% url 'delete-user' id=user_profile.user.id%}">Delete</a>
-      {% comment %} {% url 'delete-user' id=user.user.id %} {% endcomment %}
-    </button>
+    <a class="btn btn-dark" href="{% url 'delete-user' id=user_profile.user.id%}">Delete</a>
+
   </div>
 
 {%endblock%}

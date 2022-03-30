@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+  <p>
+    Logged out!
+  </p>
+
+  <button href="{% url 'login' %}"
+            class="mx-3  mt-2 btn btn-primary">
+    Login Again
+  </button>
+
+  <button href="{% url 'home' %}"
+            class="mx-3  mt-2 btn btn-primary">
+    Home
+  </button>
+
+{% endblock %}

@@ -3,12 +3,18 @@
 {% block content%}
 
 <div class="pt-4 mx-5">
-  <h4>Add Project</h4>
+  <h4>
+    Add Project
+  </h4>
   <br>
   <form method="post">
     {% csrf_token %}
     {{ project_form.as_p }}
-    <button class = "btn btn-dark" type="submit">Add Project</button>
+
+    <button class = "btn btn-dark" type="submit">
+      Add Project
+    </button>
+
   </form>
 </div>
 

@@ -1,17 +1,22 @@
 {% extends 'base.html' %}
 
-{% block content%}
+{% block content %}
 
 <div class="pt-4 mx-5">
-  <h4>Update Project</h4>
+  <h4>
+    Update Project
+  </h4>
   <br>
   <form method="post">
     {% csrf_token %}
     {{ user_form.as_p }}
     {{ profile_form.as_p }}
-    <button class = "btn btn-dark" type="submit">Save changes</button>
+    <button class = "btn btn-dark"
+              type="submit">
+      Save changes
+    </button>
   </form>
 </div>
 
 
-{%endblock%}
+{% endblock %}

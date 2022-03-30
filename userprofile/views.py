@@ -1,25 +1,22 @@
-from http.client import HTTPResponse
-from operator import index
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic.detail import DetailView
 from django.views.generic import ListView
 from userprofile.models import Profile
-from django.http import Http404, HttpResponse as hr
+from django.http import Http404
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
-import userprofile.forms as ff
+import userprofile.forms as profileforms
 from django.contrib import messages
 
 
 def index_page(request):
+
   if(request.user.is_authenticated):
     profile = Profile.objects.get(pk=request.user).designation
   else:
     profile = ""
-
-  print(type(profile), ": ", profile, "\n")
 
   context = {
     "user": request.user,
@@ -28,83 +25,96 @@ def index_page(request):
 
   return render(request, 'index.html', context)
 
+
+#Tried merging add_user and update_user but it created a lot of conditional statements so left it as it is
+
 @login_required
 @transaction.atomic
 def add_user(request):
-    try:
-      current_user = Profile.objects.get(user=request.user)
-      if current_user.designation == 'man':
-        if request.method == 'POST':
-              user_form = ff.UserRegisterForm(request.POST)
-              profile_form = ff.ProfileForm(request.POST)
-              if user_form.is_valid() and profile_form.is_valid():
-                  user = user_form.save()
-                  profile = profile_form.save()
-                  profile.user = user
-                  profile.save()
-                  messages.success(request, f'Account has been created! You can now log in.')
-                  return redirect('dashboard')
-              else:
-                  messages.error(request, f'Please correct the errors.')
-        else:
-            user_form = ff.UserRegisterForm(request.POST)
-            profile_form = ff.ProfileForm(request.POST)
-        return render(request, "user_add.html", {'user_form': user_form, 'profile_form': profile_form})
+
+  current_user = get_object_or_404(Profile, user=request.user)
+  if current_user.designation == 'man':
+
+    if request.method == 'POST':
+
+      user_form = profileforms.UserRegisterForm(request.POST)
+      profile_form = profileforms.ProfileForm(request.POST)
+
+      if user_form.is_valid() and profile_form.is_valid():
+          user = user_form.save()
+          profile = profile_form.save(commit=False)
+          profile.user = user
+          profile.save()
+          messages.success(request, "New Employee has been created successfully")
+          return redirect('dashboard')
+
       else:
-        raise Http404
-    except:
-      raise Http404
+          messages.error(request, "Failed adding new employee")
+
+    else: #GET
+
+        user_form = profileforms.UserRegisterForm(request.POST)
+        profile_form = profileforms.ProfileForm(request.POST)
+
+    return render(request, "user_add.html", {'user_form': user_form, 'profile_form': profile_form})
+
+  else:
+    raise Http404
 
 
 
 @login_required
 @transaction.atomic
 def update_user(request, id):
-    # try:
-      current_user = Profile.objects.get(user=request.user)
-      if current_user.designation == 'man':
-        user = get_object_or_404(User, id=id)
-        profile = get_object_or_404(Profile, user=user)
-        if request.method == 'POST':
-          user_form = ff.UserUpdateForm(request.POST, instance=user)
-          profile_form = ff.ProfileForm(request.POST, instance=profile)
-          if user_form.is_valid() and profile_form.is_valid():
-              # user.username = user_form.cleaned_data['username']
-              # user.first_name = user_form.cleaned_data['last_name']
-              # user.last_name = user_form.cleaned_data['first_name']
-              # profile.designation = profile_form.cleaned_data['designation']
-              # user.save()
-              # profile.save()
-              user_form.save()
-              profile_form.save()
-              messages.success(request, f'Account has been created! You can now log in.')
-              return redirect('user-detail', user.id)
-          else:
-              messages.error(request, f'Please correct the errors.')
-        else:
-          user_form = ff.UserUpdateForm(instance = user)
-          profile_form = ff.ProfileForm(instance= profile)
-        return render(request, "user_update.html", {'user_form': user_form, 'profile_form': profile_form})
+
+  current_user = get_object_or_404(Profile, user=request.user)
+
+  if current_user.designation == 'man':
+
+    user = get_object_or_404(User, id=id)
+    profile = get_object_or_404(Profile, user=user)
+
+    if request.method == 'POST':
+      user_form = profileforms.UserUpdateForm(request.POST, instance=user)
+      profile_form = profileforms.ProfileForm(request.POST, instance=profile)
+
+      if user_form.is_valid() and profile_form.is_valid():
+
+        user = user_form.save()
+        profile_form.save()
+        messages.success(request, "Employee Information has been updated successfully.")
+        return redirect('user-detail', pk=user.id)
+
       else:
-        raise Http404
-    # except:
-    #   raise Http404
+          messages.error(request, "Updating Employee Information Failed.")
+
+    else: #GET
+
+
+      user_form = profileforms.UserUpdateForm(instance = user)
+      profile_form = profileforms.ProfileForm(instance = profile)
+
+    return render(request, "user_update.html", {'user_form': user_form, 'profile_form': profile_form})
+
+  else:
+    raise Http404
+
 
 
 @login_required
 def delete_user(request, id):
-    try:
-      current_user = Profile.objects.get(user=request.user)
-      if current_user.designation == 'man':
-        u = User.objects.get(id = id)
-        u.delete()
-        messages.success(request, "The user is deleted")
-      else:
-        raise Http404
-    except:
+  try:
+    current_user = Profile.objects.get(user=request.user)
+    if current_user.designation == 'man':
+      u = User.objects.get(id = id)
+      u.delete()
+      messages.success(request, "The user is deleted")
+    else:
       raise Http404
+  except:
+    raise Http404
 
-    return redirect(index_page)
+  return redirect(index_page)
 
 
 class UserDetailView(LoginRequiredMixin, DetailView):
@@ -138,11 +148,11 @@ class UserListView(LoginRequiredMixin, ListView):
   allow_empty = False
 
   def get_queryset(self):
-        try:
-          current_user = Profile.objects.get(user=self.request.user)
-          if current_user.designation == 'man':
-            return Profile.objects.filter(designation=self.kwargs['slug'])
-          else:
-            raise Http404
-        except:
-          raise Http404
+    try:
+      current_user = Profile.objects.get(user=self.request.user)
+      if current_user.designation == 'man':
+        return Profile.objects.filter(designation=self.kwargs['slug'])
+      else:
+        raise Http404
+    except:
+      raise Http404

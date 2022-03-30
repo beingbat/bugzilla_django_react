@@ -6,11 +6,59 @@
     <p><strong>Name:</strong> {{ user_profile.user.get_full_name }}</p>
     <p><strong>Username:</strong> {{ user_profile.user.username }}</p>
 
+
+    <p>
+      <strong>
+        Project Assigned:
+      </strong>
+
+      {%if current_project %}
+        <a
+          style = "text-decoration:none; color:black;"
+          href="{% url 'project-view' id=project.id %}"
+        >
+        {{current_project.name}}
+        </a>
+      {% else %}
+        None
+      {% endif %}
+
+    </p>
+
     <a class="btn btn-dark"
     href="{% url 'update-user' id=user_profile.user.id%}"
     >Edit</a>
     <a class="btn btn-dark" href="{% url 'delete-user' id=user_profile.user.id%}">Delete</a>
-    <br>
+
+    <hr>
+    <p>
+      <strong>
+        Change Project:
+      </strong>
+      <select class="mt-2 form-select" size="3" aria-label="size 3 select example">
+        <option selected>None</option>
+        {% for project in projects%}
+          <option value="{{project.id}}">{{project.name}}</option>
+        {% endfor %}
+      </select>
+      <a class="mt-3 btn btn-dark"
+          {% comment %} href="{% url 'assign-project' id=project.id%}" {% endcomment %}
+          >
+        Change
+      </a>
+
+      {% comment %} <form method="post">
+        {% csrf_token %}
+        {{ project_form }}
+        <button class = "btn btn-dark" type="submit">
+          Change Project
+        </button>
+      </form> {% endcomment %}
+
+    </p>
+
+    <hr>
+
     <a class="mt-3 btn btn-light" href="{% url 'user-list' slug=user_profile.designation%}">Go Back</a>
 
   </div>

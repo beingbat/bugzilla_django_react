@@ -12,6 +12,8 @@ from django.db import transaction
 import userprofile.forms as ff
 from django.contrib import messages
 
+from project.models import Project
+
 
 def index_page(request):
   if(request.user.is_authenticated):
@@ -115,6 +117,18 @@ class UserDetailView(LoginRequiredMixin, DetailView):
   context_object_name = 'user_profile'
   allow_empty = False
   queryset = Profile.objects.all()
+
+  def get_context_data(self, **kwargs):
+    context = super(UserDetailView, self).get_context_data(**kwargs)
+    projects = Project.objects.all()
+    my_profile = get_object_or_404(Profile, user=get_object_or_404(User, pk=self.kwargs['pk']))
+    my_project = my_profile.project
+    if projects:
+      context['projects'] = projects
+    if my_project:
+      context['current_project'] = my_project
+
+    return context
 
   def get_object(self):
 

@@ -1,101 +1,131 @@
 {% extends 'base.html' %}
 
-{% block content%}
-<br>
+{% block content %}
 
-<div class = "mx-4">
-  {% if user.is_authenticated %}
-    <h4>Username: {{user.username}}
-    <br>
-    {% if user.get_full_name|length > 0 %}
-      Name:{{user.full_name}}
-      <br>
-    {%endif%}
-    </h4>
+  <br>
+  <div class = "mx-4">
 
-    {% if user.is_superuser %}
-      <h4>Hello Administrator!</h4>
-      <a class="mt-2 btn btn-light" href="{% url 'admin:index' %}">
-        Manage
-      </a>
+    {% if user.is_authenticated %}
+
+      <h4>
+        Username: {{user.username}} <br>
+
+        {% if user.get_full_name|length > 0 %}
+          Name: {{user.full_name}} <br>
+        {% endif %}
+
+      </h4>
 
 
-    {% elif user_type == 'man'%}
-    <h5>Hello Manager</h5>
-    <br>
-
-    <p><b>Add: </b></p>
-
-    <a class="mt-2 btn btn-light mx-2" href="{% url 'dashboard' %}" >Project</a>
-
-    <a class="mt-2 btn btn-light" href="{% url 'add-user'%}" >Employee</a>
-
-    <br>
-    <br>
-    <br>
-
-    <p><b>Manage: </b></p>
-
-    <a class="mt-2 btn btn-light mx-2" href="{% url 'dashboard' %}" >
-      Projects
-    </a>
-
-    <a class="mt-2 btn btn-light" href="{% url 'user-list' slug='dev'%}" >
-      Developers
-    </a>
-
-    <a class="mt-2 btn btn-light mx-2" href="{% url 'user-list' slug='qae'%}" >
-      QAEs
-    </a>
-
-    <br>
-    <br>
-    <br>
-    {% else %}
-
-      {% if user_type == 'dev'%}
-        <p>Hello Developer!</p>
-        <p>Assigned Project: None</p>
-
-        <a class="mt-2 btn btn-dark"   href="{% url 'dashboard' %}">
-          View Project
+      {% if user.is_superuser %}
+        <h4>
+          Hello Administrator!
+        </h4>
+        <a class="mt-2 btn btn-light" href="{% url 'admin:index' %}">
+          Admin Dashboard
         </a>
 
-      {% elif user_type == 'qae' %}
-
-        <p>Hello Quality Assurance Engineer!</p>
-
-        <a class="mt-2 btn btn-dark" href="{% url 'dashboard' %}">
-          Manage Reported Bugs or Features
-        </a>
-
-        <a class="mt-2 btn btn-dark" href="{% url 'dashboard' %}">
-          View Assigned Project
-        </a>
-
-        <a class="mt-2 btn btn-dark" href="{% url 'dashboard' %}">
-          View All Projects
-        </a>
-        <br>
-
-      {% else %}
-        <p> Unkown User Type Detected </p>
       {% endif %}
 
-    {% endif %}
 
-      <a class="mt-2 btn btn-dark"  href="{% url 'logout' %}">
-        Logout
-      </a>
+      {% if user_type == 'man' %}
+        <h4>
+          Hello Manager
+        </h4>
+        <br>
+        <p>
+          <b>
+            Add:
+          </b>
+        </p>
 
-  {% else %}
+        <a class="mt-2 btn btn-light mx-2" href="{% url 'dashboard' %}" >
+          Project
+        </a>
 
-    <h5>Please Login</h5>
+        <a class="mt-2 btn btn-light" href="{% url 'add-user'%}" >
+          Employee
+        </a>
+
+        <br><br><br>
+
+        <p>
+          <b>
+            Manage:
+          </b>
+        </p>
+
+        <a class="mt-2 btn btn-light mx-2" href="{% url 'dashboard' %}" >
+          Projects
+        </a>
+
+        <a class="mt-2 btn btn-light" href="{% url 'user-list' slug='dev'%}" >
+          Developers
+        </a>
+
+        <a class="mt-2 btn btn-light mx-2" href="{% url 'user-list' slug='qae'%}" >
+          QAEs
+        </a>
+
+        <br><br><br>
+
+      {% else %}
+
+        {% if user_type == 'dev'%}
+
+          <p>
+            Hello Developer!
+          </p>
+
+          <p>
+            Assigned Project: None
+          </p>
+
+          <a class="mt-2 btn btn-dark"   href="{% url 'dashboard' %}">
+            View Project
+          </a>
+
+        {% elif user_type == 'qae' %}
+
+          <p>
+            Hello Quality Assurance Engineer!
+          </p>
+
+          <a class="mt-2 btn btn-dark" href="{% url 'dashboard' %}">
+            Manage Reported Bugs or Features
+          </a>
+
+          <a class="mt-2 btn btn-dark" href="{% url 'dashboard' %}">
+            View Assigned Project
+          </a>
+
+          <a class="mt-2 btn btn-dark" href="{% url 'dashboard' %}">
+            View All Projects
+          </a>
+          <br>
+
+        {% else %}
+          <p>
+            Unkown User Type Detected
+          </p>
+
+        {% endif %}
+
+      {% endif %}
+        <a class="mt-2 btn btn-dark"  href="{% url 'logout' %}">
+          Logout
+        </a>
+
+    {% else %}
+
+      <h5>
+        Please Login
+      </h5>
       <a class="mt-2 btn btn-outline btn-dark" href="{% url 'login' %}" >
         Login
       </a>
-  {% endif %}
 
-</div>
+    {% endif %}
+  </div>
 
 {% endblock %}

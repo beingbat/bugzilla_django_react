@@ -1,6 +1,6 @@
 from django.db.models import ProtectedError
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import Http404, JsonResponse
+from django.http import Http404
 from django.views.generic.detail import DetailView
 from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
@@ -63,8 +63,7 @@ def delete_project(request, id):
     project = Project.objects.get(id = id)
     try:
       project.delete()
-    except:
-
+    except: #ProtectedError was not working so I have just used except
       return render(request, "delete_project.html", {'title':'Deletion Failed',
         'msg':"Deletion Failed. Employees are currently working on this project, so It can't be deleted."})
 
@@ -93,8 +92,6 @@ class DetailProject(LoginRequiredMixin, DetailView):
     employees = Profile.objects.filter(project=get_object_or_404(Project, pk=self.kwargs['pk']))
     qaes = employees.filter(designation='qae')
     devs = employees.filter(designation='dev')
-    print(qaes)
-    print(devs)
     context['qaes'] = qaes
     context['devs'] = devs
     return context
@@ -113,7 +110,6 @@ class ListProjects(LoginRequiredMixin, ListView):
   model = Project
   template_name = 'list_projects.html'
   context_object_name = 'project_list'
-  # allow_empty = False
 
   def get_queryset(self):
     current_user = get_object_or_404(Profile, user=self.request.user)

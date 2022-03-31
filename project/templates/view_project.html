@@ -24,7 +24,10 @@
         QAE Team on Project:
       </strong>
       {% for qae in qaes%}
-        <p>Employee ID: {{ qae.user.id }}; Name: {{ qae.user.get_full_name }}</p>
+        <p>
+          Employee ID: {{ qae.user.id }};
+          Name: {{ qae.user.get_full_name }}
+        </p>
       {% endfor %}
       {% if not qaes %}
       None
@@ -34,7 +37,10 @@
         Developers Team on Project:
       </strong>
         {% for dev in devs%}
-          <p>Employee ID: {{ dev.user.id }}; Name: {{ dev.user.get_full_name }}</p>
+          <p>
+            Employee ID: {{ dev.user.id }};
+            Name: {{ dev.user.get_full_name }}
+          </p>
         {% endfor %}
       </p>
         {% if not devs %}

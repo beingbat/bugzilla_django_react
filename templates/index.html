@@ -5,7 +5,8 @@
 
 <div class = "mx-4">
   {% if user.is_authenticated %}
-    <h4>Username: {{user.username}}
+    <h4>
+      Username: {{user.username}}
     <br>
     {% if user.get_full_name|length > 0 %}
       Name:{{user.full_name}}
@@ -14,8 +15,11 @@
     </h4>
 
     {% if user.is_superuser %}
-      <h4>Hello Administrator!</h4>
-      <a class="mt-2 btn btn-light" href="{% url 'admin:index' %}">
+      <h4>
+        Hello Administrator!
+      </h4>
+      <a class="mt-2 btn btn-light"
+          href="{% url 'admin:index' %}">
         Manage
       </a>
       <br>
@@ -23,38 +27,50 @@
 
 
     {% if user_type == 'man'%}
-    {% if not user.is_superuser %}
-      <h5>Hello Manager</h5>
-    {% endif %}
-    <br>
+      {% if not user.is_superuser %}
+        <h5>Hello Manager</h5>
+      {% endif %}
+      <br>
 
-    <p><b>Add: </b></p>
+      <p><b>Add: </b></p>
 
-    <a class="mt-2 btn btn-light mx-2" href="{% url 'add-project' %}" >Project</a>
+      <a class="mt-2 btn btn-light mx-2"
+          href="{% url 'add-project' %}">
+        Project
+      </a>
 
-    <a class="mt-2 btn btn-light" href="{% url 'add-user'%}" >Employee</a>
+      <a class="mt-2 btn btn-light"
+          href="{% url 'add-user'%}" >
+        Employee
+      </a>
 
-    <br>
-    <br>
-    <br>
+      <br>
+      <br>
+      <br>
 
-    <p><b>Manage: </b></p>
+      <p>
+        <b>
+          Manage:
+        </b>
+      </p>
 
-    <a class="mt-2 btn btn-light mx-2" href="{% url 'list-project' %}" >
-      Projects
-    </a>
+      <a class="mt-2 btn btn-light mx-2"
+          href="{% url 'list-project' %}" >
+        Projects
+      </a>
 
-    <a class="mt-2 btn btn-light" href="{% url 'user-list' slug='dev'%}" >
-      Developers
-    </a>
+      <a class="mt-2 btn btn-light"
+          href="{% url 'user-list' slug='dev'%}" >
+        Developers
+      </a>
 
-    <a class="mt-2 btn btn-light mx-2" href="{% url 'user-list' slug='qae'%}" >
-      QAEs
-    </a>
-
-    <br>
-    <br>
-    <br>
+      <a class="mt-2 btn btn-light mx-2"
+          href="{% url 'user-list' slug='qae'%}" >
+        QAEs
+      </a>
+      <br>
+      <br>
+      <br>
     {% else %}
 
       {% if user_type == 'dev'%}
@@ -63,7 +79,8 @@
           {% if project_name %}
             {{project_name}}
             <br>
-            <a class="mt-2 btn btn-dark"   href="{% url 'detail-project' pk=project_id %}">
+            <a class="mt-2 btn btn-dark"
+                href="{% url 'detail-project' pk=project_id %}">
               View Project
             </a>
         {% endif %}
@@ -71,45 +88,55 @@
 
       {% elif user_type == 'qae' %}
 
-        <p>Hello Quality Assurance Engineer!</p>
+        <p>
+          Hello Quality Assurance Engineer!
+        </p>
 
         Assigned Project:
         {% if project_name %}
           {{project_name}}
           <br>
-          <a class="mt-2 btn btn-dark"   href="{% url 'detail-project' pk=project_id %}">
+          <a class="mt-2 btn btn-dark"
+              href="{% url 'detail-project' pk=project_id %}">
             View Assigned Project
           </a>
         {% else %}
-          None<br>
+          None
+          <br>
         {% endif %}
 
-        <a class="mt-2 btn btn-dark" href="{% url 'dashboard' %}">
+        <a class="mt-2 btn btn-dark"
+            href="{% url 'dashboard' %}">
           Manage Reported Bugs or Features
         </a>
 
-
-        <a class="mt-2 btn btn-dark" href="{% url 'list-project' %}">
+        <a class="mt-2 btn btn-dark"
+            href="{% url 'list-project' %}">
           View All Projects
         </a>
         <br>
 
       {% else %}
-        <p> Unkown User Type Detected </p>
+        <p>
+          Unkown User Type
+        </p>
       {% endif %}
 
     {% endif %}
 
-      <a class="mt-2 btn btn-dark"  href="{% url 'logout' %}">
+      <a class="mt-2 btn btn-dark"
+          href="{% url 'logout' %}">
         Logout
       </a>
 
   {% else %}
-
-    <h5>Please Login</h5>
-      <a class="mt-2 btn btn-outline btn-dark" href="{% url 'login' %}" >
-        Login
-      </a>
+    <h5>
+      Please Login
+    </h5>
+    <a class="mt-2 btn btn-outline btn-dark"
+        href="{% url 'login' %}" >
+      Login
+    </a>
   {% endif %}
 
 </div>

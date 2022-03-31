@@ -12,7 +12,7 @@ USER_TYPES = (
 class Profile(models.Model):
 
   user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-  designation = models.CharField(max_length=3, choices = USERS_TYPES, default='dev')
+  designation = models.CharField(max_length=3, choices = USER_TYPES+(('man', 'Manager'),), default='dev')
   project = models.ForeignKey(Project,
     on_delete=models.DO_NOTHING,
     related_name='assigned_project',

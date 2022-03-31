@@ -9,3 +9,18 @@ class ProjectForm(forms.ModelForm):
     class Meta:
         model = Project
         fields = ('name', 'description',)
+
+
+
+class ProjectChooseForm(forms.ModelForm):
+    projects = Project.objects.all()
+    choicess = ((-1, 'None'), )
+    for project in projects:
+        print("**********", project)
+        choicess = choicess + ((project.id, project.name),)
+    projects_field = forms.ChoiceField(choices=choicess)
+    print(choicess)
+
+    class Meta:
+        model = Project
+        fields = ('projects_field', )

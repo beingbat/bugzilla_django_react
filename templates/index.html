@@ -18,10 +18,14 @@
       <a class="mt-2 btn btn-light" href="{% url 'admin:index' %}">
         Manage
       </a>
+      <br>
+    {% endif %}
 
 
-    {% elif user_type == 'man'%}
-    <h5>Hello Manager</h5>
+    {% if user_type == 'man'%}
+    {% if not user.is_superuser %}
+      <h5>Hello Manager</h5>
+    {% endif %}
     <br>
 
     <p><b>Add: </b></p>
@@ -55,25 +59,37 @@
 
       {% if user_type == 'dev'%}
         <p>Hello Developer!</p>
-        <p>Assigned Project: None</p>
+        Assigned Project:
+          {% if project_name %}
+            {{project_name}}
+            <br>
+            <a class="mt-2 btn btn-dark"   href="{% url 'detail-project' pk=project_id %}">
+              View Project
+            </a>
+        {% endif %}
 
-        <a class="mt-2 btn btn-dark"   href="{% url 'dashboard' %}">
-          View Project
-        </a>
 
       {% elif user_type == 'qae' %}
 
         <p>Hello Quality Assurance Engineer!</p>
 
+        Assigned Project:
+        {% if project_name %}
+          {{project_name}}
+          <br>
+          <a class="mt-2 btn btn-dark"   href="{% url 'detail-project' pk=project_id %}">
+            View Assigned Project
+          </a>
+        {% else %}
+          None<br>
+        {% endif %}
+
         <a class="mt-2 btn btn-dark" href="{% url 'dashboard' %}">
           Manage Reported Bugs or Features
         </a>
 
-        <a class="mt-2 btn btn-dark" href="{% url 'dashboard' %}">
-          View Assigned Project
-        </a>
 
-        <a class="mt-2 btn btn-dark" href="{% url 'dashboard' %}">
+        <a class="mt-2 btn btn-dark" href="{% url 'list-project' %}">
           View All Projects
         </a>
         <br>

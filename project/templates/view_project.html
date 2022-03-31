@@ -23,14 +23,26 @@
       <strong>
         QAE Team on Project:
       </strong>
-      <br>
+      {% for qae in qaes%}
+        <p>Employee ID: {{ qae.user.id }}; Name: {{ qae.user.get_first_name }} {{ qae.user.get_last_name }}</p>
+      {% endfor %}
+      {% if not qaes %}
+      None
+    {% endif %}
       <br>
       <strong>
         Developers Team on Project:
-      </strong>
-    </p>
+        {% for dev in devs%}
+          <p>{{ dev.user.id }}: {{ dev.user.get_first_name }} {{ dev.user.get_last_name }}</p>
+        {% endfor %}
+        </strong>
+      </p>
+        {% if not devs %}
+          None
+        {% endif %}
     <br>
-
+    <br>
+    {% if designation == 'man' %}
     <a class="btn btn-dark"
         href="{% url 'update-project' id=project.id%}">
       Edit
@@ -40,13 +52,17 @@
         href="{% url 'delete-project' id=project.id%}">
       Delete
     </a>
-
+    {% endif %}
     <br>
     <a class="mt-3 btn btn-light"
-        href="{% url 'list-project'%}">
+      {% if designation == 'man' or designation == 'qae'%}
+          href="{% url 'list-project'%}"
+      {% else %}
+          href="{% url 'dashboard'%}"
+      {% endif %}
+      >
       Go Back
-    </a>
-
+      </a>
   </div>
 
 {%endblock%}

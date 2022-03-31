@@ -16,10 +16,10 @@ class ProjectChooseForm(forms.ModelForm):
     projects = Project.objects.all()
     choicess = ((-1, 'None'), )
     for project in projects:
-        print("**********", project)
+        # print("**********", project)
         choicess = choicess + ((project.id, project.name),)
     projects_field = forms.ChoiceField(choices=choicess)
-    print(choicess)
+    # print(choicess)
 
     class Meta:
         model = Project

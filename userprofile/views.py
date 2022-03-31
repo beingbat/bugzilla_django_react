@@ -21,17 +21,26 @@ from django.urls import reverse
 
 
 def index_page(request):
+  context = {}
   if(request.user.is_authenticated):
-    profile = Profile.objects.get(pk=request.user).designation
+    profileobj = Profile.objects.get(pk=request.user)
+    profile = profileobj.designation
+    if profileobj.project:
+      context = {
+        "project_name": profileobj.project.name,
+        "project_id": profileobj.project.id,
+        "user": request.user,
+        "user_type": profile,
+      }
+    else:
+      context = {
+        "user": request.user,
+        "user_type": profile,
+      }
   else:
-    profile = ""
-
-  print(type(profile), ": ", profile, "\n")
-
-  context = {
-    "user": request.user,
-    "user_type": profile,
-    }
+     context = {
+        "user": request.user,
+      }
 
   return render(request, 'index.html', context)
 

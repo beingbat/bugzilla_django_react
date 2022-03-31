@@ -75,9 +75,23 @@ class DetailProject(LoginRequiredMixin, DetailView):
   allow_empty = False
   queryset = Project.objects.all()
 
+  def get_context_data(self, **kwargs):
+    context = super(DetailProject, self).get_context_data(**kwargs)
+
+    current_user = get_object_or_404(Profile, user=self.request.user)
+    context['designation'] = current_user.designation
+    employees = Profile.objects.filter(project=get_object_or_404(Project, pk=self.kwargs['pk']))
+    qaes = employees.filter(designation='qae')
+    devs = employees.filter(designation='dev')
+    print(qaes)
+    print(devs)
+    context['qaes'] = qaes
+    context['devs'] = devs
+    return context
+
   def get_object(self):
     current_user = get_object_or_404(Profile, user=self.request.user)
-    if current_user.designation == 'man' or current_user.designation == 'qae':
+    if current_user.designation == 'man' or current_user.designation == 'qae' or (current_user.project and current_user.project.id == self.kwargs['pk']):
       return Project.objects.get(id=self.kwargs['pk'])
     else:
       raise Http404

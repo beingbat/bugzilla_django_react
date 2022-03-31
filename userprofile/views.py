@@ -107,7 +107,6 @@ def update_user(request, id):
 @login_required
 def delete_user(request, id):
   try:
-
     current_user = get_object_or_404(Profile, user=request.user)
     if current_user.designation == 'man':
       u = User.objects.get(id = id)

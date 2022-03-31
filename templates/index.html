@@ -84,9 +84,7 @@
               View Project
             </a>
         {% endif %}
-
-
-      {% elif user_type == 'qae' %}
+        <br><br><br>
 
         <p>
           Hello Quality Assurance Engineer!
@@ -114,7 +112,8 @@
             href="{% url 'list-project' %}">
           View All Projects
         </a>
-        <br>
+
+        <br><br><br>
 
       {% else %}
         <p>
@@ -122,8 +121,7 @@
         </p>
       {% endif %}
 
-    {% endif %}
-
+        {% if user_type == 'dev'%}
       <a class="mt-2 btn btn-dark"
           href="{% url 'logout' %}">
         Logout
@@ -139,6 +137,7 @@
     </a>
   {% endif %}
 
-</div>
+    {% endif %}
+  </div>
 
 {% endblock %}

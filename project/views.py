@@ -1,5 +1,6 @@
+from django.db.models import ProtectedError
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import Http404
+from django.http import Http404, JsonResponse
 from django.views.generic.detail import DetailView
 from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
@@ -56,15 +57,24 @@ def update_project(request, id):
 
 @login_required
 def delete_project(request, id):
+
   current_user = get_object_or_404(Profile, user=request.user)
   if current_user.designation == 'man':
     project = Project.objects.get(id = id)
-    project.delete()
+    try:
+      project.delete()
+    except:
+
+      return render(request, "delete_project.html", {'title':'Deletion Failed',
+        'msg':"Deletion Failed. Employees are currently working on this project, so It can't be deleted."})
+
     messages.success(request, "Project Removed!")
   else:
     raise Http404
 
   return redirect('list-project')
+
+
 
 
 class DetailProject(LoginRequiredMixin, DetailView):

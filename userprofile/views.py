@@ -165,7 +165,6 @@ class UserDetailView(LoginRequiredMixin, FormMixin, DetailView):
   def get_context_data(self, **kwargs):
     context = super(UserDetailView, self).get_context_data(**kwargs)
     context["project_form"] = self.get_form
-    projects = Project.objects.all()
     my_profile = get_object_or_404(Profile, user=get_object_or_404(User, pk=self.kwargs['pk']))
     my_project = my_profile.project
     # if projects:

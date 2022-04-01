@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+  <div class="pt-4 mx-5">
+
+    <p>
+      <strong>
+        Project Name:
+      </strong>
+      {{ project.name }}
+      <br>
+      <strong>
+        Project Description:
+      </strong>
+      {{ project.description }}
+      <br>
+      <strong>
+        Bugs:
+      </strong>
+      <br>
+      <br>
+      <strong>
+        QAE Team on Project:
+      </strong>
+      {% for qae in qaes%}
+        <p>
+          Employee ID: {{ qae.user.id }};
+          Name: {{ qae.user.get_full_name }}
+        </p>
+      {% endfor %}
+      {% if not qaes %}
+      None
+    {% endif %}
+      <br>
+      <strong>
+        Developers Team on Project:
+      </strong>
+        {% for dev in devs%}
+          <p>
+            Employee ID: {{ dev.user.id }};
+            Name: {{ dev.user.get_full_name }}
+          </p>
+        {% endfor %}
+      </p>
+        {% if not devs %}
+          None
+        {% endif %}
+    <br>
+    <br>
+    {% if designation == manager %}
+    <a class="btn btn-dark"
+        href="{% url 'update-project' id=project.id%}">
+      Edit
+    </a>
+
+    <a class="btn btn-dark"
+        href="{% url 'delete-project' id=project.id%}">
+      Delete
+    </a>
+    {% endif %}
+    <br>
+    <a class="mt-3 btn btn-light"
+      {% if designation == manager or designation == qaengineer %}
+          href="{% url 'list-project'%}"
+      {% else %}
+          href="{% url 'dashboard'%}"
+      {% endif %}
+      >
+      Go Back
+      </a>
+  </div>
+
+{%endblock%}

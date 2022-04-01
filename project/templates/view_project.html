@@ -48,7 +48,7 @@
         {% endif %}
     <br>
     <br>
-    {% if designation == 'man' %}
+    {% if designation == manager %}
     <a class="btn btn-dark"
         href="{% url 'update-project' id=project.id%}">
       Edit
@@ -61,7 +61,7 @@
     {% endif %}
     <br>
     <a class="mt-3 btn btn-light"
-      {% if designation == 'man' or designation == 'qae'%}
+      {% if designation == manager or designation == qaengineer %}
           href="{% url 'list-project'%}"
       {% else %}
           href="{% url 'dashboard'%}"

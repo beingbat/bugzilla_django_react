@@ -27,6 +27,13 @@ def is_manager(user):
   current_user = get_object_or_404(Profile, user=user)
   return True if current_user.designation == constants.MANAGER else False
 
+def get_user_profile(user):
+  return get_object_or_404(Profile, user=user)
+
+def get_user_profile_by_id(user_id):
+  user = get_object_or_404(User, id=user_id)
+  return get_object_or_404(Profile, user=user)
+
 
 def index_page(request):
   context = {}
@@ -153,7 +160,7 @@ class UserDetailView(LoginRequiredMixin, FormMixin, DetailView):
   def form_valid(self, form):
     chosen_project = form.cleaned_data['projects_field']
     if chosen_project != '-1':
-      my_profile = get_object_or_404(Profile, user=get_object_or_404(User, pk=self.kwargs['pk']))
+      my_profile = get_user_profile_by_id(self.kwargs['pk'])
       my_project = my_profile.project
       my_project = get_object_or_404(Project, id=chosen_project)
       my_profile.project = my_project
@@ -164,7 +171,7 @@ class UserDetailView(LoginRequiredMixin, FormMixin, DetailView):
   def get_context_data(self, **kwargs):
     context = super(UserDetailView, self).get_context_data(**kwargs)
     context["project_form"] = self.get_form
-    my_profile = get_object_or_404(Profile, user=get_object_or_404(User, pk=self.kwargs['pk']))
+    my_profile = get_user_profile_by_id(self.kwargs['pk'])
     my_project = my_profile.project
     if my_project:
       context['current_project'] = my_project
@@ -174,8 +181,7 @@ class UserDetailView(LoginRequiredMixin, FormMixin, DetailView):
   def get_object(self):
     if not is_manager(self.request.user):
       raise Http404
-    return get_object_or_404(Profile, user=get_object_or_404(User, pk=self.kwargs['pk']))
-
+    return get_user_profile_by_id(self.kwargs['pk'])
 
 
 class UserListView(LoginRequiredMixin, ListView):

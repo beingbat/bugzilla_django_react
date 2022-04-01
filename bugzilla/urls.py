@@ -9,4 +9,5 @@ urlpatterns = [
     path('', index_page, name="dashboard"),
     path('users/', include('userprofile.urls')),
     path('projects/', include('project.urls')),
+    path('bugs/', include('bugs.urls')),
 ]

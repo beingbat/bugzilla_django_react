@@ -59,16 +59,19 @@
           href="{% url 'list-project' %}" >
         Projects
       </a>
+      {% if dev_list %}
+        <a class="mt-2 btn btn-light"
+            href="{% url 'user-list' slug=types.0.0%}" >
+          Developers
+        </a>
+      {% endif %}
 
-      <a class="mt-2 btn btn-light"
-          href="{% url 'user-list' slug='dev'%}" >
-        Developers
-      </a>
-
-      <a class="mt-2 btn btn-light mx-2"
-          href="{% url 'user-list' slug='qae'%}" >
-        QAEs
-      </a>
+      {% if qae_list %}
+        <a class="mt-2 btn btn-light mx-2"
+            href="{% url 'user-list' slug=types.1.0%}" >
+          QAEs
+        </a>
+      {% endif %}
       <br>
       <br>
       <br>

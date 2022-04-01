@@ -47,6 +47,11 @@ def index_page(request):
   context["user"] = request.user
   context["types"] = constants.USER_TYPES
   context["manager"] = constants.MANAGER
+  if Profile.objects.filter(designation=constants.USER_TYPES[constants.DEV_INDEX][0]).count() > 0:
+    context['dev_list'] = True
+  if Profile.objects.filter(designation=constants.USER_TYPES[constants.QAE_INDEX][0]).count() > 0:
+    context['qae_list'] = True
+
   return render(request, 'index.html', context)
 
 #Tried merging add_user and update_user but it created a lot of conditional statements so left it as it is
@@ -175,7 +180,7 @@ class UserDetailView(LoginRequiredMixin, FormMixin, DetailView):
     my_project = my_profile.project
     if my_project:
       context['current_project'] = my_project
-
+    context['type'] = my_profile.designation
     return context
 
   def get_object(self):

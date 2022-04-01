@@ -78,11 +78,11 @@ WSGI_APPLICATION = 'bugzilla.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'pgl',
-        'USER': 'admin',
-        'PASSWORD': 'admin',
+        'NAME': 'db_bugzilla',
+        'USER': 'db_bugzillauser',
+        'PASSWORD': 'password',
         'HOST': 'localhost',
-        'PORT': '8000',
+        'PORT': '',
     }
 }
 

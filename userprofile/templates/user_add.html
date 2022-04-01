@@ -15,8 +15,8 @@
     {% endcomment %}
 
     {% csrf_token %}
-    {{ user_form.as_p }}
     {{ profile_form.as_p }}
+    {{ user_form.as_p }}
 
     <button class = "btn btn-dark"
               type="submit">

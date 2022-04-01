@@ -2,7 +2,6 @@
 
 {% block content%}
 <br>
-
 <div class = "mx-4">
   {% if user.is_authenticated %}
     <h4>
@@ -14,21 +13,23 @@
     {%endif%}
     </h4>
 
-    {% if user.is_superuser %}
-      <h4>
-        Hello Administrator!
-      </h4>
-      <a class="mt-2 btn btn-light"
-          href="{% url 'admin:index' %}">
-        Manage
-      </a>
-      <br>
-    {% endif %}
 
 
-    {% if user_type == 'man'%}
-      {% if not user.is_superuser %}
-        <h5>Hello Manager</h5>
+
+    {% if user_type == manager or user.is_superuser %}
+      {% if user.is_superuser %}
+        <h4>
+          Hello Administrator!
+        </h4>
+        <a class="mt-2 btn btn-light"
+            href="{% url 'admin:index' %}">
+          Manage
+        </a>
+        <br>
+      {% elif not user.is_superuser %}
+          <h5>
+            Hello Manager!
+          </h5>
       {% endif %}
       <br>
 
@@ -73,8 +74,8 @@
       <br>
     {% else %}
 
-      {% if user_type == 'dev'%}
-        <p>Hello Developer!</p>
+      {% if user_type == types.0.0%}
+        <p>Hello {{types.0.1}}!</p>
         Assigned Project:
           {% if project_name %}
             {{project_name}}
@@ -84,10 +85,12 @@
               View Project
             </a>
         {% endif %}
-        <br><br><br>
+
+
+      {% elif user_type == types.1.0 %}
 
         <p>
-          Hello Quality Assurance Engineer!
+          Hello {{types.1.1}} !
         </p>
 
         Assigned Project:
@@ -112,8 +115,7 @@
             href="{% url 'list-project' %}">
           View All Projects
         </a>
-
-        <br><br><br>
+        <br>
 
       {% else %}
         <p>
@@ -121,7 +123,8 @@
         </p>
       {% endif %}
 
-        {% if user_type == 'dev'%}
+    {% endif %}
+
       <a class="mt-2 btn btn-dark"
           href="{% url 'logout' %}">
         Logout
@@ -137,7 +140,6 @@
     </a>
   {% endif %}
 
-    {% endif %}
-  </div>
+</div>
 
 {% endblock %}

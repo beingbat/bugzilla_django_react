@@ -1,3 +1,4 @@
+from random import choices
 from django import forms
 from .models import Project
 
@@ -26,7 +27,7 @@ class ProjectChooseForm(forms.ModelForm):
     def get_choices(self):
 
         projects = Project.objects.all()
-        choicess = ((-1, 'None'), )
+        choices = ((-1, 'None'), )
         for project in projects:
-            choicess = choicess + ((project.id, project.name),)
-        return choicess
+            choices = choices + ((project.id, project.name),)
+        return choices

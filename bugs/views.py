@@ -84,23 +84,12 @@ class DetailBug(LoginRequiredMixin, DetailView):
 
   def get_context_data(self, **kwargs):
     context = super(DetailBug, self).get_context_data(**kwargs)
-
-    # current_user = get_user_profile(self.request.user)
-    # context['designation'] = current_user.designation
-    # employees = Profile.objects.filter(
-    #     project = get_object_or_404(Project, pk=self.kwargs['pk']))
-    # qaes = employees.filter(designation=USER_TYPES[QAE_INDEX][0])
-    # devs = employees.filter(designation=USER_TYPES[DEV_INDEX][0])
-    # context['qaes'] = qaes
-    # context['devs'] = devs
-    # context['qaengineer'] = USER_TYPES[QAE_INDEX][0]
-    # context['manager'] = MANAGER
     return context
 
   def get_object(self):
     current_user = get_user_profile(self.request.user)
     bug = get_object_or_404(Bug, uuid=self.kwargs['pk'])
-    if is_manager(self.request.user) or current_user.designation == USER_TYPES[QAE_INDEX][0] or (current_user.project and current_user.project == bug.project):
+    if is_manager(self.request.user) or current_user.designation == QAENGINEER or (current_user.project and current_user.project == bug.project):
         return bug
     else:
         raise Http404
@@ -112,15 +101,6 @@ class ListBug(LoginRequiredMixin, ListView):
   model = Project
   template_name = 'list_bug.html'
   context_object_name = 'bugs'
-
-  # def get_queryset(self):
-  #   current_user = get_user_profile(self.request.user)
-  #   project = get_object_or_404(Bug, self.kwargs['id'])
-  #   if is_manager(self.request.user) or current_user.designation == USER_TYPES[QAE_INDEX][0] or (current_user.project and current_user.project == project):
-  #       return Bug.objects.filter(project=project)
-  #   else:
-  #       raise Http404
-
 
   def get_queryset(self):
     current_user = get_user_profile(self.request.user)

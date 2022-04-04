@@ -59,6 +59,15 @@
           href="{% url 'list-project' %}" >
         Projects
       </a>
+
+
+      {% if bugs %}
+      <a class="mt-2 btn btn-light"
+          href="{% url 'list-bug' %}">
+        Manage Reported Bugs or Features
+      </a>
+      {% endif %}
+
       {% if dev_list %}
         <a class="mt-2 btn btn-light"
             href="{% url 'user-list' slug=types.0.0%}" >
@@ -109,10 +118,13 @@
           <br>
         {% endif %}
 
+
+        {% if bugs %}
         <a class="mt-2 btn btn-dark"
-            href="{% url 'dashboard' %}">
+            href="{% url 'list-bug' %}">
           Manage Reported Bugs or Features
         </a>
+        {% endif %}
 
         <a class="mt-2 btn btn-dark"
             href="{% url 'list-project' %}">

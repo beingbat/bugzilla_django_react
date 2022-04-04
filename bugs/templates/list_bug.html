@@ -3,7 +3,7 @@
 
 <div class ="mx-3 mt-3">
 
-  {% if project_list %}
+  {% if bugs %}
     <h4>
       Bug List in Project:
     </h4>
@@ -13,7 +13,7 @@
 
       <a class="btn btn-light bg-light mb-5 px-5 pb-4 pt-4"
           style="min-width:100%; border-radius: 10px;"
-            href="{% url 'detail-bug' pk=bug.id%}">
+            href="{% url 'detail-bug' pk=bug.pk%}">
 
         Bug Title: {{bug.title}} <br>
         Bug Description: {{bug.description}} <br>

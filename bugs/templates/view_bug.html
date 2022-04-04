@@ -25,26 +25,31 @@
       {{ project.description }}
       <br>
       <br>
+    </p>
+
+    {% if qae %}
+    <p>
       <strong>
         Reported By:
       </strong>
-    </p>
+
 
     <a class ="btn bnt-light" href="" >
-      Employee ID: {{ qae.user.id }};
+      ID: {{ qae.user.id }};
       Name: {{ qae.user.get_full_name }}
     </a>
-
+    {% endif %}
+    {% if dev %}
     <p>
       <strong>
         Assigned To:
       </strong>
     </p>
       <a class ="btn bnt-light" href="">
-        Employee ID: {{ dev.user.id }};
+        ID: {{ dev.user.id }};
         Name: {{ dev.user.get_full_name }}
       </a>
-
+    {% endif %}
     <br>
 
     <p>
@@ -68,19 +73,19 @@
     <br>
     {% if designation == manager %}
     <a class="btn btn-dark"
-        href="{% url 'update-bug' id=project.id%}">
+        href="{% url 'dashboard' %}">
       Edit
     </a>
 
     <a class="btn btn-dark"
-        href="{% url 'delete-bug' id=project.id%}">
+        href="{% url 'dashboard'%}">
       Delete
     </a>
     {% endif %}
     <br>
     <a class="mt-3 btn btn-light"
       {% if designation == manager or designation == qaengineer %}
-          href="{% url 'view-project' id=project.id%}"
+          href="{% url 'detail-project' pk=bug.project.pk%}"
       {% else %}
           href="{% url 'dashboard'%}"
       {% endif %}

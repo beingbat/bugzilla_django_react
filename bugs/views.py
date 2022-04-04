@@ -7,6 +7,7 @@ from constants.constants import *
 from django.contrib import messages
 from .forms import BugForm
 from .models import Bug
+from django.contrib.auth.models import User
 from project.models import Project
 from userprofile.models import Profile
 
@@ -33,16 +34,20 @@ def add_bug(request, id):
             bug = bug_form.save(commit=False)
             bug.project = project
             bug.status = NEW
-            if bug.cleaned_data.get("assigned_dev") != -1:
+            bug.creator = get_user_profile(request.user)
+            dev_id = bug_form.cleaned_data.get("assigned_dev")
+
+            if bug_form.cleaned_data.get("assigned_dev") != '-1':
                 bug.assigned_to = get_object_or_404(
-                    Profile, user=get_object_or_404(bug.cleaned_data.get("assigned_dev")))
+                    Profile, user=get_object_or_404(User, id=dev_id))
 
             bug.save()
-            messages.sucess(request, "Bug created sucessfully")
+            messages.success(request, "Bug created sucessfully")
+            return redirect('detail-bug', pk=bug.uuid)
         else:
             messages.error(request, "Error occured in Bug creation")
     else:  # GET
-        bug_form = BugForm(request.POST)
+        bug_form = BugForm(request.POST, project_id=id)
 
     context['bug_form'] = bug_form
     return render(request, 'add_bug.html', context)
@@ -63,7 +68,7 @@ def delete_bug(request, id):
     try:
         bug.delete()
     except:  # ProtectedError was not working so I have just used except
-        return render(request, "delete_bug.html",       {'title': 'Deletion Failed',
+        return render(request, "delete_bug.html",  {'title': 'Deletion Failed',
             'msg': "Deletion Failed. Bug can't be deleted."})
     messages.success(request, "Bug Removed!")
     return redirect('list-bug')
@@ -94,7 +99,7 @@ class DetailBug(LoginRequiredMixin, DetailView):
 
   def get_object(self):
     current_user = get_user_profile(self.request.user)
-    bug = get_object_or_404(Bug, self.kwargs['pk'])
+    bug = get_object_or_404(Bug, uuid=self.kwargs['pk'])
     if is_manager(self.request.user) or current_user.designation == USER_TYPES[QAE_INDEX][0] or (current_user.project and current_user.project == bug.project):
         return bug
     else:

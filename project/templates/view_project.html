@@ -16,15 +16,18 @@
       {{ project.description }}
       <br>
       <strong>
+        <br>
         Bugs:
       </strong>
       {% for bug in bugs%}
-      <a class="btn btn-dark"
-      href="{% url 'view-bug' id=bug.id%}">
-        {{bug.id}}; {{bug.title}}]
-      </a>
-      {% endfor %}
       <br>
+      <a class="btn btn-outline-dark mt-2"
+      href="{% url 'detail-bug' pk=bug.uuid%}">
+        ID: {{bug.uuid}}<br>Name: {{bug.title}}]
+      </a>
+
+      {% endfor %}
+      <br><br>
       <a class="btn btn-dark"
         href="{% url 'add-bug' id=project.id%}">
         Add Bug
@@ -41,22 +44,21 @@
         </p>
       {% endfor %}
       {% if not qaes %}
-      None
-    {% endif %}
+        None
+      {% endif %}
       <br>
       <strong>
         Developers Team on Project:
       </strong>
-        {% for dev in devs%}
-          <p>
-            Employee ID: {{ dev.user.id }};
-            Name: {{ dev.user.get_full_name }}
-          </p>
-        {% endfor %}
-      </p>
-        {% if not devs %}
-          None
-        {% endif %}
+      {% for dev in devs%}
+        <p>
+          Employee ID: {{ dev.user.id }};
+          Name: {{ dev.user.get_full_name }}
+        </p>
+      {% endfor %}
+      {% if not devs %}
+        None
+      {% endif %}
     <br>
     <br>
     {% if designation == manager %}

@@ -92,8 +92,9 @@ class DetailProject(LoginRequiredMixin, DetailView):
     employees = Profile.objects.filter(
         project = get_object_or_404(Project, pk=self.kwargs['pk']))
     qaes = employees.filter(designation=QAENGINEER)
-    devs = employees.filter(designation=QAENGINEER)
+    devs = employees.filter(designation=DEVELOPER)
     bugs = Bug.objects.filter(project = get_object_or_404(Project, pk=self.kwargs['pk']))
+    context['bugs'] = bugs
     context['qaes'] = qaes
     context['devs'] = devs
     context['qaengineer'] = USER_TYPES[QAE_INDEX][0]

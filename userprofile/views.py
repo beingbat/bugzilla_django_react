@@ -21,6 +21,7 @@ from userprofile.models import Profile
 from project.models import Project
 
 from constants import constants
+from bugs.models import Bug
 
 
 def is_manager(user):
@@ -52,6 +53,8 @@ def index_page(request):
   if Profile.objects.filter(designation=constants.USER_TYPES[constants.QAE_INDEX][0]).count() > 0:
     context['qae_list'] = True
 
+  if Bug.objects.all().count() > 0:
+    context['bugs'] = True
   return render(request, 'index.html', context)
 
 #Tried merging add_user and update_user but it created a lot of conditional statements so left it as it is

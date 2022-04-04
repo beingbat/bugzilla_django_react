@@ -79,13 +79,21 @@ WSGI_APPLICATION = 'bugzilla.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'db_bugzilla',
-        'USER': 'db_bugzillauser',
+        'NAME': 'dbbug',
+        'USER': 'dbuser',
         'PASSWORD': 'password',
         'HOST': 'localhost',
-        'PORT': '',
+        'PORT': '5432',
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME':'dbsqlite',
+
+#     }
+# }
 
 # AUTH_USER_MODEL = 'usersauth.User'
 

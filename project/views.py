@@ -15,6 +15,7 @@ from userprofile.models import Profile
 from userprofile.views import is_manager, get_user_profile_by_id, get_user_profile
 from .models import *
 from .forms import *
+from bugs.models import Bug
 
 
 @login_required
@@ -90,8 +91,9 @@ class DetailProject(LoginRequiredMixin, DetailView):
     context['designation'] = current_user.designation
     employees = Profile.objects.filter(
         project = get_object_or_404(Project, pk=self.kwargs['pk']))
-    qaes = employees.filter(designation=USER_TYPES[QAE_INDEX][0])
-    devs = employees.filter(designation=USER_TYPES[DEV_INDEX][0])
+    qaes = employees.filter(designation=QAENGINEER)
+    devs = employees.filter(designation=QAENGINEER)
+    bugs = Bug.objects.filter(project = get_object_or_404(Project, pk=self.kwargs['pk']))
     context['qaes'] = qaes
     context['devs'] = devs
     context['qaengineer'] = USER_TYPES[QAE_INDEX][0]
@@ -100,7 +102,7 @@ class DetailProject(LoginRequiredMixin, DetailView):
 
   def get_object(self):
     current_user = get_user_profile(self.request.user)
-    if is_manager(self.request.user) or current_user.designation == USER_TYPES[QAE_INDEX][0] or (current_user.project and current_user.project.id == self.kwargs['pk']):
+    if is_manager(self.request.user) or current_user.designation == QAENGINEER or (current_user.project and current_user.project.id == self.kwargs['pk']):
         return Project.objects.get(id=self.kwargs['pk'])
     else:
         raise Http404
@@ -115,7 +117,7 @@ class ListProjects(LoginRequiredMixin, ListView):
 
   def get_queryset(self):
     current_user = get_user_profile(self.request.user)
-    if is_manager(self.request.user) or current_user.designation == USER_TYPES[QAE_INDEX][0]:
+    if is_manager(self.request.user) or current_user.designation == QAENGINEER:
         return Project.objects.all()
     else:
         raise Http404

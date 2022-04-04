@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content%}
+
+<div class="pt-4 mx-5">
+  <h4>
+    Add Bug
+  </h4>
+  <br>
+  <form method="post">
+    {% csrf_token %}
+    {{ bug_form.as_p }}
+
+    <button class = "btn btn-dark" type="submit">
+      Add Bug
+    </button>
+
+  </form>
+</div>
+
+
+{%endblock%}

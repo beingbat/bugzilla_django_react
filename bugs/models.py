@@ -9,6 +9,7 @@ from userprofile.models import Profile
 import uuid
 from constants.constants import BUG_STATUS, DEVELOPER, QAENGINEER, BUG_TYPE, NEW
 from django.urls import reverse
+from django.utils.timezone import now
 
 
 class Bug(models.Model):
@@ -16,7 +17,7 @@ class Bug(models.Model):
   project = models.ForeignKey(Project, blank=False, null=False, verbose_name="Found In Project", on_delete=models.CASCADE)
   title = models.CharField(max_length=100, verbose_name="Bug Title", null=False, blank=False)
   description = models.TextField(max_length=500, verbose_name="Describe bug/feature in a paragraph", blank=True, null=True)
-  deadline = models.DateField(verbose_name="Bug Deadline", auto_now_add=True, blank=True)
+  deadline = models.DateField(verbose_name="Bug Deadline", default = now, blank=True)
   type = models.CharField(max_length=20,verbose_name="Is it a Feature or Bug", choices=BUG_TYPE, null=False, blank=False, default=BUG_TYPE[0][0])
   status = models.CharField(max_length=20,verbose_name="Bug/Feature Status", choices=BUG_STATUS, null=False, blank=False, default=NEW)
   creator = models.ForeignKey(Profile, verbose_name="Creator of Bug/Feature", null=False, blank=False, limit_choices_to={'designation': QAENGINEER}, on_delete=models.PROTECT, related_name="creator_qae")

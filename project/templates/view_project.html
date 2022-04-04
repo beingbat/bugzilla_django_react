@@ -18,6 +18,17 @@
       <strong>
         Bugs:
       </strong>
+      {% for bug in bugs%}
+      <a class="btn btn-dark"
+      href="{% url 'view-bug' id=bug.id%}">
+        {{bug.id}}; {{bug.title}}]
+      </a>
+      {% endfor %}
+      <br>
+      <a class="btn btn-dark"
+        href="{% url 'add-bug' id=project.id%}">
+        Add Bug
+      </a>
       <br>
       <br>
       <strong>

@@ -106,6 +106,21 @@ def delete_bug(request, pk):
     return redirect('list-bug')
 
 
+def assign_bug(request, bug_id, user_id):
+    user_profile = get_user_profile(request.user)
+    des = user_profile.designation
+    if request.user.id != user_id or des != DEVELOPER:
+        raise Http404
+
+    bug = get_object_or_404(Bug, uuid=bug_id)
+    if not bug.assigned_to:
+        bug.assigned_to = user_profile
+        bug.save()
+    else:
+        raise Http404
+    return redirect('detail-bug', pk=bug.uuid)
+
+
 class DetailBug(LoginRequiredMixin, FormMixin, DetailView):
 
     redirect_field_name = 'rt'
@@ -126,8 +141,12 @@ class DetailBug(LoginRequiredMixin, FormMixin, DetailView):
 
     def post(self, request, *args, **kwargs):
         profile_user = get_user_profile(self.request.user)
+        bug = get_object_or_404(Bug, uuid=self.kwargs['pk'])
         if profile_user.designation not in (MANAGER, QAENGINEER, DEVELOPER):
             return HttpResponseForbidden()
+        if profile_user.designation == DEVELOPER and  bug.assigned_to!=profile_user:
+            return HttpResponseForbidden()
+
         self.object = self.get_object()
         form = self.get_form()
         if form.is_valid():
@@ -144,9 +163,16 @@ class DetailBug(LoginRequiredMixin, FormMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(DetailBug, self).get_context_data(**kwargs)
+        bug = get_object_or_404(Bug, uuid=self.kwargs['pk'])
         context['status_form'] = self.get_form
-        if get_user_profile(self.request.user).designation in (MANAGER, QAENGINEER):
+        user_profile = get_user_profile(self.request.user)
+        des = user_profile.designation
+        if des in (MANAGER, QAENGINEER):
             context['moderator'] = True
+        elif des in DEVELOPER:
+            context['developer'] = True
+            if user_profile == bug.assigned_to:
+                context['cuser'] = True
 
         return context
 

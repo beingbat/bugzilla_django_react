@@ -1,160 +1,101 @@
-{% extends 'base.html' %}
-
-{% block content%}
-<br>
-<div class = "mx-4">
+{% extends 'base.html' %} {% block content%}
+<br />
+<div class="mx-4">
   {% if user.is_authenticated %}
-    <h4>
-      Username: {{user.username}}
-    <br>
-    {% if user.get_full_name|length > 0 %}
-      Name:{{user.full_name}}
-      <br>
+  <h4>
+    Username: {{user.username}}
+    <br />
+    {% if user.get_full_name|length > 0 %} Name: {{user.get_full_name}}
+    <br />
     {%endif%}
-    </h4>
+  </h4>
 
+  {% if user_type == manager or user.is_superuser %} {% if user.is_superuser %}
+  <h4>Hello Administrator!</h4>
+  <a class="mt-2 btn btn-light" href="{% url 'admin:index' %}"> Manage </a>
+  <br />
+  {% elif not user.is_superuser %}
+  <h5>Hello Manager!</h5>
+  {% endif %}
+  <br />
 
+  <p><b>Add: </b></p>
 
+  <a class="mt-2 btn btn-light mx-2" href="{% url 'add-project' %}">
+    Project
+  </a>
 
-    {% if user_type == manager or user.is_superuser %}
-      {% if user.is_superuser %}
-        <h4>
-          Hello Administrator!
-        </h4>
-        <a class="mt-2 btn btn-light"
-            href="{% url 'admin:index' %}">
-          Manage
-        </a>
-        <br>
-      {% elif not user.is_superuser %}
-          <h5>
-            Hello Manager!
-          </h5>
-      {% endif %}
-      <br>
+  <a class="mt-2 btn btn-light" href="{% url 'add-user'%}"> Employee </a>
 
-      <p><b>Add: </b></p>
+  <br />
+  <br />
+  <br />
 
-      <a class="mt-2 btn btn-light mx-2"
-          href="{% url 'add-project' %}">
-        Project
-      </a>
+  <p>
+    <b> Manage: </b>
+  </p>
 
-      <a class="mt-2 btn btn-light"
-          href="{% url 'add-user'%}" >
-        Employee
-      </a>
+  <a class="mt-2 btn btn-light mx-2" href="{% url 'list-project' %}">
+    Projects
+  </a>
 
-      <br>
-      <br>
-      <br>
+  {% if bugs %}
+  <a class="mt-2 btn btn-light" href="{% url 'list-bug' %}">
+    Manage Reported Bugs or Features
+  </a>
+  {% endif %} {% if dev_list %}
+  <a class="mt-2 btn btn-light" href="{% url 'user-list' slug=types.0.0%}">
+    Developers
+  </a>
+  {% endif %} {% if qae_list %}
+  <a class="mt-2 btn btn-light mx-2" href="{% url 'user-list' slug=types.1.0%}">
+    QAEs
+  </a>
+  {% endif %}
+  <br />
+  <br />
+  <br />
+  {% else %} {% if user_type == types.0.0%}
+  <p>Hello {{types.0.1}}!</p>
+  Assigned Project: {% if project_name %} {{project_name}}
+  <br />
+  <a class="mt-2 btn btn-dark" href="{% url 'detail-project' pk=project_id %}">
+    View Project
+  </a>
+  {% else %} None
+  <br />
+  {% endif %} {% elif user_type == types.1.0 %}
 
-      <p>
-        <b>
-          Manage:
-        </b>
-      </p>
+  <p>Hello {{types.1.1}} !</p>
 
-      <a class="mt-2 btn btn-light mx-2"
-          href="{% url 'list-project' %}" >
-        Projects
-      </a>
-
-
-      {% if bugs %}
-      <a class="mt-2 btn btn-light"
-          href="{% url 'list-bug' %}">
-        Manage Reported Bugs or Features
-      </a>
-      {% endif %}
-
-      {% if dev_list %}
-        <a class="mt-2 btn btn-light"
-            href="{% url 'user-list' slug=types.0.0%}" >
-          Developers
-        </a>
-      {% endif %}
-
-      {% if qae_list %}
-        <a class="mt-2 btn btn-light mx-2"
-            href="{% url 'user-list' slug=types.1.0%}" >
-          QAEs
-        </a>
-      {% endif %}
-      <br>
-      <br>
-      <br>
-    {% else %}
-
-      {% if user_type == types.0.0%}
-        <p>Hello {{types.0.1}}!</p>
-        Assigned Project:
-          {% if project_name %}
-            {{project_name}}
-            <br>
-            <a class="mt-2 btn btn-dark"
-                href="{% url 'detail-project' pk=project_id %}">
-              View Project
-            </a>
-        {% endif %}
-
-
-      {% elif user_type == types.1.0 %}
-
-        <p>
-          Hello {{types.1.1}} !
-        </p>
-
-        Assigned Project:
-        {% if project_name %}
-          {{project_name}}
-          <br>
-          <a class="mt-2 btn btn-dark"
-              href="{% url 'detail-project' pk=project_id %}">
-            View Assigned Project
-          </a>
-        {% else %}
-          None
-          <br>
-        {% endif %}
-
-
-        {% if bugs %}
-        <a class="mt-2 btn btn-dark"
-            href="{% url 'list-bug' %}">
-          Manage Reported Bugs or Features
-        </a>
-        {% endif %}
-
-        <a class="mt-2 btn btn-dark"
-            href="{% url 'list-project' %}">
-          View All Projects
-        </a>
-        <br>
-
-      {% else %}
-        <p>
-          Unknown User Type
-        </p>
-      {% endif %}
-
-    {% endif %}
-
-      <a class="mt-2 btn btn-dark"
-          href="{% url 'logout' %}">
-        Logout
-      </a>
-
-  {% else %}
-    <h5>
-      Please Login
-    </h5>
-    <a class="mt-2 btn btn-outline btn-dark"
-        href="{% url 'login' %}" >
-      Login
-    </a>
+  Assigned Project: {% if project_name %} {{project_name}}
+  <br />
+  <a class="mt-2 btn btn-dark" href="{% url 'detail-project' pk=project_id %}">
+    View Assigned Project
+  </a>
+  {% else %} None
+  <br />
+  {% endif %} {% if bugs %}
+  <a class="mt-2 btn btn-dark" href="{% url 'list-bug' %}">
+    Manage Reported Bugs or Features
+  </a>
   {% endif %}
 
+  <a class="mt-2 btn btn-dark" href="{% url 'list-project' %}">
+    View All Projects
+  </a>
+  <br />
+
+  {% else %}
+  <p>Unknown User Type</p>
+  {% endif %} {% endif %}
+
+  <a class="mt-2 btn btn-dark" href="{% url 'logout' %}"> Logout </a>
+
+  {% else %}
+  <h5>Please Login</h5>
+  <a class="mt-2 btn btn-outline btn-dark" href="{% url 'login' %}"> Login </a>
+  {% endif %}
 </div>
 
 {% endblock %}

@@ -7,4 +7,5 @@ urlpatterns = [
   path('delete/<uuid:pk>', delete_bug, name='delete-bug'),
   path('<uuid:pk>', DetailBug.as_view(), name='detail-bug'),
   path('', ListBug.as_view(), name='list-bug'),
+  path('assignbug/<int:user_id>/<uuid:bug_id>', assign_bug, name='assign-bug'),
 ]

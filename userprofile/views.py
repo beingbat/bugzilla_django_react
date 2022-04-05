@@ -41,9 +41,11 @@ def index_page(request):
   if(request.user.is_authenticated):
     profileobj = Profile.objects.get(pk=request.user)
     profile = profileobj.designation
+
     if profileobj.project:
       context["project_name"] = profileobj.project.name
       context["project_id"] = profileobj.project.id
+
     context["user_type"] = profile
   context["user"] = request.user
   context["types"] = constants.USER_TYPES

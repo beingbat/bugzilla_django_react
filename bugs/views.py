@@ -1,23 +1,24 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import Http404, HttpResponse
-from django.contrib.auth.decorators import login_required
-from django.db import transaction
-from userprofile.views import is_manager, get_user_profile
-from constants.constants import *
-from django.contrib import messages
-from .forms import BugForm, BugStatusForm
-from .models import Bug
-from django.contrib.auth.models import User
-from project.models import Project
-from userprofile.models import Profile
+from django.urls import reverse
+from django.http import Http404, HttpResponseForbidden
 
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.db import transaction
+
+from constants.constants import *
+from userprofile.views import is_manager, get_user_profile
+from .forms import BugForm, BugStatusForm
 from django.views.generic.edit import FormMixin
-from django.http import HttpResponseForbidden, HttpResponse
+
+from django.contrib.auth.models import User
+from userprofile.models import Profile
+from project.models import Project
+from .models import Bug
+
 from django.views.generic.detail import DetailView
 from django.views.generic import ListView
-from django.contrib.auth.mixins import LoginRequiredMixin
-
-from django.urls import reverse
 
 
 @login_required
@@ -60,7 +61,8 @@ def add_bug(request, id):
 @login_required
 @transaction.atomic
 def update_bug(request, pk):
-    if not (is_manager(request.user) or get_user_profile(request.user).designation == QAENGINEER):
+    designation = get_user_profile(request.user).designation
+    if designation not in (MANAGER, QAENGINEER):
         raise Http404
 
     context = {}
@@ -70,7 +72,8 @@ def update_bug(request, pk):
 
     bug = get_object_or_404(Bug, pk=pk)
     if request.method == 'POST':
-        bug_form = BugForm(request.POST, instance=bug, project_id=bug.project.id)
+        bug_form = BugForm(request.POST, instance=bug,
+                           project_id=bug.project.id)
         if bug_form.is_valid():
             bug = bug_form.save(commit=False)
             dev_id = bug_form.cleaned_data.get("assigned_dev")
@@ -130,9 +133,10 @@ class DetailBug(LoginRequiredMixin, FormMixin, DetailView):
     queryset = Bug.objects.all()
     form_class = BugStatusForm
 
+
     def get_success_url(self):
         bug = get_object_or_404(Bug, uuid=self.kwargs['pk'])
-        return reverse('detail-bug', kwargs={'pk':bug.uuid})
+        return reverse('detail-bug', kwargs={'pk': bug.uuid})
 
     def get_form_kwargs(self):
         kwargs = super(DetailBug, self).get_form_kwargs()
@@ -144,7 +148,7 @@ class DetailBug(LoginRequiredMixin, FormMixin, DetailView):
         bug = get_object_or_404(Bug, uuid=self.kwargs['pk'])
         if profile_user.designation not in (MANAGER, QAENGINEER, DEVELOPER):
             return HttpResponseForbidden()
-        if profile_user.designation == DEVELOPER and  bug.assigned_to!=profile_user:
+        if profile_user.designation == DEVELOPER and bug.assigned_to != profile_user:
             return HttpResponseForbidden()
 
         self.object = self.get_object()
@@ -157,7 +161,7 @@ class DetailBug(LoginRequiredMixin, FormMixin, DetailView):
     def form_valid(self, form):
         status = form.cleaned_data['status']
         bug = get_object_or_404(Bug, uuid=self.kwargs['pk'])
-        bug.status=status
+        bug.status = status
         bug.save()
         return super().form_valid(form)
 

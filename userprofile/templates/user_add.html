@@ -1,30 +1,16 @@
-{% extends 'base.html' %}
-
-{% block content %}
+{% extends 'base.html' %} {% block content %}
 
 <div class="pt-4 mx-5">
-  <h4>
-    Add Employee
-  </h4>
-  <br>
+  <h4>Add Employee</h4>
+  <br />
 
   <form method="post">
+    {% comment %} Can beautify the output form by manually writing form by
+    accessing each field and its properties {% endcomment %} {% csrf_token %} {{
+    profile_form.as_p }} {{ user_form.as_p }}
 
-    {% comment %}
-    Can beautify the output form by manually writing form by accessing each field and its properties
-    {% endcomment %}
-
-    {% csrf_token %}
-    {{ profile_form.as_p }}
-    {{ user_form.as_p }}
-
-    <button class = "btn btn-dark"
-              type="submit">
-      Save
-    </button>
+    <button class="btn btn-dark" type="submit">Save</button>
   </form>
-
 </div>
-
 
 {% endblock %}

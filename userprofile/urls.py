@@ -1,5 +1,5 @@
-from django.urls import path, include
-from userprofile.views import index_page, UserDetailView, UserListView, add_user, delete_user, update_user
+from django.urls import path
+from userprofile.views import UserDetailView, UserListView, add_user, delete_user, update_user
 
 
 urlpatterns = [

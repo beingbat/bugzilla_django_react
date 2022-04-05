@@ -1,15 +1,12 @@
-from distutils.command.upload import upload
-from random import choices
-from sqlite3 import Date
-from tabnanny import verbose
-from xmlrpc.client import DateTime
+from django.urls import reverse
 from django.db import models
+
+from django.utils.timezone import now
+import uuid
+
+from constants.constants import *
 from project.models import Project
 from userprofile.models import Profile
-import uuid
-from constants.constants import BUG_STATUS, DEVELOPER, QAENGINEER, BUG_TYPE, NEW
-from django.urls import reverse
-from django.utils.timezone import now
 
 
 class Bug(models.Model):

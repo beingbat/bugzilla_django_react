@@ -1,11 +1,10 @@
-from mimetypes import init
-from tabnanny import verbose
+from django.shortcuts import get_object_or_404
+
+from django import forms
+from constants.constants import *
 from userprofile.models import Profile
 from .models import Bug
-from django import forms
 from project.models import Project
-from django.shortcuts import get_object_or_404
-from constants.constants import *
 
 
 class BugStatusForm(forms.ModelForm):
@@ -14,10 +13,12 @@ class BugStatusForm(forms.ModelForm):
     class Meta:
         model = Bug
         fields = ('status', )
+
     def __init__(self, *args, pk, **kwargs):
         super(BugStatusForm, self).__init__(*args, **kwargs)
         bug = get_object_or_404(Bug, uuid=pk)
-        self.fields['status'] = forms.ChoiceField(choices=self.get_choices(bug.type), initial=bug.status)
+        self.fields['status'] = forms.ChoiceField(
+            choices=self.get_choices(bug.type), initial=bug.status)
 
     def get_choices(self, type):
         if type == FEATURE:

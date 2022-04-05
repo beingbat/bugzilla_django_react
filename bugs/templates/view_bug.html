@@ -12,44 +12,53 @@
       <br> <strong>
         Found in Project:
       </strong>
-      {{ bug.project.title }}
+      {{ bug.project.name }}
       <br>
       <strong>
         Bug Name:
       </strong>
-      {{ bug.name }}
+      {{ bug.title }}
       <br>
       <strong>
         Bug Description:
       </strong>
-      {{ project.description }}
+      {{ bug.description }}
       <br>
       <br>
     </p>
 
-    {% if qae %}
     <p>
       <strong>
         Reported By:
       </strong>
 
 
-    <a class ="btn bnt-light" href="" >
-      ID: {{ qae.user.id }};
-      Name: {{ qae.user.get_full_name }}
-    </a>
+    {% if moderator %}
+      <a class ="btn bnt-light" href="{% url 'user-detail' pk=bug.creator.user.id%}" >
+        ID: {{ bug.creator.user.id }};
+        Name: {{ bug.creator.user.get_full_name }}
+      </a>
+    {% else %}
+      ID: {{ bug.creator.user.id }};
+      Name: {{ bug.creator.user.get_full_name }}
     {% endif %}
-    {% if dev %}
+
     <p>
       <strong>
         Assigned To:
       </strong>
+      {% if bug.assigned_to and moderator %}
+        <a class ="btn bnt-light" href="{% url 'user-detail' pk=bug.assigned_to.user.id%}" >
+          ID: {{ bug.assigned_to.user.id }};
+          Name: {{ bug.assigned_to.user.get_full_name }}
+        </a>
+      {% elif bug.assigned_to %}
+        ID: {{ bug.assigned_to.user.id }};
+        Name: {{ bug.assigned_to.user.get_full_name }}
+      {% else %}
+        None
+      {% endif %}
     </p>
-      <a class ="btn bnt-light" href="">
-        ID: {{ dev.user.id }};
-        Name: {{ dev.user.get_full_name }}
-      </a>
-    {% endif %}
     <br>
 
     <p>
@@ -61,7 +70,11 @@
       <strong>
         Screenshot:
       </strong>
-      {{ bug.screenshot }}
+      {% if bug.screenshot %}
+        {{ bug.screenshot }}
+      {% else %}
+      N/A
+      {% endif %}
       <br>
       <strong>
         Status:
@@ -70,15 +83,32 @@
       <br>
     </p>
 
+    {% comment %}
+    <p>
+      <strong>
+        Change Status:
+      </strong>
+      <form method="post">
+        {% csrf_token %}
+        {{ status_form.as_p }}
+
+        <button class = "btn btn-dark"
+                type="submit">
+                Change
+        </button>
+      </form>
+    </p>
+    {% endcomment %}
+
     <br>
     {% if designation == manager %}
     <a class="btn btn-dark"
-        href="{% url 'dashboard' %}">
+        href="{% url 'update-bug' pk=bug.uuid%}">
       Edit
     </a>
 
     <a class="btn btn-dark"
-        href="{% url 'dashboard'%}">
+        href="{% url 'delete-bug' pk=bug.uuid%}">
       Delete
     </a>
     {% endif %}

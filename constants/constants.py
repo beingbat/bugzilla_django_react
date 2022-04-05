@@ -2,10 +2,9 @@ MANAGER = 'manager'
 DEVELOPER = 'developer'
 QAENGINEER = 'qaengineer'
 
-NEW = "New"
-INPROGRESS = "Started"
-RESOLVED = "Resolved"
-COMPLETED = "Completed"
+NEW = "start"
+INPROGRESS = "in_progress"
+COMPLETED = "completed"
 
 
 USER_TYPES = (
@@ -13,18 +12,21 @@ USER_TYPES = (
   (QAENGINEER, 'Quality Assurance Engineer'),
 )
 
+BUG = 'bug'
+FEATURE = 'feature'
+
 BUG_TYPE = (
-  ('bug', 'Bug'),
-  ('feature', 'Feature'),
+  (BUG, 'Bug'),
+  (FEATURE, 'Feature'),
 )
 
 STATUS_PARTIAL = (
-  ('start', NEW),
-  ('in_progress', INPROGRESS),
+  (NEW, "New"),
+  (INPROGRESS, "In Progress"),
 )
 
-BUG_STATUS = STATUS_PARTIAL + (('completed', RESOLVED),)
-FEATURE_STATUS = STATUS_PARTIAL + (('completed', COMPLETED),)
+BUG_STATUS = STATUS_PARTIAL + ((COMPLETED, "Resolved"),)
+FEATURE_STATUS = STATUS_PARTIAL + ((COMPLETED, "Completed"),)
 
 DEV_INDEX = 0
 QAE_INDEX = 1

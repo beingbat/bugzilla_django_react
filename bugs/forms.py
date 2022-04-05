@@ -5,35 +5,25 @@ from .models import Bug
 from django import forms
 from project.models import Project
 from django.shortcuts import get_object_or_404
-from constants.constants import DEVELOPER
+from constants.constants import *
 
 
+class BugStatusForm(forms.ModelForm):
+    status = forms.ChoiceField(choices=())
 
-# class BugUpdateForm(forms.ModelForm):
-#     assigned_dev = forms.ChoiceField(choices=())
-#     deadline = forms.DateField(widget=forms.DateInput(
-#         attrs={'type': 'date'}), initial="Due By")
+    class Meta:
+        model = Bug
+        fields = ('status', )
+    def __init__(self, *args, pk, **kwargs):
+        super(BugStatusForm, self).__init__(*args, **kwargs)
+        bug = get_object_or_404(Bug, uuid=pk)
+        self.fields['status'] = forms.ChoiceField(choices=self.get_choices(bug.type), initial=bug.status)
 
-#     class Meta:
-#         model = Bug
-#         fields = ('title', 'description', 'assigned_dev',
-#                   'deadline', 'type', 'screenshot')
-
-#     def __init__(self, *args, project_id, **kwargs):
-#         super(BugForm, self).__init__(*args, **kwargs)
-#         self.fields['assigned_dev'] = forms.ChoiceField(
-#             label="Assign a Developer ", choices=self.get_choices(project_id))
-#         self.initial['deadline'] = self.instance.deadline.isoformat()
-
-#     def get_choices(self, id):
-#         project = get_object_or_404(Project, id=id)
-#         devs = Profile.objects.filter(
-#             project=project).filter(designation=DEVELOPER)
-#         choices = ((-1, 'None'), )
-#         for dev in devs:
-#             choices = choices + ((dev.user.id, dev.user.get_full_name()),)
-#         return choices
-
+    def get_choices(self, type):
+        if type == FEATURE:
+            return FEATURE_STATUS
+        else:
+            return BUG_STATUS
 
 
 class BugForm(forms.ModelForm):
@@ -58,5 +48,6 @@ class BugForm(forms.ModelForm):
             project=project).filter(designation=DEVELOPER)
         choices = ((-1, 'None'), )
         for dev in devs:
-            choices = choices + ((dev.user.id, dev.user.get_full_name()),)
+            dev_id = str(dev.user.id) + ": " + str(dev.user.get_full_name())
+            choices = choices + ((dev.user.id, dev_id),)
         return choices

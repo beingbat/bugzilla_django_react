@@ -5,15 +5,19 @@ from django.db import transaction
 from userprofile.views import is_manager, get_user_profile
 from constants.constants import *
 from django.contrib import messages
-from .forms import BugForm
+from .forms import BugForm, BugStatusForm
 from .models import Bug
 from django.contrib.auth.models import User
 from project.models import Project
 from userprofile.models import Profile
 
+from django.views.generic.edit import FormMixin
+from django.http import HttpResponseForbidden, HttpResponse
 from django.views.generic.detail import DetailView
 from django.views.generic import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
+
+from django.urls import reverse
 
 
 @login_required
@@ -102,17 +106,45 @@ def delete_bug(request, pk):
     return redirect('list-bug')
 
 
-class DetailBug(LoginRequiredMixin, DetailView):
+class DetailBug(LoginRequiredMixin, FormMixin, DetailView):
 
     redirect_field_name = 'rt'
     template_name = 'view_bug.html'
     context_object_name = 'bug'
     allow_empty = False
     queryset = Bug.objects.all()
+    form_class = BugStatusForm
+
+    def get_success_url(self):
+        bug = get_object_or_404(Bug, uuid=self.kwargs['pk'])
+        return reverse('detail-bug', kwargs={'pk':bug.uuid})
+
+    def get_form_kwargs(self):
+        kwargs = super(DetailBug, self).get_form_kwargs()
+        kwargs['pk'] = self.kwargs['pk']
+        return kwargs
+
+    def post(self, request, *args, **kwargs):
+        profile_user = get_user_profile(self.request.user)
+        if profile_user.designation not in (MANAGER, QAENGINEER, DEVELOPER):
+            return HttpResponseForbidden()
+        self.object = self.get_object()
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        status = form.cleaned_data['status']
+        bug = get_object_or_404(Bug, uuid=self.kwargs['pk'])
+        bug.status=status
+        bug.save()
+        return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super(DetailBug, self).get_context_data(**kwargs)
-        bug = get_object_or_404(Bug, uuid=self.kwargs['pk'])
+        context['status_form'] = self.get_form
         if get_user_profile(self.request.user).designation in (MANAGER, QAENGINEER):
             context['moderator'] = True
 
@@ -121,7 +153,7 @@ class DetailBug(LoginRequiredMixin, DetailView):
     def get_object(self):
         current_user = get_user_profile(self.request.user)
         bug = get_object_or_404(Bug, uuid=self.kwargs['pk'])
-        if is_manager(self.request.user) or current_user.designation == QAENGINEER or (current_user.project and current_user.project == bug.project):
+        if current_user.designation in (QAENGINEER, MANAGER) or (current_user.project and current_user.project == bug.project):
             return bug
         else:
             raise Http404

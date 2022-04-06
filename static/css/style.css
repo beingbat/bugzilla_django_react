@@ -1,0 +1,62 @@
+.col_primary_bg
+{
+  background-color: #7158f1;
+  color: white;
+}
+
+.col_primary
+{
+  color:#7158f1;
+}
+
+.mr_auto
+{
+  margin: auto;
+}
+
+.text_center
+{
+  text-align: center;
+}
+
+.navbar_font_size
+{
+  font-size: 180%;
+}
+
+.login_dash_div
+{
+  margin-top: 120px;
+  width:100%;
+}
+
+.sqr_btn
+{
+  padding: 10px 60px;
+  border-radius: 0px;
+}
+
+.login_pg_div
+{
+  max-width: 400px;
+  margin: auto;
+  margin-top: 100px;
+}
+
+.forms_div
+{
+  max-width: 650px;
+  margin: auto;
+  margin-top: 20px;
+}
+
+.small_font
+{
+  font-size:75%;
+}
+
+.v_bar
+{
+    border-right: 3px solid white;
+    height: 100%;
+}

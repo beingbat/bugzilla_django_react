@@ -1,7 +1,9 @@
 {% extends 'base.html' %} {% block content%}
 <br />
-<div class="mx-4">
-  {% if user.is_authenticated %}
+{% if user.is_authenticated %}
+  <div class="mx-4">
+    <h4 class="display-6">Dashboard</h4>
+    <p>
   <h4>
     Username: {{user.username}}
     <br />
@@ -92,10 +94,14 @@
 
   <a class="mt-2 btn btn-dark" href="{% url 'logout' %}"> Logout </a>
 
+  </div>
   {% else %}
-  <h5>Please Login</h5>
-  <a class="mt-2 btn btn-outline btn-dark" href="{% url 'login' %}"> Login </a>
+  <div class="mx-5 text_center login_dash_div">
+    <h5 class="display-6">Please login</h5>
+    <a class="mt-4 btn btn-outline-dark sqr_btn" href="{% url 'login' %}">
+      Login
+    </a>
+  </div>
   {% endif %}
-</div>
 
 {% endblock %}

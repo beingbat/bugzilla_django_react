@@ -1,16 +1,31 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %} {% load widget_tweaks %} {% block content %}
 
-<div class="pt-4 mx-5">
-  <h4>Add Employee</h4>
+<div class="pt-4 forms_div">
+  {% comment %} <h4 class="display-4">please enter new employee information</h4> {% endcomment %}
+  <h4 class="display-4">{{form_title}}</h4>
   <br />
 
   <form method="post">
-    {% comment %} Can beautify the output form by manually writing form by
-    accessing each field and its properties {% endcomment %}
-    {% csrf_token %} {{
-    profile_form.as_p }} {{ user_form.as_p }}
-
-    <button class="btn btn-dark" type="submit">Save</button>
+    {% csrf_token %}
+    {% for hidden_field in user_form.hidden_fields %} {{hidden_field}} {% endfor %}
+    {% for hidden_field in profile_form.hidden_fields %} {{hidden_field}} {% endfor %}
+    {% for field in user_form.visible_fields %}
+    <div class="form-group mt-2">
+      {{field.label_tag}} {% render_field field class="form-control" %} {% if field.help_text %}
+      <small class="form-text text-muted"> {{field.help_text}} </small>
+      {% endif %}
+    </div>
+    {% endfor %}
+    <hr class="hr">
+    {% for field in profile_form.visible_fields %}
+    <div class="form-group">
+      {{field.label_tag}} {% render_field field class="form-control" %} {% if field.help_text %}
+      <small class="form-text text-muted"> {{field.help_text}} </small>
+      {% endif %}
+    </div>
+    {% endfor %}
+    {% comment %} <button class="btn btn-primary mt-5 mb-3" type="submit">add employee</button> {% endcomment %}
+    <button class="btn btn-outline-dark mt-5 mb-5 sqr_btn type="submit">{{button_text}}</button>
   </form>
 </div>
 

@@ -47,8 +47,10 @@ def index_page(request):
         if profileobj.project:
             context["project_name"] = profileobj.project.name
             context["project_id"] = profileobj.project.id
-
-        context["user_type"] = profile
+        if profile == constants.MANAGER:
+            context["user_type"] = "Manager"
+        else:
+            context["user_type"] = dict(constants.USER_TYPES).get(profile)
     context["user"] = request.user
     context["types"] = constants.USER_TYPES
     context["manager"] = constants.MANAGER
@@ -93,7 +95,7 @@ def add_user(request):
         user_form = profileforms.UserRegisterForm(request.POST)
         profile_form = profileforms.ProfileForm(request.POST)
 
-    return render(request, "user_add.html", {'user_form': user_form, 'profile_form': profile_form})
+    return render(request, "user_add.html", {'form_title':"please enter new employee information", 'button_text':"Add Employee", 'user_form': user_form, 'profile_form': profile_form})
 
 
 @login_required
@@ -126,7 +128,7 @@ def update_user(request, id):
         user_form = profileforms.UserUpdateForm(instance=user)
         profile_form = profileforms.ProfileForm(instance=profile)
 
-    return render(request, "user_update.html", {'user_form': user_form, 'profile_form': profile_form})
+    return render(request, "user_add.html", {'form_title': "please update employee information", 'button_text': "Update Employee", 'user_form': user_form, 'profile_form': profile_form})
 
 
 @login_required

@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'userprofile',
     'project',
     'bugs',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [

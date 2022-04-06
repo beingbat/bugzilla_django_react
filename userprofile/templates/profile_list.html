@@ -20,8 +20,8 @@
 
     {% if user.user %} Username: {{user.user.username}} <br />
     Name: {{user.user.get_full_name}} <br />
-    {% endif %} Project Assigned: {% if user.project %} {{user.project.name}} {%
-    else %} None {% endif %}
+    {% endif %} Project Assigned: {% if user.project %} {{user.project.name}}
+    {% else %} None {% endif %}
   </a>
   <br />
 

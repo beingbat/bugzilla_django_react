@@ -1,33 +1,34 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %}  {% load widget_tweaks %}  {% block content %}
 
 <div class="mx-3 mt-3">
   {% if user_list %}
-  <h4>Employee List</h4>
+  <h4 class="display-6 mb-5">{{list_title}}</h4>
 
-  <br />
+
+  <div class='container'>
+    <div class='row justify-content-start'>
+
   {% for user in user_list %}
+    <div class='col'>
 
-  <a
-    class="btn btn-light bg-light mb-5 px-5 pb-4 pt-4"
-    style="min-width: 100%; border-radius: 10px"
-    href="{{user.get_absolute_url}}"
-  >
-    Designation: {% if user.designation == 'man' %} Manager {% elif
-    user.designation == 'dev' %} Developer {% elif user.designation == 'qae' %}
-    Quality Assurance Engineer {% else %} {{user.designation}} {% endif %}
+      <a
+      class="btn btn-outline-success  mb-5  px-5"
+      style="height:220px; width: 350px; text-align:left; "
+      href="{{user.get_absolute_url}}"
+      >
 
-    <br />
-
-    {% if user.user %} Username: {{user.user.username}} <br />
-    Name: {{user.user.get_full_name}} <br />
-    {% endif %} Project Assigned: {% if user.project %} {{user.project.name}}
-    {% else %} None {% endif %}
-  </a>
-  <br />
-
-  {% endfor %} {% else %}
-  <h4>Nothing Found.</h4>
-  {% endif %}
+        <div class="large_font pt-4 pb-2" style="min-height:90px;"> {{user.user.get_full_name}}</div>
+        username:&emsp;&ensp;{{user.user.username}}<br>
+        project:&emsp;&emsp;&ensp;{% if user.project %} {{user.project.name}} {% else %} None {% endif %}
+        </a>
+    </div>
+    {% endfor %}
+    </div>
+  </div>
 </div>
+
+  {% else %}
+  <h4 class="display-6 mb-5">Nothing Found</h4>
+  {% endif %}
 
 {%endblock%}

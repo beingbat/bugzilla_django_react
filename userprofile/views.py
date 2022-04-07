@@ -24,6 +24,12 @@ from constants import constants
 from bugs.models import Bug
 
 
+def get_designation(profile):
+    if profile.designation == constants.MANAGER:
+        return 'Manager'
+    else:
+        return dict(constants.USER_TYPES).get(profile.designation)
+
 def is_manager(user):
     current_user = get_object_or_404(Profile, user=user)
     return True if current_user.designation == constants.MANAGER else False
@@ -47,10 +53,9 @@ def index_page(request):
         if profileobj.project:
             context["project_name"] = profileobj.project.name
             context["project_id"] = profileobj.project.id
-        if profile == constants.MANAGER:
-            context["user_type"] = "Manager"
-        else:
-            context["user_type"] = dict(constants.USER_TYPES).get(profile)
+        context["user_type"] = profile
+        context["user__type"] = get_designation(profileobj)
+
     context["user"] = request.user
     context["types"] = constants.USER_TYPES
     context["manager"] = constants.MANAGER
@@ -95,7 +100,12 @@ def add_user(request):
         user_form = profileforms.UserRegisterForm(request.POST)
         profile_form = profileforms.ProfileForm(request.POST)
 
-    return render(request, "user_add.html", {'form_title':"please enter new employee information", 'button_text':"Add Employee", 'user_form': user_form, 'profile_form': profile_form})
+    profile = get_object_or_404(Profile, user=request.user)
+    context = {'form_title':"please enter new employee information", 'button_text':"Add Employee", 'user_form': user_form, 'profile_form': profile_form}
+    context["user__type"] = get_designation(profile)
+
+    context['user'] = request.user
+    return render(request, "user_add.html", context)
 
 
 @login_required
@@ -127,8 +137,10 @@ def update_user(request, id):
 
         user_form = profileforms.UserUpdateForm(instance=user)
         profile_form = profileforms.ProfileForm(instance=profile)
-
-    return render(request, "user_add.html", {'form_title': "please update employee information", 'button_text': "Update Employee", 'user_form': user_form, 'profile_form': profile_form})
+    context = {'form_title': "please update employee information", 'button_text': "Update Employee", 'user_form': user_form, 'profile_form': profile_form}
+    context["user__type"] = get_designation(profile)
+    context['user'] = request.user
+    return render(request, "user_add.html", context=context)
 
 
 @login_required
@@ -158,6 +170,12 @@ class UserDetailView(LoginRequiredMixin, FormMixin, DetailView):
     def get_success_url(self):
         user = get_object_or_404(User, pk=self.kwargs['pk'])
         return reverse('user-detail', kwargs={'pk': user.pk})
+
+
+    def get_form_kwargs(self):
+        kwargs = super(UserDetailView, self).get_form_kwargs()
+        kwargs['pk'] = self.kwargs['pk']
+        return kwargs
 
     def post(self, request, *args, **kwargs):
         if not is_manager(request.user):
@@ -189,6 +207,7 @@ class UserDetailView(LoginRequiredMixin, FormMixin, DetailView):
         if my_project:
             context['current_project'] = my_project
         context['type'] = my_profile.designation
+        context["user__type"] = get_designation(get_object_or_404(Profile, user=self.request.user))
         return context
 
     def get_object(self):
@@ -209,3 +228,15 @@ class UserListView(LoginRequiredMixin, ListView):
         if not is_manager(self.request.user):
             return HttpResponseForbidden()
         return Profile.objects.filter(designation=self.kwargs['slug'])
+
+    def get_context_data(self, **kwargs):
+        context = super(UserListView, self).get_context_data(**kwargs)
+
+        my_profile = get_user_profile_by_id(self.request.user.id)
+        context['type'] = my_profile.designation
+        if self.kwargs['slug'] == constants.DEVELOPER:
+            context['list_title'] = "Manage Developers"
+        elif self.kwargs['slug'] == constants.QAENGINEER:
+            context['list_title'] = "Manage QAEngineers"
+        context['user__type'] = get_designation(my_profile)
+        return context

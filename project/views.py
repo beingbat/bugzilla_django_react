@@ -15,6 +15,7 @@ from userprofile.views import is_manager, get_user_profile
 from .models import *
 from .forms import *
 from bugs.models import Bug
+from userprofile.views import get_designation
 
 
 @login_required
@@ -35,8 +36,10 @@ def add_project(request):
             messages.error(request, "Project Creation Failed.")
     else:
         project_form = ProjectForm(request.POST)
+    designation = get_designation(
+        get_object_or_404(Profile, user=request.user))
 
-    return render(request, "add_project.html", {'project_form': project_form})
+    return render(request, "add_project.html", {'form_title': "Please add project information below", 'project_form': project_form, 'button_text': "Add Project", 'user__type': designation})
 
 
 @login_required
@@ -121,3 +124,9 @@ class ListProjects(LoginRequiredMixin, ListView):
             return Project.objects.all()
         else:
             raise Http404
+
+
+    def get_context_data(self, **kwargs):
+        context = super(ListProjects, self).get_context_data(**kwargs)
+        context['list_title'] = "List of projects"
+        return context

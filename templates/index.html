@@ -1,107 +1,132 @@
 {% extends 'base.html' %} {% block content%}
 <br />
 {% if user.is_authenticated %}
-  <div class="mx-4">
-    <h4 class="display-6">Dashboard</h4>
-    <p>
-  <h4>
-    Username: {{user.username}}
-    <br />
-    {% if user.get_full_name|length > 0 %} Name: {{user.get_full_name}}
-    <br />
-    {%endif%}
-  </h4>
+<div class="mx-4">
+  <h4 class="display-6">Dashboard</h4>
 
-  {% if user_type == manager or user.is_superuser %} {% if user.is_superuser %}
-  <h4>Hello Administrator!</h4>
-  <a class="mt-2 btn btn-light" href="{% url 'admin:index' %}"> Manage </a>
-  <br />
-  {% elif not user.is_superuser %}
-  <h5>Hello Manager!</h5>
-  {% endif %}
-  <br />
-
-  <p><b>Add: </b></p>
-
-  <a class="mt-2 btn btn-light mx-2" href="{% url 'add-project' %}">
-    Project
-  </a>
-
-  <a class="mt-2 btn btn-light" href="{% url 'add-user'%}"> Employee </a>
-
-  <br />
-  <br />
-  <br />
-
-  <p>
-    <b> Manage: </b>
-  </p>
-
-  <a class="mt-2 btn btn-light mx-2" href="{% url 'list-project' %}">
-    Projects
-  </a>
-
-  {% if bugs %}
-  <a class="mt-2 btn btn-light" href="{% url 'list-bug' %}">
-    Manage Reported Bugs or Features
-  </a>
-  {% endif %} {% if dev_list %}
-  <a class="mt-2 btn btn-light" href="{% url 'user-list' slug=types.0.0%}">
-    Developers
-  </a>
-  {% endif %} {% if qae_list %}
-  <a class="mt-2 btn btn-light mx-2" href="{% url 'user-list' slug=types.1.0%}">
-    QAEs
-  </a>
-  {% endif %}
-  <br />
-  <br />
-  <br />
-  {% else %} {% if user_type == types.0.0%}
-  <p>Hello {{types.0.1}}!</p>
-  Assigned Project: {% if project_name %} {{project_name}}
-  <br />
-  <a class="mt-2 btn btn-dark" href="{% url 'detail-project' pk=project_id %}">
-    View Project
-  </a>
-  {% else %} None
-  <br />
-  {% endif %} {% elif user_type == types.1.0 %}
-
-  <p>Hello {{types.1.1}} !</p>
-
-  Assigned Project: {% if project_name %} {{project_name}}
-  <br />
-  <a class="mt-2 btn btn-dark" href="{% url 'detail-project' pk=project_id %}">
-    View Assigned Project
-  </a>
-  {% else %} None
-  <br />
-  {% endif %} {% if bugs %}
-  <a class="mt-2 btn btn-dark" href="{% url 'list-bug' %}">
-    Manage Reported Bugs or Features
-  </a>
-  {% endif %}
-
-  <a class="mt-2 btn btn-dark" href="{% url 'list-project' %}">
-    View All Projects
-  </a>
-  <br />
-
-  {% else %}
-  <p>Unknown User Type</p>
-  {% endif %} {% endif %}
-
-  <a class="mt-2 btn btn-dark" href="{% url 'logout' %}"> Logout </a>
-
+  {% if user_type == manager or user.is_superuser%} {% if user.is_superuser %}
+  <div class="mb-5">
+    <h5 class="mt-5 display-6 large_font">Administrator Management</h5>
+    <a
+      class="mt-2 btn color_a_bg dashboard_btn"
+      style="margin-left: 50px"
+      href="{% url 'admin:index' %}"
+      >Admin Panel</a
+    >
   </div>
+  {% endif %}
+
+  <div class="mb-5">
+    <h5 class="mt-5 display-6 large_font">Employees</h5>
+    <a
+      class="mt-2 btn color_b_bg dashboard_btn"
+      style="margin-left: 50px"
+      href="{% url 'add-user' %}"
+      >Add Employee</a
+    >
+    {% if dev_list %}
+    <a
+      class="mt-2 btn color_c_bg dashboard_btn"
+      style="margin-left: 20px"
+      href="{% url 'user-list' slug=types.0.0 %}"
+      >Manage Developers</a
+    >
+    {% endif %} {% if qae_list %}
+    <a
+      class="mt-2 btn col_primary_bg dashboard_btn"
+      style="margin-left: 20px"
+      href="{% url 'user-list' slug=types.1.0 %}"
+      >Manage QAEngineers</a
+    >
+    {% endif %}
+  </div>
+  <div class="mb-5">
+    <h5 class="mt-5 display-6 large_font">Projects</h5>
+    <a
+      class="mt-2 btn color_b_bg dashboard_btn"
+      style="margin-left: 50px"
+      href="{% url 'add-project' %}"
+      >Add Project</a
+    ><a
+      class="mt-2 btn color_a_bg dashboard_btn"
+      style="margin-left: 20px"
+      href="{% url 'list-project' %}"
+      >Manage Projects</a
+    >
+  </div>
+  {% if bugs %}
+  <div class="mb-5">
+    <h5 class="mt-5 display-6 large_font">Bugs</h5>
+    <a
+      class="mt-2 btn color_c_bg dashboard_btn"
+      style="margin-left: 50px"
+      href="{% url 'list-bug' %}"
+      >Manage Bugs/Features</a
+    >
+  </div>
+  {% endif %} {% else %} {% if user_type == types.0.0%}
+  <div class="mb-5">
+    {% if project_name %}
+    <h5 class="mt-5 display-6 large_font">Current Project</h5>
+    <a
+      class="mt-2 btn color_b_bg dashboard_btn"
+      style="margin-left: 50px"
+      href="{% url 'detail-project' pk=project_id %}"
+      >View Project
+    </a>
+    {% else %}
+    <h5 class="mt-5 display-6 large_font">
+      Please get project assigned to you by Manager
+    </h5>
+    {% endif %}
+  </div>
+
+  {% elif user_type == types.1.0 %}
+  <div class="mb-5">
+    {% if project_name %}
+    <h5 class="mt-5 display-6 large_font">Current Project</h5>
+    <a
+      class="mt-2 btn color_b_bg dashboard_btn"
+      style="margin-left: 50px"
+      href="{% url 'detail-project' pk=project_id %}"
+      >View Project
+    </a>
+    {% else %}
+    <h5 class="mt-5 display-6 large_font">
+      Please get project assigned to you by the Manager
+    </h5>
+    {% endif %}
+  </div>
+  <div class="mb-5">
+    <h5 class="mt-5 display-6 large_font">View Projects</h5>
+    <a
+      class="mt-2 btn color_a_bg dashboard_btn"
+      style="margin-left: 50px"
+      href="{% url 'list-project' %}"
+      >List Projects
+    </a>
+  </div>
+
+  <div class="mb-5">
+    <h5 class="mt-5 display-6 large_font">Manage and Report Bugs</h5>
+    <a
+      class="mt-2 btn color_c_bg dashboard_btn"
+      style="margin-left: 50px"
+      href="{% url 'list-bug' %}"
+      >View Bugs
+    </a>
+  </div>
+
   {% else %}
+  <h5 class="mt-5 display-6 large_font">
+    Your user type is not handled, please log-in with another account
+  </h5>
+  {% endif %} {% endif %} {% else %}
   <div class="mx-5 text_center login_dash_div">
     <h5 class="display-6">Please login</h5>
     <a class="mt-4 btn btn-outline-dark sqr_btn" href="{% url 'login' %}">
       Login
     </a>
   </div>
-  {% endif %}
-
-{% endblock %}
+  {% endif %} {% endblock %}
+</div>

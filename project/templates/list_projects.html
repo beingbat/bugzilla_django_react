@@ -1,24 +1,33 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %} {% load widget_tweaks %} {% block content %}
 
 <div class="mx-3 mt-3">
   {% if project_list %}
-  <h4>Projects List</h4>
-  <br />
+
+  <h4 class="display-6 mb-5">{{list_title}}</h4>
+
+
+  <div class='container'>
+    <div class='row justify-content-start'>
 
   {% for project in project_list %}
 
-  <a
-    class="btn btn-light bg-light mb-5 px-5 pb-4 pt-4"
-    style="min-width: 100%; border-radius: 10px"
+    <div class='col'>
+    <a
+    class="btn btn-outline-success  mb-5  px-5"
+    style="height:220px; width: 350px; text-align:left; "
     href="{% url 'detail-project' pk=project.id%}"
   >
-    Project Name: {{project.name}} <br />
-    Project Description: {{project.description}} <br />
+    <div class="large_font pt-4 pb-2" style="min-height:90px;"> {{project.name}}</div>
+    description:&emsp;&ensp;{{project.description}}
   </a>
-  <br />
-  {% endfor %} {% else %}
-  <h4>Nothing Found.</h4>
-  {% endif %}
+  </div>
+  {% endfor %}
+  </div>
 </div>
+</div>
+
+{% else %}
+<h4 class="display-6 mb-5">Nothing Found</h4>
+{% endif %}
 
 {%endblock%}

@@ -1,6 +1,10 @@
+from errno import errorcode
+from sqlite3 import IntegrityError
 from urllib import request
+from xml.dom import ValidationErr
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
+
 from django.http import Http404, HttpResponseForbidden
 
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -31,29 +35,32 @@ def add_bug(request, id):
     context = {}
     if is_manager(request.user):
         context['manager'] = True
+    try:
+        if request.method == 'POST':
+            bug_form = BugForm(request.POST, project_id=id)
+            project = get_object_or_404(Project, id=id)
+            if bug_form.is_valid():
+                bug = bug_form.save(commit=False)
+                bug.project = project
+                bug.status = NEW
+                bug.creator = get_user_profile(request.user)
+                dev_id = bug_form.cleaned_data.get("assigned_dev")
 
-    if request.method == 'POST':
-        bug_form = BugForm(request.POST, project_id=id)
-        project = get_object_or_404(Project, id=id)
-        if bug_form.is_valid():
-            bug = bug_form.save(commit=False)
-            c = Bug.objects.filter(title=bug.title).exclude(bug).count()
-            bug.project = project
-            bug.status = NEW
-            bug.creator = get_user_profile(request.user)
-            dev_id = bug_form.cleaned_data.get("assigned_dev")
+                if bug_form.cleaned_data.get("assigned_dev") != '-1':
+                    bug.assigned_to = get_object_or_404(
+                        Profile, user=get_object_or_404(User, id=dev_id))
 
-            if bug_form.cleaned_data.get("assigned_dev") != '-1':
-                bug.assigned_to = get_object_or_404(
-                    Profile, user=get_object_or_404(User, id=dev_id))
-
-            bug.save()
-            messages.success(request, "Bug created sucessfully")
-            return redirect('detail-bug', pk=bug.uuid)
-        else:
-            messages.error(request, "Error occured in Bug creation")
-    else:  # GET
-        bug_form = BugForm(project_id=id)
+                bug.save()
+                messages.success(request, "Bug created sucessfully")
+                return redirect('detail-bug', pk=bug.uuid)
+            else:
+                messages.error(request, "Error occured in Bug creation")
+        else:  # GET
+            bug_form = BugForm(project_id=id)
+    except:
+        raise ValidationErr({
+            'Uniqueness Error': 'Title should be unique for a bug in specific project.'
+        })
 
     context['bug_form'] = bug_form
     context['user__type'] = get_designation(get_user_profile(request.user))
@@ -83,7 +90,6 @@ def update_bug(request, pk):
                            project_id=bug.project.id)
         if bug_form.is_valid():
             bug = bug_form.save(commit=False)
-            c = Bug.objects.filter(title=bug.title).exclude(bug).count()
             dev_id = bug_form.cleaned_data.get("assigned_dev")
 
             if bug_form.cleaned_data.get("assigned_dev") != '-1':

@@ -41,7 +41,7 @@
 </div>
   <hr>
 
-
+{% if designation == manager or designation == qaengineer %}
   <div class='container mt-5'
     style="margin-left:0px; max-width:500px;">
     <div class='row'>
@@ -59,7 +59,8 @@
       </div>
     </div>
   </div>
-<hr>
+  <hr>
+  {% endif %}
 
 
   <div class='container mt-5  mb-3' style= "margin-left:0px; margin-right:0px; min-width:100%;">
@@ -102,6 +103,8 @@
 
 <hr>
 
+{% if designation == manager or designation == qaengineer %}
+
 <h4 class="display-6 largee_font mb-3 mt-2 pb-4"
       >Admin Controls</h4>
 
@@ -117,8 +120,10 @@
       onclick="return confirm('Are you sure?');">
     Delete
   </a>
-  {% endif %}<br>
+  {% endif %}
+
 <hr>
+{% endif %}
   <a class="mt-3 mb-5 btn btn-outline-dark sqr_btn"
     {% if designation == manager or designation == qaengineer %}
         href="{% url 'list-project'%}"

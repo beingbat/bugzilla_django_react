@@ -106,7 +106,8 @@ class DetailProject(LoginRequiredMixin, DetailView):
         context['bugs'] = bugs
         context['qaes'] = qaes
         context['devs'] = devs
-        context['qaengineer'] = USER_TYPES[QAE_INDEX][0]
+        context['qaengineer'] = QAENGINEER
+        context['developer'] = DEVELOPER
         context['manager'] = MANAGER
         context['user__type'] = get_designation(current_user)
         return context

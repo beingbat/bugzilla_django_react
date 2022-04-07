@@ -97,8 +97,8 @@ def add_user(request):
 
     else:  # GET
 
-        user_form = profileforms.UserRegisterForm(request.POST)
-        profile_form = profileforms.ProfileForm(request.POST)
+        user_form = profileforms.UserRegisterForm()
+        profile_form = profileforms.ProfileForm()
 
     profile = get_object_or_404(Profile, user=request.user)
     context = {'form_title':"please enter new employee information", 'button_text':"Add Employee", 'user_form': user_form, 'profile_form': profile_form}

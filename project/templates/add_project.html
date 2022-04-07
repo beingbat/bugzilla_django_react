@@ -6,6 +6,15 @@
 
   <form method="post">
     {% csrf_token %}
+    {% if project_form.errors %}
+       {% for field in project_form %}
+           {% for error in field.errors %}
+              <div class="alert alert-danger">
+                   <strong>{{ error|escape }}</strong>
+              </div>
+           {% endfor %}
+       {% endfor %}
+    {% endif %}
     {% for hidden_field in project_form.hidden_fields %} {{hidden_field}} {% endfor %}
     {% for field in project_form.visible_fields %}
     <div class="form-group mt-2">

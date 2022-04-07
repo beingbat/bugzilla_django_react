@@ -57,7 +57,8 @@
     </a>
 
     <a class="mx-3 btn btn-outline-danger sqr_btn"
-        href="{% url 'delete-bug' pk=bug.uuid%}">
+        href="{% url 'delete-bug' pk=bug.uuid%}"
+        onclick="return confirm('Are you sure?');">
       Delete
     </a>
 

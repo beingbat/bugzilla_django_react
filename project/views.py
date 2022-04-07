@@ -35,7 +35,7 @@ def add_project(request):
         else:
             messages.error(request, "Project Creation Failed.")
     else:
-        project_form = ProjectForm(request.POST)
+        project_form = ProjectForm()
     designation = get_designation(
         get_user_profile(request.user))
     context = {'form_title': "Please add project information below",

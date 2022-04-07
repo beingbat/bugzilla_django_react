@@ -31,6 +31,11 @@ class Bug(models.Model):
     screenshot = models.ImageField(
         upload_to='bugs_imgs', null=True, blank=True)
 
+    class Meta:
+        unique_together = (
+            ('project', 'title'),
+        )
+
     def __str__(self):
         return self.title
 

@@ -1,3 +1,4 @@
+from urllib import request
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.http import Http404, HttpResponseForbidden
@@ -70,10 +71,13 @@ def update_bug(request, pk):
 
     context = {}
 
+    bug = get_object_or_404(Bug, pk=pk)
     if is_manager(request.user):
         context['manager'] = True
+    else:
+        if bug.creator.user != request.user:
+            raise Http404
 
-    bug = get_object_or_404(Bug, pk=pk)
     if request.method == 'POST':
         bug_form = BugForm(request.POST, instance=bug,
                            project_id=bug.project.id)
@@ -140,7 +144,6 @@ class DetailBug(LoginRequiredMixin, FormMixin, DetailView):
     queryset = Bug.objects.all()
     form_class = BugStatusForm
 
-
     def get_success_url(self):
         bug = get_object_or_404(Bug, uuid=self.kwargs['pk'])
         return reverse('detail-bug', kwargs={'pk': bug.uuid})
@@ -179,7 +182,7 @@ class DetailBug(LoginRequiredMixin, FormMixin, DetailView):
         user_profile = get_user_profile(self.request.user)
         des = user_profile.designation
         context['user__type'] = get_designation(user_profile)
-        if des in (MANAGER, QAENGINEER):
+        if des == MANAGER or (des == QAENGINEER and user_profile == bug.creator):
             context['moderator'] = True
         elif des in DEVELOPER:
             context['developer'] = True
@@ -191,7 +194,7 @@ class DetailBug(LoginRequiredMixin, FormMixin, DetailView):
     def get_object(self):
         current_user = get_user_profile(self.request.user)
         bug = get_object_or_404(Bug, uuid=self.kwargs['pk'])
-        if current_user.designation in (QAENGINEER, MANAGER) or (current_user.project and current_user.project == bug.project):
+        if current_user.designation == MANAGER or current_user == bug.creator or current_user.project == bug.project:
             return bug
         else:
             raise Http404
@@ -212,7 +215,7 @@ class ListBug(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         current_user = get_user_profile(self.request.user)
-        if is_manager(self.request.user) or current_user.designation == QAENGINEER:
+        if current_user.designation in (QAENGINEER, MANAGER):
             return Bug.objects.all()
         else:
             raise Http404

@@ -1,77 +1,124 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %} {% load widget_tweaks %} {% block content %}
 
 <div class="pt-4 mx-5">
+  <h4 class="display-6 mb-5">Project Detailed Information</h4>
 
-  <p>
-    <strong>
-      Project Name:
-    </strong>
-    {{ project.name }}
-    <br>
-    <strong>
-      Project Description:
-    </strong>
-    {{ project.description }}
-    <br>
-    <strong>
-      <br>
-      Bugs:
-    </strong>
-    {% for bug in bugs%}
-    <br>
-    <a class="btn btn-outline-dark mt-2"
-    href="{% url 'detail-bug' pk=bug.uuid%}">
-      ID: {{bug.uuid}}<br>Name: {{bug.title}}
-    </a>
 
-    {% endfor %}
-    <br><br>
-    <a class="btn btn-dark"
-      href="{% url 'add-bug' id=project.id%}">
-      Add Bug
-    </a>
-    <br>
-    <br>
-    <strong>
-      QAE Team on Project:
-    </strong>
-    {% for qae in qaes%}
-      <p>
-        Employee ID: {{ qae.user.id }};
-        Name: {{ qae.user.get_full_name }}
-      </p>
-    {% endfor %}
-    {% if not qaes %}
-      None
-    {% endif %}
-    <br>
-    <strong>
-      Developers Team on Project:
-    </strong>
-    {% for dev in devs%}
-      <p>
-        Employee ID: {{ dev.user.id }};
-        Name: {{ dev.user.get_full_name }}
-      </p>
-    {% endfor %}
-    {% if not devs %}
-      None
-    {% endif %}
-  <br>
-  <br>
+  <h4 class="display-6 larger_font">{{project.name}}</h4>
+
+
+  <h5 class="display-6 large_font mb-3">
+    description:&emsp;&emsp;&emsp;&emsp;&emsp;{{ project.description }}
+  </h5>
+
+  <hr>
+
+
+
+  <h4 class="display-6 largee_font mb-3 mt-4">Reported Bugs</h4>
+  <div class='container'>
+    <div class='row justify-content-start'
+        style="width:100%; margin:0px; max-height:350px; overflow:scroll;"
+    >
+
+  {% for bug in bugs%}
+  <div class='col'>
+
+  <a
+    class="btn btn-outline-danger sqr_btn pb-4 mb-4 mx-1"
+    style="min-height:150px; width: 450px; text-align:left; padding-left:30px; padding-right:30px;"
+    href="{% url 'detail-bug' pk=bug.uuid%}"
+  >
+  <div class="large_font pt-3 pb-3 px-0" >
+    {{bug.title}}
+  </div>
+    id: &emsp;&emsp;&ensp;{{bug.uuid}}<br>
+    status: &ensp;{{bug.status}}
+  </a>
+</div>
+  {% endfor %}
+  </div>
+</div>
+  <hr>
+
+
+  <div class='container mt-5'
+    style="margin-left:0px; max-width:500px;">
+    <div class='row'>
+      <div class='col'>
+        <h4 class="display-6 largee_font mb-3 mt-2 pb-4"
+          >Report A Bug</h4>
+      </div>
+      <div class='col'>
+        <a
+        class="btn btn-outline-warning sqr_btn"
+        href="{% url 'add-bug' id=project.id%}"
+        >
+          Add Bug
+        </a>
+      </div>
+    </div>
+  </div>
+<hr>
+
+
+  <div class='container mt-5  mb-3' style= "margin-left:0px; margin-right:0px; min-width:100%;">
+  <div class='row'>
+    <div class='col-6 '>
+      <h4 class="display-6 largee_font mb-3 mt-2 pb-4"
+      >Developers on project</h4>
+      <div style="overflow:scroll; max-height:200px;">
+        {% if not devs %}
+        <h4 class="display-6 large_font  mx-3 mb-3 mt-2 pb-4"
+        >None</h4>
+        {% else %}
+          {% for dev in devs%}
+          <h4 class="display-6 large_font mx-3 mb-3 mt-2 pb-4"
+          >id: {{ dev.user.id }}, name: {{ dev.user.get_full_name }}</h4>
+          {% endfor %}
+        {% endif %}
+      </div>
+    </div>
+    <div class='col-6'
+    style="margin-left:0px;">
+      <h4 class="display-6 largee_font mb-3 mt-2 pb-4"
+      >QAEs on project</h4>
+      <div style="overflow:scroll; max-height:200px;">
+        {% if not qaes %}
+          <h4 class="display-6 large_font mx-3 mb-3 mt-2 pb-4"
+          >None</h4>
+        {% else %}
+          {% for qae in qaes%}
+          <h4 class="display-6 large_font  mx-3  mb-3 mt-2 pb-4"
+          >id: {{ qae.user.id }}, name: {{ qae.user.get_full_name }}</h4>
+          {% endfor %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  </div>
+
+
+
+<hr>
+
+<h4 class="display-6 largee_font mb-3 mt-2 pb-4"
+      >Admin Controls</h4>
+
+
   {% if designation == manager %}
-  <a class="btn btn-dark"
+  <a class="mb-3 btn btn-outline-info sqr_btn"
       href="{% url 'update-project' id=project.id%}">
     Edit
   </a>
 
-  <a class="btn btn-dark"
+  <a class="mb-3 mx-3 btn btn-outline-danger sqr_btn"
       href="{% url 'delete-project' id=project.id%}">
     Delete
   </a>
-  {% endif %}
-  <br>
-  <a class="mt-3 btn btn-light"
+  {% endif %}<br>
+<hr>
+  <a class="mt-3 mb-5 btn btn-outline-dark sqr_btn"
     {% if designation == manager or designation == qaengineer %}
         href="{% url 'list-project'%}"
     {% else %}

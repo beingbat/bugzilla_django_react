@@ -1,95 +1,89 @@
-{% extends 'base.html' %}
-{% load widget_tweaks %}
-{% block content%}
-  <div class="pt-4 mx-5">
-    <h4 class="display-6 mb-5">Employee Detailed Information</h4>
+{% extends 'base.html' %} {% load widget_tweaks %} {% block content%}
+<div class="pt-4 mx-5">
+  <h4 class="display-6 mb-5">Employee Detailed Information</h4>
 
-    {% if user_profile.user.get_full_name|length > 0 %}
-      <h4 class="display-6 large_font">{{ user_profile.user.get_full_name }}</h4>
-    {% else %}
-      <h4 class="display-6 large_font mb-4">Employee has no name defined</h4>
-    {% endif %}
+  {% if user_profile.user.get_full_name|length > 0 %}
+  <h4 class="display-6 large_font">{{ user_profile.user.get_full_name }}</h4>
+  {% else %}
+  <h4 class="display-6 large_font mb-4">Employee has no name defined</h4>
+  {% endif %}
 
-    <h5 class="display-6 large_font mb-3">
-      type:&emsp;&emsp;&emsp;&nbsp;&emsp;&emsp;&nbsp;&nbsp;
-      <a href="{% url 'user-list' slug=type%}" class="col_primary">
-        {{ user_profile.designation }}
-      </a>
-    </h5>
-    <h5 class="display-6 large_font mb-3">
-      username:&emsp;&emsp;&emsp;&nbsp;
-      <a href="{% url 'user-list' slug=type%}" class="col_primary">
-        {{ user_profile.user.username}}
-      </a>
-    </h5>
+  <h5 class="display-6 large_font mb-3">
+    type:&emsp;&emsp;&emsp;&nbsp;&emsp;&emsp;&nbsp;&nbsp;
+    <a href="{% url 'user-list' slug=type%}" class="col_primary">
+      {{ user_profile.designation }}
+    </a>
+  </h5>
+  <h5 class="display-6 large_font mb-3">
+    username:&emsp;&emsp;&emsp;&nbsp;
+    <a href="{% url 'user-list' slug=type%}" class="col_primary">
+      {{ user_profile.user.username}}
+    </a>
+  </h5>
 
-    <h5 class="display-6 large_font mb-3 mt-3">
-      current project:&emsp;
+  <h5 class="display-6 large_font mb-3 mt-3">
+    current project:&emsp; {%if current_project %}
+    <a
+      class="col_primary"
+      href="{% url 'detail-project' pk=current_project.id %}"
+    >
+      {{current_project.name}}
+    </a>
+    {% else %} None {% endif %}
+  </h5>
 
-      {%if current_project %}
+  <div
+    class="container"
+    style="margin-left: 0px; margin-top: 50px; max-width: 500px"
+  >
+    <div class="row">
+      <div class="col" style="margin: auto">
         <a
-          class="col_primary"
-          href="{% url 'detail-project' pk=current_project.id %}"
+          class="btn btn-outline-primary sqr_btn"
+          href="{% url 'update-user' id=user_profile.user.id%}"
         >
-        {{current_project.name}}
+          Edit
         </a>
-      {% else %}
-        None
-      {% endif %}
-
-    </h5>
-
-    <div class='container' style="margin-left:0px; margin-top:50px;  max-width:500px; ">
-      <div class='row'>
-
-        <div class="col" style="margin:auto;">
-
-          <a class="btn btn-outline-primary sqr_btn"
-          href="{% url 'update-user' id=user_profile.user.id%}">
-        Edit
-        </a>
-
-        </div>
-        <div class="col" style="margin:auto;">
-
-          <a class="btn btn-outline-secondary sqr_btn"
-          href="{% url 'delete-user' id=user_profile.user.id%}">
+      </div>
+      <div class="col" style="margin: auto">
+        <a
+          class="btn btn-outline-secondary sqr_btn"
+          href="{% url 'delete-user' id=user_profile.user.id%}"
+        >
           Delete
-          </a>
-        </div>
+        </a>
       </div>
     </div>
-
-    <hr>
-    <h4 class="display-6 mb-4 large_font">Manage</h4>
-
-    <div class =" col mb-5 mt-2">
-      <form method="post">
-        {% csrf_token %}
-        {% for field in project_form.visible_fields %}
-        <div class="form-group mt-2" style="max-width:300px;">
-          Change Project <br><br> {% render_field field class="form-control" %} {% if field.help_text %}
-          <small class="form-text text-muted"> {{field.help_text}} </small>
-          {% endif %}
-        </div>
-        {% endfor %}
-
-        <button class="btn btn-outline-danger sqr_btn mt-3"
-                type="submit">
-                Change
-        </button>
-      </form>
-    </div>
-
-
-    <hr>
-
-    <a class="mt-3 btn btn-outline-dark sqr_btn"
-        href="{% url 'user-list' slug=user_profile.designation%}">
-        Go Back
-
-    </a>
-
   </div>
+
+  <hr />
+  <h4 class="display-6 mb-4 large_font">Manage</h4>
+
+  <div class="col mb-5 mt-2">
+    <form method="post">
+      {% csrf_token %} {% for field in project_form.visible_fields %}
+      <div class="form-group mt-2" style="max-width: 300px">
+        Change Project <br /><br />
+        {% render_field field class="form-control" %} {% if field.help_text %}
+        <small class="form-text text-muted"> {{field.help_text}} </small>
+        {% endif %}
+      </div>
+      {% endfor %}
+
+      <button class="btn btn-outline-danger sqr_btn mt-3" type="submit">
+        Change
+      </button>
+    </form>
+  </div>
+
+  <hr />
+
+  <a
+    class="mt-3 btn btn-outline-dark sqr_btn"
+    href="{% url 'user-list' slug=user_profile.designation%}"
+  >
+    Go Back
+  </a>
+</div>
 
 {%endblock%}

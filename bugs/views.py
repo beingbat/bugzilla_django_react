@@ -8,7 +8,7 @@ from django.contrib import messages
 from django.db import transaction
 
 from constants.constants import *
-from userprofile.views import is_manager, get_user_profile
+from userprofile.views import get_designation, is_manager, get_user_profile
 from .forms import BugForm, BugStatusForm
 from django.views.generic.edit import FormMixin
 
@@ -55,6 +55,9 @@ def add_bug(request, id):
         bug_form = BugForm(request.POST, project_id=id)
 
     context['bug_form'] = bug_form
+    context['user__type'] = get_designation(get_user_profile(request.user))
+    context['form_title'] = "Please add bug information below"
+    context['button_text'] = "Add Bug"
     return render(request, 'add_bug.html', context)
 
 
@@ -91,7 +94,10 @@ def update_bug(request, pk):
         bug_form = BugForm(instance=bug, project_id=bug.project.id)
 
     context['bug_form'] = bug_form
-    return render(request, 'update_bug.html', context)
+    context['user__type'] = get_designation(get_user_profile(request.user))
+    context['form_title'] = "Please update bug information below"
+    context['button_text'] = "Update Bug"
+    return render(request, 'add_bug.html', context)
 
 
 @login_required
@@ -171,6 +177,7 @@ class DetailBug(LoginRequiredMixin, FormMixin, DetailView):
         context['status_form'] = self.get_form
         user_profile = get_user_profile(self.request.user)
         des = user_profile.designation
+        context['user__type'] = get_designation(user_profile)
         if des in (MANAGER, QAENGINEER):
             context['moderator'] = True
         elif des in DEVELOPER:
@@ -195,6 +202,12 @@ class ListBug(LoginRequiredMixin, ListView):
     model = Project
     template_name = 'list_bug.html'
     context_object_name = 'bugs'
+
+    def get_context_data(self, **kwargs):
+        context = super(ListBug, self).get_context_data(**kwargs)
+        user_profile = get_user_profile(self.request.user)
+        context['user__type'] = get_designation(user_profile)
+        return context
 
     def get_queryset(self):
         current_user = get_user_profile(self.request.user)

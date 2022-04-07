@@ -37,9 +37,11 @@ def add_project(request):
     else:
         project_form = ProjectForm(request.POST)
     designation = get_designation(
-        get_object_or_404(Profile, user=request.user))
-
-    return render(request, "add_project.html", {'form_title': "Please add project information below", 'project_form': project_form, 'button_text': "Add Project", 'user__type': designation})
+        get_user_profile(request.user))
+    context = {'form_title': "Please add project information below",
+               'project_form': project_form, 'button_text': "Add Project",
+               'user__type': designation}
+    return render(request, "add_project.html", context)
 
 
 @login_required
@@ -59,7 +61,12 @@ def update_project(request, id):
             messages.error(request, "Project Updation Failed")
     else:
         project_form = ProjectForm(instance=project)
-    return render(request, "add_project.html", {'project_form': project_form})
+    designation = get_designation(
+        get_user_profile(request.user))
+    context = {'form_title': "Please update project information below",
+               'project_form': project_form, 'button_text': "Update Project",
+               'user__type': designation}
+    return render(request, "add_project.html", context)
 
 
 @login_required
@@ -101,6 +108,7 @@ class DetailProject(LoginRequiredMixin, DetailView):
         context['devs'] = devs
         context['qaengineer'] = USER_TYPES[QAE_INDEX][0]
         context['manager'] = MANAGER
+        context['user__type'] = get_designation(current_user)
         return context
 
     def get_object(self):
@@ -125,8 +133,9 @@ class ListProjects(LoginRequiredMixin, ListView):
         else:
             raise Http404
 
-
     def get_context_data(self, **kwargs):
         context = super(ListProjects, self).get_context_data(**kwargs)
-        context['list_title'] = "List of projects"
+        context['list_title'] = "Manage projects"
+        context['user__type'] = get_designation(
+            get_user_profile(self.request.user))
         return context

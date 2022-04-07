@@ -1,25 +1,32 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %} {% load widget_tweaks %} {% block content %}
 
 <div class="mx-3 mt-3">
   {% if bugs %}
-  <h4>Bug List in Project:</h4>
-  <br />
+  <h4 class="display-6 mb-5">Manage bugs</h4>
 
-  {% for bug in bugs %}
+  <div class="container">
+    <div class="row justify-content-start">
+      {% for bug in bugs %}
+      <div class="col">
+        <a
+          class="btn btn-outline-success mb-5 px-5"
+          style="height: 200px; width: 400px; text-align: left"
+          href="{% url 'detail-bug' pk=bug.pk %}"
+        >
+          <div class="large_font pt-4 pb-2" style="min-height: 90px">
+            {{bug.title}}
+          </div>
+          description:&emsp;{{bug.description}} <br />
+          project:&emsp;&emsp;&emsp;{{bug.project.name}}
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
 
-  <a
-    class="btn btn-light bg-light mb-5 px-5 pb-4 pt-4"
-    style="min-width: 100%; border-radius: 10px"
-    href="{% url 'detail-bug' pk=bug.pk%}"
-  >
-    Bug Title: {{bug.title}} <br />
-    Bug Description: {{bug.description}} <br />
-    Bug Project: {{bug.project.name}}<br />
-  </a>
-  <br />
-  {% endfor %} {% else %}
-  <h4>Nothing Found.</h4>
+  {% else %}
+  <h4 class="display-6 mb-5">Nothing Found</h4>
   {% endif %}
 </div>
 
-{%endblock%}
+{% endblock %}

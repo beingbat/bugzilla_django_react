@@ -11,18 +11,11 @@
       <a
         class="mt-4 mx-3 btn btn-primary"
         style="max-width: 250px"
-        {%
-        if
-        b_type
-        %}
+        {%if b_type %}
         href="{% url 'list-bug-filter' slug=b_type filter=status.0%}"
-        {%
-        else
-        %}
+        {% else %}
         href="{% url 'list-bug-filter' slug=status.0%}"
-        {%
-        endif
-        %}
+        {% endif %}
       >
         {{status.1}}
       </a>

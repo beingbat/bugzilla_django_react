@@ -44,6 +44,7 @@ def add_bug(request, id):
                 bug.project = project
                 bug.status = NEW
                 bug.creator = get_user_profile(request.user)
+                bug.screenshot = bug_form.cleaned_data.get("screenshot")
                 dev_id = bug_form.cleaned_data.get("assigned_dev")
 
                 if bug_form.cleaned_data.get("assigned_dev") != '-1':
@@ -86,7 +87,7 @@ def update_bug(request, pk):
             raise Http404
 
     if request.method == 'POST':
-        bug_form = BugForm(request.POST, instance=bug,
+        bug_form = BugForm(request.POST, request.FILES, instance=bug,
                            project_id=bug.project.id)
         if bug_form.is_valid():
             bug = bug_form.save(commit=False)
@@ -96,6 +97,8 @@ def update_bug(request, pk):
                 bug.assigned_to = get_object_or_404(
                     Profile, user=get_object_or_404(User, id=dev_id))
 
+            bug.screenshot = bug_form.cleaned_data.get("screenshot")
+            print("************", bug.screenshot)
             bug.save()
             messages.success(request, "Bug Updated Successfully")
             return redirect('detail-bug', bug.uuid)
@@ -188,8 +191,15 @@ class DetailBug(LoginRequiredMixin, FormMixin, DetailView):
         user_profile = get_user_profile(self.request.user)
         des = user_profile.designation
         context['user__type'] = get_designation(user_profile)
-        if des == MANAGER or (des == QAENGINEER and user_profile == bug.creator):
+        if bug.type == BUG:
+            context['bug__status'] = dict(BUG_STATUS).get(bug.status)
+        else:
+            context['bug__status'] = dict(FEATURE_STATUS).get(bug.status)
+
+        if des == MANAGER:
             context['moderator'] = True
+        elif user_profile == bug.creator:
+            context['creator'] = True
         elif des in DEVELOPER:
             context['developer'] = True
             if user_profile == bug.assigned_to:
@@ -200,7 +210,7 @@ class DetailBug(LoginRequiredMixin, FormMixin, DetailView):
     def get_object(self):
         current_user = get_user_profile(self.request.user)
         bug = get_object_or_404(Bug, uuid=self.kwargs['pk'])
-        if current_user.designation == MANAGER or current_user == bug.creator or current_user.project == bug.project:
+        if current_user.designation in (MANAGER, QAENGINEER) or current_user.project == bug.project:
             return bug
         else:
             raise Http404

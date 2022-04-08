@@ -45,12 +45,13 @@
 
 
   <h4 class="display-6 large_font mb-2">Deadline:&emsp;&emsp;&emsp;&ensp;{{ bug.deadline }}</h4>
-  <h4 class="display-6 large_font mb-2">Status:&emsp;&emsp;&emsp;&emsp;&ensp;{{ bug.status }}</h4>
+  <h4 class="display-6 large_font mb-2">Status:&emsp;&emsp;&emsp;&emsp;&ensp;{{ bug__status }}</h4>
   <h4 class="display-6 large_font mb-5">Screenshot:&emsp;&emsp;
-    {% if bug.screenshot %} {{ bug.screenshot }} {% else %} N/A  {% endif %}
+
+    {% if bug.screenshot %} <img class='img-responsive mt-4' width="500px" src="{{ bug.screenshot.url }}" />{% else %} N/A  {% endif %}
   </h4>
 
-    {% if moderator %}
+    {% if moderator or creator%}
     <a class="btn btn-outline-info sqr_btn"
         href="{% url 'update-bug' pk=bug.uuid%}">
       Edit
@@ -71,8 +72,8 @@
 
 <hr>
 
+{% if moderator or cuser or creator%}
   <h4 class="display-6 largee_font mb-3">Manage</h4>
-  {% if moderator or cuser %}
 
   <h4 class="display-6 large_font mb-2">
     <form method="post">
@@ -88,9 +89,9 @@
     <button class="btn btn-outline-success mt-3 mb-4 sqr_btn" type="submit">Update</button>
   </form>
   </h4>
+  <hr>
   {% endif %}
 
-  <hr>
   <a class="mt-3 mb-5 btn btn-outline-dark sqr_btn"
   {% if moderator %}
       href="{% url 'detail-project' pk=bug.project.pk%}"

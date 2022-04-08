@@ -4,7 +4,7 @@
   <h4 class="display-4">{{form_title}}</h4>
   <br />
 
-  <form method="post">
+  <form enctype="multipart/form-data" method="post">
     {% csrf_token %}
     {% if bug_form.errors %}
        {% for field in bug_form %}

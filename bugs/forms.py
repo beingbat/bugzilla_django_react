@@ -42,6 +42,15 @@ class BugForm(forms.ModelForm):
         self.fields['assigned_dev'] = forms.ChoiceField(
             label="Assign a Developer ", choices=self.get_choices(project_id))
         self.initial['deadline'] = self.instance.deadline.isoformat()
+        self.p_id = project_id
+
+    def clean(self):
+        if self.cleaned_data.get('title'):
+            same_count = Bug.objects.filter(title=self.cleaned_data.get(
+                'title')).filter(project=self.p_id).count()
+            if same_count > 0:
+                self.add_error(
+                    'title', "Bug name should be unique in a project")
 
     def get_choices(self, id):
         project = get_object_or_404(Project, id=id)

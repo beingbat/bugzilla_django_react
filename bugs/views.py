@@ -1,6 +1,7 @@
 
+from sqlite3 import IntegrityError
 from xml.dom import ValidationErr
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, render_to_response
 from django.urls import reverse
 
 from django.http import Http404, HttpResponseForbidden
@@ -33,33 +34,27 @@ def add_bug(request, id):
     context = {}
     if is_manager(request.user):
         context['manager'] = True
-    try:
-        if request.method == 'POST':
-            bug_form = BugForm(request.POST, project_id=id)
-            project = get_object_or_404(Project, id=id)
-            if bug_form.is_valid():
-                bug = bug_form.save(commit=False)
-                bug.project = project
-                bug.status = NEW
-                bug.creator = get_user_profile(request.user)
-                bug.screenshot = bug_form.cleaned_data.get("screenshot")
-                dev_id = bug_form.cleaned_data.get("assigned_dev")
+    if request.method == 'POST':
+        bug_form = BugForm(request.POST, project_id=id)
+        project = get_object_or_404(Project, id=id)
+        if bug_form.is_valid():
+            bug = bug_form.save(commit=False)
+            bug.project = project
+            bug.status = NEW
+            bug.creator = get_user_profile(request.user)
+            bug.screenshot = bug_form.cleaned_data.get("screenshot")
+            dev_id = bug_form.cleaned_data.get("assigned_dev")
 
-                if bug_form.cleaned_data.get("assigned_dev") != '-1':
-                    bug.assigned_to = get_object_or_404(
-                        Profile, user=get_object_or_404(User, id=dev_id))
-
-                bug.save()
-                messages.success(request, "Bug created sucessfully")
-                return redirect('detail-bug', pk=bug.uuid)
-            else:
-                messages.error(request, "Error occured in Bug creation")
-        else:  # GET
-            bug_form = BugForm(project_id=id)
-    except:
-        raise ValidationErr({
-            'Uniqueness Error': 'Title should be unique for a bug in specific project.'
-        })
+            if bug_form.cleaned_data.get("assigned_dev") != '-1':
+                bug.assigned_to = get_object_or_404(
+                    Profile, user=get_object_or_404(User, id=dev_id))
+            bug.save()
+            messages.success(request, "Bug created sucessfully")
+            return redirect('detail-bug', pk=bug.uuid)
+        else:
+            messages.error(request, "Error occured in Bug creation")
+    else:  # GET
+        bug_form = BugForm(project_id=id)
 
     context['bug_form'] = bug_form
     context['user__type'] = get_designation(get_user_profile(request.user))
@@ -231,10 +226,10 @@ class ListBug(LoginRequiredMixin, ListView):
             if FEATURE == self.kwargs['slug']:
                 context['list_title'] = "Manage Features"
                 context['statuses'] = FEATURE_STATUS
-                context['b_type']=FEATURE
+                context['b_type'] = FEATURE
             elif BUG == self.kwargs['slug']:
                 context['list_title'] = "Manage Bugs"
-                context['b_type']=BUG
+                context['b_type'] = BUG
             elif self.kwargs['slug'] not in (NEW, INPROGRESS, COMPLETED):
                 raise Http404
 
@@ -243,7 +238,6 @@ class ListBug(LoginRequiredMixin, ListView):
     def get_queryset(self):
         current_user = get_user_profile(self.request.user)
         if current_user.designation in (QAENGINEER, MANAGER):
-
 
             bug_list = Bug.objects.all()
             if 'slug' in self.kwargs:
@@ -256,7 +250,7 @@ class ListBug(LoginRequiredMixin, ListView):
                     if self.kwargs['slug'] == NEW:
                         bug_list = bug_list.filter(status=NEW)
                     elif self.kwargs['slug'] == INPROGRESS:
-                        bug_list =  bug_list.filter(status=INPROGRESS)
+                        bug_list = bug_list.filter(status=INPROGRESS)
                     elif self.kwargs['slug'] == COMPLETED:
                         bug_list = bug_list.filter(status=COMPLETED)
                 else:

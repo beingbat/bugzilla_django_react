@@ -155,7 +155,7 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR),"static","media")
 
 EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST = env('E_HOST')
 EMAIL_HOST_USER = env('E_USER')
 EMAIL_HOST_PASSWORD = env('EMAIL_PASS')
-EMAIL_PORT = 587
+EMAIL_PORT = env('E_PORT')

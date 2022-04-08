@@ -258,7 +258,7 @@ class UserDetailView(LoginRequiredMixin, FormMixin, DetailView):
             context['current_project'] = my_project
         context['type'] = my_profile.designation
         context["user__type"] = get_designation(get_object_or_404(Profile, user=self.request.user))
-        if my_profile.designation == constants.MANAGER:
+        if get_object_or_404(Profile, user=self.request.user).designation == constants.MANAGER:
             context['moderator'] = True
         return context
 

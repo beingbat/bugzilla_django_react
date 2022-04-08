@@ -22,10 +22,14 @@ from project.models import Project
 
 from constants import constants
 from bugs.models import Bug
+from django.core.mail import EmailMessage
+from django.contrib.sites.shortcuts import get_current_site
+from django.utils.encoding import force_bytes, force_text
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.template.loader import render_to_string
+from .tokens import account_activation_token
 
-from django.shortcuts import render_to_response
-from django.template import RequestContext
-
+from django.contrib.auth import login, authenticate
 
 def get_designation(profile):
     if profile.designation == constants.MANAGER:
@@ -86,19 +90,36 @@ def add_user(request):
     if not is_manager(request.user):
         raise Http404
 
+
     if request.method == 'POST':
 
         user_form = profileforms.UserRegisterForm(request.POST)
         profile_form = profileforms.ProfileForm(request.POST)
 
         if user_form.is_valid() and profile_form.is_valid():
-            user = user_form.save()
+            user = user_form.save(commit=False)
             profile = profile_form.save(commit=False)
+            user.is_active = False
+            user.save()
             profile.user = user
             profile.save()
+            current_site = get_current_site(request)
+            mail_subject = 'Activate your bugzilla account.'
+            message = render_to_string('activate_account.html', {
+                'user': user,
+                'domain': current_site.domain,
+                'uid':urlsafe_base64_encode(force_bytes(user.pk)),
+                'token':account_activation_token.make_token(user),
+            })
+            to_email = user_form.cleaned_data.get('email')
+            email = EmailMessage(
+                        mail_subject, message, to=[to_email]
+            )
+            email.send()
             messages.success(
                 request, "New Employee has been created successfully")
-            return redirect('dashboard')
+            return render(request, "confirmation_page.html",{})
+            # HttpResponse('Please confirm your email address to complete the registration!')
 
         else:
             messages.error(request, "Failed adding new employee")
@@ -111,9 +132,25 @@ def add_user(request):
     profile = get_object_or_404(Profile, user=request.user)
     context = {'form_title':"please enter new employee information", 'button_text':"Add Employee", 'user_form': user_form, 'profile_form': profile_form}
     context["user__type"] = get_designation(profile)
-
+    context['moderator']=True
     context['user'] = request.user
     return render(request, "user_add.html", context)
+
+
+def activate(request, uidb64, token):
+    try:
+        uid = force_text(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+    if user is not None and account_activation_token.check_token(user, token):
+        user.is_active = True
+        user.save()
+        login(request, user)
+        return redirect('dashboard')
+    else:
+        return HttpResponse('Activation link is invalid!')
+
 
 
 @login_required

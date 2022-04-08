@@ -34,6 +34,7 @@
       {% endif %}
     </div>
     {% endfor %}
+    {% if moderator %}
     <hr class="hr">
     {% for field in profile_form.visible_fields %}
     <div class="form-group mb-2">
@@ -42,6 +43,7 @@
       {% endif %}
     </div>
     {% endfor %}
+    {% endif %}
 
     <button class="btn btn-outline-dark mt-5 mb-5 sqr_btn type="submit">{{button_text}}</button>
   </form>

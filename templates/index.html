@@ -142,12 +142,25 @@
   >
   </div>
   {% endif %}
-
   {% else %}
   <h5 class="mt-5 display-6 large_font">
     Your user type is not handled, please log-in with another account
   </h5>
-  {% endif %} {% endif %} {% else %}
+  {% endif %}
+  {% endif %}
+
+
+  <div class="mb-5">
+    <h5 class="mt-5 display-6 large_font">Manage Profile</h5>
+    <a
+      class="mt-2 btn btn-success dashboard_btn"
+      style="margin-left: 50px"
+      href="{{user_profile.get_absolute_url}}"
+      >View Profile</a
+    >
+  </div>
+
+  {% else %}
   <div class="mx-5 text_center login_dash_div">
     <h5 class="display-6">Please login</h5>
     <a class="mt-4 btn btn-outline-dark sqr_btn" href="{% url 'login' %}">

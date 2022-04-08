@@ -62,6 +62,7 @@ def index_page(request):
             context["project_id"] = profileobj.project.id
         context["user_type"] = profile
         context["user__type"] = get_designation(profileobj)
+        context['user_profile'] = profileobj
 
     context["user"] = request.user
     context["types"] = constants.USER_TYPES
@@ -119,20 +120,23 @@ def add_user(request):
 @transaction.atomic
 def update_user(request, id):
 
-    if not is_manager(request.user):
-        raise Http404
-
     user = get_object_or_404(User, id=id)
     profile = get_object_or_404(Profile, user=user)
+    man = is_manager(request.user)
+    if not (is_manager(request.user) or profile.user == request.user):
+        raise Http404
 
     if request.method == 'POST':
         user_form = profileforms.UserUpdateForm(request.POST, instance=user)
-        profile_form = profileforms.ProfileForm(request.POST, instance=profile)
+        valid = True
+        if man:
+            profile_form = profileforms.ProfileForm(request.POST, instance=profile)
+            valid = profile_form.is_valid()
 
-        if user_form.is_valid() and profile_form.is_valid():
-
+        if user_form.is_valid() and valid:
             user = user_form.save()
-            profile_form.save()
+            if man:
+                profile_form.save()
             messages.success(
                 request, "Employee Information has been updated successfully.")
             return redirect('user-detail', pk=user.id)
@@ -147,6 +151,8 @@ def update_user(request, id):
     context = {'form_title': "please update employee information", 'button_text': "Update Employee", 'user_form': user_form, 'profile_form': profile_form}
     context["user__type"] = get_designation(profile)
     context['user'] = request.user
+    if is_manager(request.user):
+        context['moderator'] = True
     return render(request, "user_add.html", context=context)
 
 
@@ -215,12 +221,15 @@ class UserDetailView(LoginRequiredMixin, FormMixin, DetailView):
             context['current_project'] = my_project
         context['type'] = my_profile.designation
         context["user__type"] = get_designation(get_object_or_404(Profile, user=self.request.user))
+        if my_profile.designation == constants.MANAGER:
+            context['moderator'] = True
         return context
 
     def get_object(self):
-        if not is_manager(self.request.user):
-            raise Http404
-        return get_user_profile_by_id(self.kwargs['pk'])
+        profile_to_view = get_user_profile_by_id(self.kwargs['pk'])
+        if is_manager(self.request.user) or profile_to_view.user == self.request.user:
+            return profile_to_view
+        raise Http404
 
 
 class UserListView(LoginRequiredMixin, ListView):
@@ -233,12 +242,14 @@ class UserListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         if not is_manager(self.request.user):
-            return HttpResponseForbidden()
+            raise Http404
         return Profile.objects.filter(designation=self.kwargs['slug'])
 
     def get_context_data(self, **kwargs):
-        context = super(UserListView, self).get_context_data(**kwargs)
 
+        if not is_manager(self.request.user):
+            raise Http404
+        context = super(UserListView, self).get_context_data(**kwargs)
         my_profile = get_user_profile_by_id(self.request.user.id)
         context['type'] = my_profile.designation
         if self.kwargs['slug'] == constants.DEVELOPER:

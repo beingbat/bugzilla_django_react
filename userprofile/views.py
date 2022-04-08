@@ -23,6 +23,9 @@ from project.models import Project
 from constants import constants
 from bugs.models import Bug
 
+from django.shortcuts import render_to_response
+from django.template import RequestContext
+
 
 def get_designation(profile):
     if profile.designation == constants.MANAGER:
@@ -43,6 +46,10 @@ def get_user_profile_by_id(user_id):
     user = get_object_or_404(User, id=user_id)
     return get_object_or_404(Profile, user=user)
 
+
+def page_not_found(request, exception):
+
+    return render(request, "errors/404.html", {})
 
 def index_page(request):
     context = {}

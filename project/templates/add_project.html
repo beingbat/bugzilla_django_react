@@ -1,22 +1,32 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} {% load widget_tweaks %}  {% block content%}
 
-{% block content%}
+<div class="pt-4 forms_div">
+  <h4 class="display-4">{{form_title}}</h4>
+  <br />
 
-<div class="pt-4 mx-5">
-  <h4>
-    Add Project
-  </h4>
-  <br>
   <form method="post">
     {% csrf_token %}
-    {{ project_form.as_p }}
+    {% if project_form.errors %}
+       {% for field in project_form %}
+           {% for error in field.errors %}
+              <div class="alert alert-danger">
+                   <strong>{{ error|escape }}</strong>
+              </div>
+           {% endfor %}
+       {% endfor %}
+    {% endif %}
+    {% for hidden_field in project_form.hidden_fields %} {{hidden_field}} {% endfor %}
+    {% for field in project_form.visible_fields %}
+    <div class="form-group mt-2">
+      {{field.label_tag}} {% render_field field class="form-control" %} {% if field.help_text %}
+      <small class="form-text text-muted"> {{field.help_text}} </small>
+      {% endif %}
+    </div>
+    {% endfor %}
+    <hr class="hr">
 
-    <button class = "btn btn-dark" type="submit">
-      Add Project
-    </button>
-
+    <button class="btn btn-outline-success mt-5 mb-5 sqr_btn" type="submit">{{button_text}}</button>
   </form>
 </div>
 
-
-{%endblock%}
+{% endblock %}

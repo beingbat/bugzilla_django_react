@@ -1,66 +1,44 @@
-{% extends "base.html" %}
+{% extends "base.html" %} {% load widget_tweaks %} {% block content %}
 
-{% block content %}
-
-<div class="mx-2">
-
+<div class="login_pg_div">
   {% if user.is_authenticated %}
 
-    <p class="mx-3 pt-2">
-      Already logged in
-    </p>
+  <p class="mx-3 pt-2">Already logged in</p>
 
-    <a class="mx-3 mt-2 btn btn-light"
-        href="{% url 'logout' %}">
-      Logout?
-    </a>
+  <a class="mx-3 mt-2 btn btn-light" href="{% url 'logout' %}"> Logout? </a>
 
-    <a class="mt-2 btn btn-dark"
-        href="{% url 'dashboard' %}">
-      Home
-    </a>
+  <a class="mt-2 btn btn-dark" href="{% url 'dashboard' %}"> Home </a>
 
+  {% else %} {% if form.errors %}
+  <p>Your username and password didn't match. Please try again.</p>
+  {% endif %} {% if next %} {% if user.is_authenticated %}
+  <p>
+    Your account doesn't have access to this page. To proceed, please login with
+    an account that has access.
+  </p>
   {% else %}
+  <p>Please login to see this page.</p>
+  {% endif %} {% endif %}
 
-    {% if form.errors %}
-      <p>
-        Your username and password didn't match. Please try again.
-      </p>
-    {% endif %}
-
-    {% if next %}
-      {% if user.is_authenticated %}
-        <p>
-          Your account doesn't have access to this page.
-          To proceed, please login with an account that has access.
-        </p>
-      {% else %}
-        <p>
-          Please login to see this page.
-        </p>
+  <form class="mx-3" method="post" action="{% url 'login' %}">
+    {% csrf_token %}
+    <div class="form-group mt-3">
+      {{form.username.label_tag}} {% render_field form.username class="form-control" %} {% if form.username.help_text %}
+      <small class="form-text text-muted"> {{form.username.help_text}} </small>
       {% endif %}
-    {% endif %}
+    </div>
+    <div class="form-group mt-3">
+      {{form.password.label_tag }} {% render_field form.password class="form-control" %} {% if form.password.help_text %}
+      <small class="form-text text-muted"> {{form.password.help_text}} </small>
+      {% endif %}
+    </div>
 
-    <form class="mx-3" method="post" action="{% url 'login' %}">
-      {% csrf_token %}
-      <table class="table">
-        <tr>
-          <td>{{ form.username.label_tag }}</td>
-          <td>{{ form.username }}</td>
-        </tr>
-        <br>
-        <tr>
-          <td>{{ form.password.label_tag }}</td>
-          <td>{{ form.password }}</td>
-        </tr>
-      </table>
-      <br>
-
-      <button type="submit" value="login" class="mt-2 mx-1 btn btn-dark">Login</button>
-      <input type="hidden" name="next" value="{{ next }}" />
-    </form>
+    <button type="submit" value="login" class="mt-5 btn btn-outline-dark sqr_btn">
+      Login
+    </button>
+    <input type="hidden" name="next" value="{{ next }}" />
+  </form>
 
   {% endif %}
-
 </div>
 {% endblock %}

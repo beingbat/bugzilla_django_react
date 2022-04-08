@@ -1,0 +1,140 @@
+.col_primary_bg
+{
+  background-color: #7158f1;
+  color: white;
+}
+
+.project_list
+{
+  height:220px; width: 350px; text-align:left;
+}
+
+.col_primary
+{
+  color:#7158f1;
+}
+
+.mr_auto
+{
+  margin: auto;
+}
+
+.text_center
+{
+  text-align: center;
+}
+
+.navbar_font_size
+{
+  font-size: 180%;
+}
+
+.login_dash_div
+{
+  margin-top: 120px;
+  margin-left:0px;
+  margin-right:0px;
+  width:95%;
+}
+
+.sqr_btn
+{
+  padding: 10px 60px;
+  border-radius: 0px;
+}
+
+.login_pg_div
+{
+  max-width: 400px;
+  margin: auto;
+  margin-top: 100px;
+}
+
+.forms_div
+{
+  max-width: 650px;
+  margin: auto;
+  margin-top: 20px;
+}
+
+.small_font
+{
+  font-size:75%;
+}
+
+.large_font
+{
+  font-size:130%;
+}
+
+.larger_font
+{
+  font-size:190%;
+}
+
+.largee_font
+{
+  font-size:160%;
+}
+
+.v_bar
+{
+    border-right: 3px solid white;
+    height: 100%;
+}
+
+
+.dashboard_btn
+{
+  padding: 30px 100px;
+  border-radius: 0px;
+  margin: 10px 10px;
+  max-height: 110px;
+  max-width: 380px;
+  min-width: 380px;
+  min-height: 0px;
+  line-height: 55px;
+}
+
+
+.color_a
+{
+  color: #ee4f4c;
+}
+
+.color_b
+{
+  color: #09d99f;
+}
+
+.color_c
+{
+  color: #03a9f5;
+}
+
+
+.color_a_bg
+{
+  background-color: #ee4f4c;
+  color:white;
+}
+
+.color_b_bg
+{
+  background-color: #09d99f;
+  color:white;
+}
+
+.color_c_bg
+{
+  background-color: #03a9f5;
+  color:white;
+}
+
+.list_cards_style
+{
+  height:450px;
+  min-width: 300px;
+  border-radius: 10px;
+  text-align:left;
+}

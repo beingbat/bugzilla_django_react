@@ -11,6 +11,11 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+import environ
+
+env = environ.Env()
+
+environ.Env.read_env()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,7 +25,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '5@kziboozl)%dl_*5djh1w-nq1j3q_laxvha^&rpvaiq-6yy8s'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -39,6 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'userprofile',
     'project',
+    'bugs',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [
@@ -78,13 +85,21 @@ WSGI_APPLICATION = 'bugzilla.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'db_bugzilla',
-        'USER': 'db_bugzillauser',
-        'PASSWORD': 'password',
+        'NAME': env('DB_NAME'),
+        'USER': env('DB_USER'),
+        'PASSWORD': env('DB_PASSWORD'),
         'HOST': 'localhost',
-        'PORT': '',
+        'PORT': '5432',
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME':'dbsqlite',
+
+#     }
+# }
 
 # AUTH_USER_MODEL = 'usersauth.User'
 
@@ -134,3 +149,13 @@ LOGOUT_REDIRECT_URL = '/'
 STATICFILES_DIRS = [
      os.path.join(BASE_DIR, 'static/'),
 ]
+
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR),"static","media")
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = env('E_HOST')
+EMAIL_HOST_USER = env('E_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_PASS')
+EMAIL_PORT = env('E_PORT')

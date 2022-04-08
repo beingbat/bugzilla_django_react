@@ -2,9 +2,26 @@
 
 <div class="mx-3 mt-3">
   {% if bugs %}
-  <h4 class="display-6 mb-5">Manage bugs</h4>
+  <h4 class="display-6 mb-5">{{list_title}}</h4>
 
   <div class="container">
+    {% if status_list %}
+    <div class="row justify-content-start mb-5 pb-3">
+      <h4 class="display-6 large_font">filter by status: </h4>
+    {% for status in status_list %}
+      <a class="mt-4 mx-3 btn btn-primary" style="max-width:250px;"
+      {% if b_type %}
+      href="{% url 'list-bug-filter' slug=b_type filter=status.0%}"
+      {% else %}
+      href="{% url 'list-bug-filter' slug=status.0%}"
+      {% endif %}
+      >
+        {{status.1}}
+      </a>
+      {% endfor%}
+    </div>
+    {% endif %}
+
     <div class="row justify-content-start">
       {% for bug in bugs %}
       <div class="col">
@@ -17,7 +34,18 @@
             {{bug.title}}
           </div>
           description:&emsp;{{bug.description}} <br />
-          project:&emsp;&emsp;&emsp;{{bug.project.name}}
+          project:&emsp;&emsp;&emsp;{{bug.project.name}}<br />
+          status:&emsp;&emsp;&emsp;&ensp;
+
+          {% if status_list.0.0 == bug.status%}
+            {{status_list.0.1}}
+          {% elif status_list.1.0 == bug.status%}
+              {{status_list.1.1}}
+          {% elif status_list.2.0 == bug.status%}
+              {{status_list.2.1}}
+          {% else %}
+              {{bug.status}}
+          {% endif %}
         </a>
       </div>
       {% endfor %}

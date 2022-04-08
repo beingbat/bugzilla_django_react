@@ -1,6 +1,4 @@
-from errno import errorcode
-from sqlite3 import IntegrityError
-from urllib import request
+
 from xml.dom import ValidationErr
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
@@ -227,11 +225,52 @@ class ListBug(LoginRequiredMixin, ListView):
         context = super(ListBug, self).get_context_data(**kwargs)
         user_profile = get_user_profile(self.request.user)
         context['user__type'] = get_designation(user_profile)
+        context['status_list'] = BUG_STATUS
+        context['list_title'] = "Manage Bug/Features"
+        if 'slug' in self.kwargs:
+            if FEATURE == self.kwargs['slug']:
+                context['list_title'] = "Manage Features"
+                context['statuses'] = FEATURE_STATUS
+                context['b_type']=FEATURE
+            elif BUG == self.kwargs['slug']:
+                context['list_title'] = "Manage Bugs"
+                context['b_type']=BUG
+            elif self.kwargs['slug'] not in (NEW, INPROGRESS, COMPLETED):
+                raise Http404
+
         return context
 
     def get_queryset(self):
         current_user = get_user_profile(self.request.user)
         if current_user.designation in (QAENGINEER, MANAGER):
-            return Bug.objects.all()
+
+
+            bug_list = Bug.objects.all()
+            if 'slug' in self.kwargs:
+                if self.kwargs['slug'] in (FEATURE, BUG):
+                    if FEATURE == self.kwargs['slug']:
+                        bug_list = Bug.objects.filter(type=FEATURE)
+                    elif BUG == self.kwargs['slug']:
+                        bug_list = Bug.objects.filter(type=BUG)
+                elif self.kwargs['slug'] in (NEW, INPROGRESS, COMPLETED):
+                    if self.kwargs['slug'] == NEW:
+                        bug_list = bug_list.filter(status=NEW)
+                    elif self.kwargs['slug'] == INPROGRESS:
+                        bug_list =  bug_list.filter(status=INPROGRESS)
+                    elif self.kwargs['slug'] == COMPLETED:
+                        bug_list = bug_list.filter(status=COMPLETED)
+                else:
+                    raise Http404
+
+            if 'filter' not in self.kwargs:
+                return bug_list
+            elif self.kwargs['filter'] == NEW:
+                return bug_list.filter(status=NEW)
+            elif self.kwargs['filter'] == INPROGRESS:
+                return bug_list.filter(status=INPROGRESS)
+            elif self.kwargs['filter'] == COMPLETED:
+                return bug_list.filter(status=COMPLETED)
+            else:
+                raise Http404
         else:
             raise Http404

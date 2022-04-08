@@ -8,4 +8,6 @@ urlpatterns = [
     path('assignbug/<int:user_id>/<uuid:bug_id>', assign_bug, name='assign-bug'),
     path('<uuid:pk>', DetailBug.as_view(), name='detail-bug'),
     path('', ListBug.as_view(), name='list-bug'),
+    path('<slug>', ListBug.as_view(), name='list-bug-filter'),
+    path('<slug>/<filter>', ListBug.as_view(), name='list-bug-filter'),
 ]

@@ -56,17 +56,23 @@
   </div>
   {% if bugs %}
   <div class="mb-5">
-    <h5 class="mt-5 display-6 large_font">Bugs</h5>
+    <h5 class="mt-5 display-6 large_font">Bugs and Features</h5>
+    <a
+      class="mt-2 btn btn-outline-warning dashboard_btn"
+      style="margin-left: 50px"
+      href="{% url 'list-bug'%}"
+      >Manage All</a
+    >
     <a
       class="mt-2 btn btn-outline-danger dashboard_btn"
-      style="margin-left: 50px"
-      href="{% url 'list-bug' %}"
+      style="margin-left: 20px"
+      href="{% url 'list-bug-filter' slug='bug'%}"
       >Manage Bugs</a
     >
     <a
     class="mt-2 btn btn-outline-secondary dashboard_btn"
     style="margin-left: 20px"
-    href="{% url 'list-bug' %}"
+    href="{% url 'list-bug-filter' slug='feature'%}"
     >Manage Features</a
   >
   </div>

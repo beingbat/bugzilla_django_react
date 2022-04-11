@@ -1,4 +1,4 @@
-{% extends 'base.html' %} {% load widget_tweaks %} {% block content %}
+{% extends 'base.html' %} {% block content %}
 
 <div class="mx-3 mt-3">
   <h4 class="display-6 mb-5">{{list_title}}</h4>
@@ -10,7 +10,7 @@
       {% for status in status_list %}
       <a
         class="mt-4 mx-3 btn btn-primary"
-        style="max-width: 250px"
+        style="max-width:200px;"
         {%if b_type %}
         href="{% url 'list-bug-filter' slug=b_type filter=status.0%}"
         {% else %}
@@ -26,11 +26,13 @@
       {% for bug in bugs %}
       <div class="col">
         <a
-          class="btn btn-outline-success mb-5 px-5"
-          style="height: 200px; width: 400px; text-align: left"
+          class="btn btn-outline-success mb-5 px-5 bug_list_item_btn"
+          style =  "height: 200px;
+                    width: 400px;
+                    text-align: left;"
           href="{% url 'detail-bug' pk=bug.pk %}"
         >
-          <div class="large_font pt-4 pb-2" style="min-height: 90px">
+          <div class="large_font pt-4 pb-2" style="min-height:90px;">
             {{bug.title}}
           </div>
           description:&emsp;{{bug.description}} <br />

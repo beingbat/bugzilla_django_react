@@ -1,12 +1,13 @@
-from django.urls import reverse
 from django.db import models
 
-from django.utils.timezone import now
-import uuid
+from django.urls import reverse
 
-from constants.constants import *
+import uuid
+from django.utils.timezone import now
+
 from project.models import Project
 from userprofile.models import Profile
+from constants.constants import *
 
 
 class Bug(models.Model):

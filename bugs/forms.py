@@ -1,10 +1,11 @@
 from django.shortcuts import get_object_or_404
 
 from django import forms
+
 from constants.constants import *
 from userprofile.models import Profile
-from .models import Bug
 from project.models import Project
+from .models import Bug
 
 
 class BugStatusForm(forms.ModelForm):
@@ -64,5 +65,3 @@ class BugForm(forms.ModelForm):
             dev_id = str(dev.user.id) + ": " + str(dev.user.get_full_name())
             choices = choices + ((dev.user.id, dev_id),)
         return choices
-
-

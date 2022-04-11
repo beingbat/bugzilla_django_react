@@ -1,7 +1,4 @@
-
-from sqlite3 import IntegrityError
-from xml.dom import ValidationErr
-from django.shortcuts import render, redirect, get_object_or_404, render_to_response
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 
 from django.http import Http404, HttpResponseForbidden
@@ -91,7 +88,6 @@ def update_bug(request, pk):
                     Profile, user=get_object_or_404(User, id=dev_id))
 
             bug.screenshot = bug_form.cleaned_data.get("screenshot")
-            print("************", bug.screenshot)
             bug.save()
             messages.success(request, "Bug Updated Successfully")
             return redirect('detail-bug', bug.uuid)
@@ -124,8 +120,8 @@ def delete_bug(request, pk):
 
 def assign_bug(request, bug_id, user_id):
     user_profile = get_user_profile(request.user)
-    des = user_profile.designation
-    if request.user.id != user_id or des != DEVELOPER:
+    desgination = user_profile.designation
+    if request.user.id != user_id or desgination != DEVELOPER:
         raise Http404
 
     bug = get_object_or_404(Bug, uuid=bug_id)
@@ -182,18 +178,18 @@ class DetailBug(LoginRequiredMixin, FormMixin, DetailView):
         bug = get_object_or_404(Bug, uuid=self.kwargs['pk'])
         context['status_form'] = self.get_form
         user_profile = get_user_profile(self.request.user)
-        des = user_profile.designation
+        desgination = user_profile.designation
         context['user__type'] = get_designation(user_profile)
         if bug.type == BUG:
             context['bug__status'] = dict(BUG_STATUS).get(bug.status)
         else:
             context['bug__status'] = dict(FEATURE_STATUS).get(bug.status)
 
-        if des == MANAGER:
+        if desgination == MANAGER:
             context['moderator'] = True
         elif user_profile == bug.creator:
             context['creator'] = True
-        elif des in DEVELOPER:
+        elif desgination in DEVELOPER:
             context['developer'] = True
             if user_profile == bug.assigned_to:
                 context['cuser'] = True

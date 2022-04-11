@@ -1,9 +1,9 @@
+from django import forms
 from django.shortcuts import get_object_or_404
 
-
-from django import forms
 from .models import Project
 from userprofile.models import Profile
+
 from django.contrib.auth.models import User
 
 

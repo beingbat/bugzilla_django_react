@@ -10,12 +10,13 @@ from django.views.generic.detail import DetailView
 from django.views.generic import ListView
 from constants.constants import *
 
-from userprofile.models import Profile
-from userprofile.views import is_manager, get_user_profile
-from .models import *
 from .forms import *
+
+from .models import *
+from userprofile.models import Profile
 from bugs.models import Bug
-from userprofile.views import get_designation
+
+from userprofile.views import is_manager, get_user_profile, get_designation
 
 
 @login_required
@@ -97,12 +98,11 @@ class DetailProject(LoginRequiredMixin, DetailView):
 
         current_user = get_user_profile(self.request.user)
         context['designation'] = current_user.designation
-        employees = Profile.objects.filter(
-            project=get_object_or_404(Project, pk=self.kwargs['pk']))
+        project = get_object_or_404(Project, pk=self.kwargs['pk'])
+        employees = Profile.objects.filter(project=project)
         qaes = employees.filter(designation=QAENGINEER)
         devs = employees.filter(designation=DEVELOPER)
-        bugs = Bug.objects.filter(
-            project=get_object_or_404(Project, pk=self.kwargs['pk']))
+        bugs = Bug.objects.filter(project=project)
         context['bugs'] = bugs
         context['qaes'] = qaes
         context['devs'] = devs
@@ -114,7 +114,7 @@ class DetailProject(LoginRequiredMixin, DetailView):
 
     def get_object(self):
         current_user = get_user_profile(self.request.user)
-        if is_manager(self.request.user) or current_user.designation == QAENGINEER or (current_user.project and current_user.project.id == self.kwargs['pk']):
+        if current_user.designation in (QAENGINEER, MANAGER) or (current_user.project and current_user.project.id == self.kwargs['pk']):
             return Project.objects.get(id=self.kwargs['pk'])
         else:
             raise Http404
@@ -129,7 +129,7 @@ class ListProjects(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         current_user = get_user_profile(self.request.user)
-        if is_manager(self.request.user) or current_user.designation == QAENGINEER:
+        if current_user.designation in (QAENGINEER, MANAGER):
             return Project.objects.all()
         else:
             raise Http404

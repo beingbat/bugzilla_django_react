@@ -31,11 +31,13 @@ from .tokens import account_activation_token
 
 from django.contrib.auth import login, authenticate
 
+
 def get_designation(profile):
     if profile.designation == constants.MANAGER:
         return 'Manager'
     else:
         return dict(constants.USER_TYPES).get(profile.designation)
+
 
 def is_manager(user):
     current_user = get_object_or_404(Profile, user=user)
@@ -54,6 +56,7 @@ def get_user_profile_by_id(user_id):
 def page_not_found(request, exception):
 
     return render(request, "errors/404.html", {})
+
 
 def index_page(request):
     context = {}
@@ -90,7 +93,6 @@ def add_user(request):
     if not is_manager(request.user):
         raise Http404
 
-
     if request.method == 'POST':
 
         user_form = profileforms.UserRegisterForm(request.POST)
@@ -108,18 +110,17 @@ def add_user(request):
             message = render_to_string('activate_account.html', {
                 'user': user,
                 'domain': current_site.domain,
-                'uid':urlsafe_base64_encode(force_bytes(user.pk)),
-                'token':account_activation_token.make_token(user),
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                'token': account_activation_token.make_token(user),
             })
             to_email = user_form.cleaned_data.get('email')
             email = EmailMessage(
-                        mail_subject, message, to=[to_email]
+                mail_subject, message, to=[to_email]
             )
             email.send()
             messages.success(
                 request, "New Employee has been created successfully")
-            return render(request, "confirmation_page.html",{})
-            # HttpResponse('Please confirm your email address to complete the registration!')
+            return render(request, "confirmation_page.html", {})
 
         else:
             messages.error(request, "Failed adding new employee")
@@ -130,9 +131,12 @@ def add_user(request):
         profile_form = profileforms.ProfileForm()
 
     profile = get_object_or_404(Profile, user=request.user)
-    context = {'form_title':"please enter new employee information", 'button_text':"Add Employee", 'user_form': user_form, 'profile_form': profile_form}
+    context = {'form_title': "please enter new employee information",
+               'button_text': "Add Employee", 'user_form': user_form,
+               'profile_form': profile_form
+               }
     context["user__type"] = get_designation(profile)
-    context['moderator']=True
+    context['moderator'] = True
     context['user'] = request.user
     return render(request, "user_add.html", context)
 
@@ -152,7 +156,6 @@ def activate(request, uidb64, token):
         return HttpResponse('Activation link is invalid!')
 
 
-
 @login_required
 @transaction.atomic
 def update_user(request, id):
@@ -167,7 +170,8 @@ def update_user(request, id):
         user_form = profileforms.UserUpdateForm(request.POST, instance=user)
         valid = True
         if man:
-            profile_form = profileforms.ProfileForm(request.POST, instance=profile)
+            profile_form = profileforms.ProfileForm(
+                request.POST, instance=profile)
             valid = profile_form.is_valid()
 
         if user_form.is_valid() and valid:
@@ -185,7 +189,8 @@ def update_user(request, id):
 
         user_form = profileforms.UserUpdateForm(instance=user)
         profile_form = profileforms.ProfileForm(instance=profile)
-    context = {'form_title': "please update employee information", 'button_text': "Update Employee", 'user_form': user_form, 'profile_form': profile_form}
+    context = {'form_title': "please update employee information",
+               'button_text': "Update Employee", 'user_form': user_form, 'profile_form': profile_form}
     context["user__type"] = get_designation(profile)
     context['user'] = request.user
     if is_manager(request.user):
@@ -220,7 +225,6 @@ class UserDetailView(LoginRequiredMixin, FormMixin, DetailView):
     def get_success_url(self):
         user = get_object_or_404(User, pk=self.kwargs['pk'])
         return reverse('user-detail', kwargs={'pk': user.pk})
-
 
     def get_form_kwargs(self):
         kwargs = super(UserDetailView, self).get_form_kwargs()
@@ -257,7 +261,8 @@ class UserDetailView(LoginRequiredMixin, FormMixin, DetailView):
         if my_project:
             context['current_project'] = my_project
         context['type'] = my_profile.designation
-        context["user__type"] = get_designation(get_object_or_404(Profile, user=self.request.user))
+        context["user__type"] = get_designation(
+            get_object_or_404(Profile, user=self.request.user))
         if get_object_or_404(Profile, user=self.request.user).designation == constants.MANAGER:
             context['moderator'] = True
         return context

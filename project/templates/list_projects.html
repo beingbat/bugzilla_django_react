@@ -5,22 +5,21 @@
 
   <h4 class="display-6 mb-5">{{list_title}}</h4>
 
-
   <div class='container'>
     <div class='row justify-content-start'>
 
-  {% for project in project_list %}
+    {% for project in project_list %}
 
-    <div class='col'>
-    <a
-    class="btn btn-outline-info  mb-5  px-5 project_list"
-    href="{% url 'detail-project' pk=project.id%}"
-  >
-    <div class="large_font pt-4 pb-2" style="min-height:90px;"> {{project.name}}</div>
-    description:&emsp;&ensp;{{project.description}}
-  </a>
-  </div>
-  {% endfor %}
+      <div class='col'>
+        <a
+        class="btn btn-outline-info  mb-5  px-5 project_list"
+        href="{% url 'detail-project' pk=project.id%}"
+        >
+          <div class="large_font pt-4 pb-2" style="min-height:90px;"> {{project.name}}</div>
+        description:&emsp;&ensp;{{project.description}}
+        </a>
+      </div>
+    {% endfor %}
   </div>
 </div>
 </div>

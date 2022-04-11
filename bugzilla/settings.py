@@ -129,10 +129,10 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 EMAIL_USE_TLS = True
-EMAIL_HOST = env('E_HOST')
-EMAIL_HOST_USER = env('E_USER')
-EMAIL_HOST_PASSWORD = env('EMAIL_PASS')
-EMAIL_PORT = env('E_PORT')
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'dev.arsalanmalek@gmail.com'
+EMAIL_HOST_PASSWORD = 'cncfrgtscprgkbop'
+EMAIL_PORT = 587
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [

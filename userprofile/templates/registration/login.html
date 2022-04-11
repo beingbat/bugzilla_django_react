@@ -20,6 +20,7 @@
   <p>Please login to see this page.</p>
   {% endif %} {% endif %}
 
+  <h4 class="display-6 larger_font mb-5">Provide credentials to login</h4>
   <form class="mx-3" method="post" action="{% url 'login' %}">
     {% csrf_token %}
     <div class="form-group mt-3">

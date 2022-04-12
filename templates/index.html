@@ -86,6 +86,24 @@
       href="{% url 'detail-project' pk=project_id %}"
       >View Project
     </a>
+    {% if bugs_assigned %}
+      <h5 class="mt-5 display-6 large_font">Assigned Bugs/Features</h5>
+      {% for bug in bugs_assigned %}
+          <a
+          class="btn btn-outline-danger sqr_btn pb-4 mb-4 mt-3"
+          style="margin-left:50px; min-height:70px; width: 450px; text-align:left; padding-left:30px; padding-right:30px;"
+          href="{% url 'detail-bug' pk=bug.uuid%}"
+        >
+          <div class="large_font pt-3 pb-3 px-0" >
+            {{bug.title}}
+          </div>
+          id: &emsp;&emsp;&ensp;{{bug.uuid}}<br>
+          status: &ensp;{{bug.status}}
+        </a>
+      {% endfor %}
+      <br>
+      <hr>
+    {% endif %}
     {% else %}
     <h5 class="mt-5 display-6 large_font">
       Please get project assigned to you by Manager

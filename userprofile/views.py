@@ -67,6 +67,11 @@ def index_page(request):
         if profileobj.project:
             context["project_name"] = profileobj.project.name
             context["project_id"] = profileobj.project.id
+            if profile == constants.DEVELOPER:
+                bugs = Bug.objects.filter(assigned_to=profileobj)
+                if bugs.count() > 0:
+                    context['bugs_assigned'] = bugs
+
         context["user_type"] = profile
         context["user__type"] = get_designation(profileobj)
         context['user_profile'] = profileobj

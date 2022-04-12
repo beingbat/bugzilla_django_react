@@ -17,6 +17,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
+# DEBUG = False TODO: Uncomment for Deployment
 
 ALLOWED_HOSTS = ['*']
 
@@ -67,7 +68,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'bugzilla.wsgi.application'
 
 
-
+# TODO: Comment for Deployment
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
@@ -79,6 +80,8 @@ WSGI_APPLICATION = 'bugzilla.wsgi.application'
 #     }
 # }
 
+
+# TODO: Uncomment for Deployment
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -135,6 +138,18 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR),"static","media")
+
+# TODO: commment for deployment
+# EMAIL_USE_TLS = env('EMAIL_USE_TLS')
+# EMAIL_HOST = env('EMAIL_HOST')
+# EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+# EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+# EMAIL_PORT = env('EMAIL_PORT')
+
+# TODO: uncommment for deployment
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+
 
 import django_heroku
 django_heroku.settings(locals())

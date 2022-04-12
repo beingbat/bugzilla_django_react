@@ -32,19 +32,19 @@ def add_bug(request, id):
     if is_manager(request.user):
         context['manager'] = True
     if request.method == 'POST':
-        bug_form = BugForm(request.POST, count_allowed=0, project_id=id)
+        bug_form = BugForm(request.POST, request.FILES, count_allowed=0, project_id=id)
         project = get_object_or_404(Project, id=id)
         if bug_form.is_valid():
             bug = bug_form.save(commit=False)
             bug.project = project
             bug.status = NEW
             bug.creator = get_user_profile(request.user)
-            bug.screenshot = bug_form.cleaned_data.get("screenshot")
             dev_id = bug_form.cleaned_data.get("assigned_dev")
 
             if bug_form.cleaned_data.get("assigned_dev") != '-1':
                 bug.assigned_to = get_object_or_404(
                     Profile, user=get_object_or_404(User, id=dev_id))
+
             bug.save()
             messages.success(request, "Bug created sucessfully")
             return redirect('detail-bug', pk=bug.uuid)

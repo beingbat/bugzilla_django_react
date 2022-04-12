@@ -16,7 +16,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 # DEBUG = False TODO: Uncomment for Deployment
 
 ALLOWED_HOSTS = ['*']
@@ -146,9 +146,6 @@ MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR),"static","media")
 # EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 # EMAIL_PORT = env('EMAIL_PORT')
 
-# TODO: uncommment for deployment
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
 
 
 import django_heroku

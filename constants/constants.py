@@ -23,7 +23,7 @@ BUG_TYPE = (
   (FEATURE, 'Feature'),
 )
 
-
+ALL = "all"
 NEW = "start"
 INPROGRESS = "in_progress"
 COMPLETED = "completed"

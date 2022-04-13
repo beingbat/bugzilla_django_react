@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 
-from django.http import Http404
-from django.http import HttpResponseForbidden, HttpResponse
+from django.http import Http404, HttpResponse
+from django.core.exceptions import PermissionDenied
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -56,14 +56,15 @@ def get_user_profile_by_id(user_id):
 def page_not_found(request, exception=None):
     return render(request, "errors/generic.html", {'title': "Page not found. 404", 'exception':exception})
 
+def permission_denied(request, exception=None):
+    return render(request, "errors/generic.html", {'title': "Permission Denied. 403", 'exception':exception})
+
 def bad_request(request, exception=None):
     return render(request, "errors/generic.html", {'title': "Bad Request. 400", 'exception':exception})
 
-def error(request, exception=None):
+def server_error(request, exception=None):
     return render(request, "errors/generic.html", {'title': "Server Error. 500", 'exception':exception})
 
-def permission_denied(request, exception=None):
-    return render(request, "errors/generic.html", {'title': "Permission Denied. 403", 'exception':exception})
 
 
 def index_page(request):
@@ -117,7 +118,7 @@ def index_page(request):
 def add_user(request):
 
     if not is_manager(request.user):
-        raise HttpResponseForbidden()
+        raise PermissionDenied()
 
     if request.method == 'POST':
 
@@ -190,7 +191,7 @@ def update_user(request, id):
     profile = get_object_or_404(Profile, user=user)
     man = is_manager(request.user)
     if not (is_manager(request.user) or profile.user == request.user):
-        raise HttpResponseForbidden()
+        raise PermissionDenied()
 
     if request.method == 'POST':
         user_form = profileforms.UserUpdateForm(request.POST, instance=user)
@@ -227,7 +228,7 @@ def update_user(request, id):
 @login_required
 def delete_user(request, id):
     if not is_manager(request.user):
-        raise HttpResponseForbidden()
+        raise PermissionDenied()
 
     u = User.objects.get(id=id)
     try:
@@ -259,7 +260,7 @@ class UserDetailView(LoginRequiredMixin, FormMixin, DetailView):
 
     def post(self, request, *args, **kwargs):
         if not is_manager(request.user):
-            return HttpResponseForbidden()
+            return PermissionDenied()
 
         self.object = self.get_object()
         form = self.get_form()
@@ -301,7 +302,7 @@ class UserDetailView(LoginRequiredMixin, FormMixin, DetailView):
         profile_to_view = get_user_profile_by_id(self.kwargs['pk'])
         if is_manager(self.request.user) or profile_to_view.user == self.request.user:
             return profile_to_view
-        raise HttpResponseForbidden()
+        raise PermissionDenied()
 
 
 class UserListView(LoginRequiredMixin, ListView):
@@ -314,7 +315,7 @@ class UserListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         if not is_manager(self.request.user):
-            raise HttpResponseForbidden()
+            raise PermissionDenied()
         return Profile.objects.filter(designation=self.kwargs['slug'])
 
     def get_context_data(self, **kwargs):

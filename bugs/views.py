@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 
-from django.http import Http404, HttpResponseForbidden
+from django.http import Http404
+from django.core.exceptions import PermissionDenied
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
@@ -26,7 +27,7 @@ from django.views.generic import ListView
 @transaction.atomic
 def add_bug(request, id, type):
     if not (is_manager(request.user) or get_user_profile(request.user).designation == QAENGINEER):
-        raise HttpResponseForbidden()
+        raise PermissionDenied()
 
     if type not in ('bug', 'feature'):
         raise Http404
@@ -78,7 +79,7 @@ def add_bug(request, id, type):
 def update_bug(request, pk):
     designation = get_user_profile(request.user).designation
     if designation not in (MANAGER, QAENGINEER):
-        raise HttpResponseForbidden()
+        raise PermissionDenied()
 
     context = {}
 
@@ -87,7 +88,7 @@ def update_bug(request, pk):
         context['manager'] = True
     else:
         if bug.creator.user != request.user:
-            raise HttpResponseForbidden
+            raise PermissionDenied()
 
     if request.method == 'POST':
         bug_form = BugForm(request.POST, request.FILES, instance=bug,
@@ -125,7 +126,7 @@ def update_bug(request, pk):
 def delete_bug(request, pk):
 
     if not is_manager(request.user):
-        raise HttpResponseForbidden()
+        raise PermissionDenied()
     bug = get_object_or_404(Bug, pk=pk)
     try:
         bug.delete()
@@ -140,14 +141,14 @@ def assign_bug(request, bug_id, user_id):
     user_profile = get_user_profile(request.user)
     desgination = user_profile.designation
     if request.user.id != user_id or desgination != DEVELOPER:
-        raise HttpResponseForbidden
+        raise PermissionDenied()
 
     bug = get_object_or_404(Bug, uuid=bug_id)
     if not bug.assigned_to:
         bug.assigned_to = user_profile
         bug.save()
     else:
-        raise HttpResponseForbidden
+        raise PermissionDenied()
     return redirect('detail-bug', pk=bug.uuid)
 
 
@@ -173,9 +174,9 @@ class DetailBug(LoginRequiredMixin, FormMixin, DetailView):
         profile_user = get_user_profile(self.request.user)
         bug = get_object_or_404(Bug, uuid=self.kwargs['pk'])
         if profile_user.designation not in (MANAGER, QAENGINEER, DEVELOPER):
-            return HttpResponseForbidden()
+            return PermissionDenied()
         if profile_user.designation == DEVELOPER and bug.assigned_to != profile_user:
-            return HttpResponseForbidden()
+            return PermissionDenied()
 
         self.object = self.get_object()
         form = self.get_form()
@@ -222,7 +223,7 @@ class DetailBug(LoginRequiredMixin, FormMixin, DetailView):
         if current_user.designation in (MANAGER, QAENGINEER) or current_user.project == bug.project:
             return bug
         else:
-            raise HttpResponseForbidden
+            raise PermissionDenied()
 
 
 class ListBug(LoginRequiredMixin, ListView):
@@ -272,7 +273,7 @@ class ListBug(LoginRequiredMixin, ListView):
                 else:
                     raise Http404
 
-            if 'filter' not in self.kwargs:
+            if 'filter' not in self.kwargs or self.kwargs['filter'] == ALL:
                 return bug_list
             elif self.kwargs['filter'] == NEW:
                 return bug_list.filter(status=NEW)

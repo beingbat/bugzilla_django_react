@@ -1,11 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import Http404, HttpResponseForbidden
+from django.http import Http404
+from django.core.exceptions import PermissionDenied
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.db import transaction
 from django.db.models import ProtectedError
+
 
 from django.views.generic.detail import DetailView
 from django.views.generic import ListView
@@ -25,7 +27,7 @@ from userprofile.views import is_manager, get_user_profile, get_designation
 def add_project(request):
 
     if not is_manager(request.user):
-        raise HttpResponseForbidden()
+        raise PermissionDenied()
 
     if request.method == 'POST':
         project_form = ProjectForm(request.POST)
@@ -51,7 +53,7 @@ def add_project(request):
 def update_project(request, id):
 
     if not is_manager(request.user):
-        raise HttpResponseForbidden()
+        raise PermissionDenied()
     project = get_object_or_404(Project, id=id)
     if request.method == 'POST':
         project_form = ProjectForm(request.POST, instance=project)
@@ -75,7 +77,7 @@ def update_project(request, id):
 def delete_project(request, id):
 
     if not is_manager(request.user):
-        raise HttpResponseForbidden()
+        raise PermissionDenied()
     project = Project.objects.get(id=id)
     try:
         project.delete()
@@ -123,7 +125,7 @@ class DetailProject(LoginRequiredMixin, DetailView):
         if current_user.designation in (QAENGINEER, MANAGER) or (current_user.project and current_user.project.id == self.kwargs['pk']):
             return Project.objects.get(id=self.kwargs['pk'])
         else:
-            raise HttpResponseForbidden()
+            raise PermissionDenied()
 
 
 class ListProjects(LoginRequiredMixin, ListView):
@@ -138,7 +140,7 @@ class ListProjects(LoginRequiredMixin, ListView):
         if current_user.designation in (QAENGINEER, MANAGER):
             return Project.objects.all()
         else:
-            raise HttpResponseForbidden()
+            raise PermissionDenied()
 
     def get_context_data(self, **kwargs):
         context = super(ListProjects, self).get_context_data(**kwargs)

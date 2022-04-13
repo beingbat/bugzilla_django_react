@@ -15,6 +15,17 @@
     {% if status_list %}
     <div class="row justify-content-start mb-5 pb-3">
       <h4 class="display-6 large_font">filter by status:</h4>
+      <a
+        class="mt-4 mx-3 btn btn-primary"
+        style="max-width:200px;"
+        {%if b_type %}
+          href="{% url 'list-bug-filter' slug=b_type filter='all'%}"
+        {% else %}
+          href="{% url 'list-bug' %}"
+        {% endif %}
+      >
+        All
+      </a>
       {% for status in status_list %}
       <a
         class="mt-4 mx-3 btn btn-primary"

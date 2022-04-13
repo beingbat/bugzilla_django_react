@@ -17,6 +17,6 @@ urlpatterns = [
 
 
 handler404 = 'userprofile.views.page_not_found'
-handler500 = 'userprofile.views.error'
 handler403 = 'userprofile.views.permission_denied'
 handler400 = 'userprofile.views.bad_request'
+handler500 = 'userprofile.views.server_error'

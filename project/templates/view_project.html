@@ -47,9 +47,17 @@
         <div class='col'>
           <a
           class="btn btn-outline-warning sqr_btn"
-          href="{% url 'add-bug' id=project.id%}"
+          href="{% url 'add-bug' id=project.id type='bug'%}"
           >
             Add Bug
+          </a>
+        </div>
+        <div class='col'>
+          <a
+          class="btn btn-outline-warning sqr_btn"
+          href="{% url 'add-bug' id=project.id type='feature'%}"
+          >
+            Add Feature
           </a>
         </div>
       </div>

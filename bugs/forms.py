@@ -36,7 +36,7 @@ class BugForm(forms.ModelForm):
     class Meta:
         model = Bug
         fields = ('title', 'description', 'assigned_dev',
-                  'deadline', 'type', 'screenshot')
+                  'deadline', 'screenshot')
 
     def __init__(self, *args, count_allowed, project_id, **kwargs):
         super(BugForm, self).__init__(*args, **kwargs)

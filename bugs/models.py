@@ -16,7 +16,7 @@ class Bug(models.Model):
     project = models.ForeignKey(Project, blank=False, null=False, editable=False,
                                 verbose_name="Found In Project", on_delete=models.CASCADE)
     title = models.CharField(
-        max_length=100, verbose_name="Bug Title", null=False, blank=False)
+        max_length=100, verbose_name="Title", null=False, blank=False)
     description = models.TextField(
         max_length=500, verbose_name="Describe bug/feature in a paragraph", blank=True, null=True)
     deadline = models.DateField(

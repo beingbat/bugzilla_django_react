@@ -104,7 +104,7 @@ def index_page(request):
 def add_user(request):
 
     if not is_manager(request.user):
-        raise Http404
+        raise HttpResponseForbidden()
 
     if request.method == 'POST':
 
@@ -177,7 +177,7 @@ def update_user(request, id):
     profile = get_object_or_404(Profile, user=user)
     man = is_manager(request.user)
     if not (is_manager(request.user) or profile.user == request.user):
-        raise Http404
+        raise HttpResponseForbidden()
 
     if request.method == 'POST':
         user_form = profileforms.UserUpdateForm(request.POST, instance=user)
@@ -214,7 +214,7 @@ def update_user(request, id):
 @login_required
 def delete_user(request, id):
     if not is_manager(request.user):
-        raise Http404
+        raise HttpResponseForbidden()
 
     u = User.objects.get(id=id)
     try:
@@ -284,7 +284,7 @@ class UserDetailView(LoginRequiredMixin, FormMixin, DetailView):
         profile_to_view = get_user_profile_by_id(self.kwargs['pk'])
         if is_manager(self.request.user) or profile_to_view.user == self.request.user:
             return profile_to_view
-        raise Http404
+        raise HttpResponseForbidden()
 
 
 class UserListView(LoginRequiredMixin, ListView):
@@ -297,7 +297,7 @@ class UserListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         if not is_manager(self.request.user):
-            raise Http404
+            raise HttpResponseForbidden()
         return Profile.objects.filter(designation=self.kwargs['slug'])
 
     def get_context_data(self, **kwargs):

@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import Http404
+from django.http import Http404, HttpResponseForbidden
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.db import transaction
+from django.db.models import ProtectedError
 
 from django.views.generic.detail import DetailView
 from django.views.generic import ListView
@@ -24,7 +25,7 @@ from userprofile.views import is_manager, get_user_profile, get_designation
 def add_project(request):
 
     if not is_manager(request.user):
-        raise Http404
+        raise HttpResponseForbidden()
 
     if request.method == 'POST':
         project_form = ProjectForm(request.POST)
@@ -50,7 +51,7 @@ def add_project(request):
 def update_project(request, id):
 
     if not is_manager(request.user):
-        raise Http404
+        raise HttpResponseForbidden()
     project = get_object_or_404(Project, id=id)
     if request.method == 'POST':
         project_form = ProjectForm(request.POST, instance=project)
@@ -74,13 +75,13 @@ def update_project(request, id):
 def delete_project(request, id):
 
     if not is_manager(request.user):
-        raise Http404
+        raise HttpResponseForbidden()
     project = Project.objects.get(id=id)
     try:
         project.delete()
     except:  # ProtectedError was not working so I have just used except
-        return render(request, "delete_project.html", {'title': 'Deletion Failed',
-                                                       'msg': "Deletion Failed. Employees are currently working on this project, so It can't be deleted."})
+        return render(request, "delete_project.html", {'title': 'Project Deletion Failed',
+                                                       'msg': "Project has employees linked to it, please remove them first to delete it."})
     messages.success(request, "Project Removed!")
     return redirect('list-project')
 
@@ -117,7 +118,7 @@ class DetailProject(LoginRequiredMixin, DetailView):
         if current_user.designation in (QAENGINEER, MANAGER) or (current_user.project and current_user.project.id == self.kwargs['pk']):
             return Project.objects.get(id=self.kwargs['pk'])
         else:
-            raise Http404
+            raise HttpResponseForbidden()
 
 
 class ListProjects(LoginRequiredMixin, ListView):
@@ -132,7 +133,7 @@ class ListProjects(LoginRequiredMixin, ListView):
         if current_user.designation in (QAENGINEER, MANAGER):
             return Project.objects.all()
         else:
-            raise Http404
+            raise HttpResponseForbidden()
 
     def get_context_data(self, **kwargs):
         context = super(ListProjects, self).get_context_data(**kwargs)

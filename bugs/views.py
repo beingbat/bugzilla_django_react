@@ -24,9 +24,16 @@ from django.views.generic import ListView
 
 @login_required
 @transaction.atomic
-def add_bug(request, id):
+def add_bug(request, id, type):
     if not (is_manager(request.user) or get_user_profile(request.user).designation == QAENGINEER):
+        raise HttpResponseForbidden()
+
+    if type not in ('bug', 'feature'):
         raise Http404
+    elif type == 'bug':
+        entity_type = BUG
+    elif type == 'feature':
+        entity_type = FEATURE
 
     context = {}
     if is_manager(request.user):
@@ -39,6 +46,7 @@ def add_bug(request, id):
             bug.project = project
             bug.status = NEW
             bug.creator = get_user_profile(request.user)
+            bug.type = entity_type
             dev_id = bug_form.cleaned_data.get("assigned_dev")
 
             if bug_form.cleaned_data.get("assigned_dev") != '-1':
@@ -46,7 +54,7 @@ def add_bug(request, id):
                     Profile, user=get_object_or_404(User, id=dev_id))
 
             bug.save()
-            messages.success(request, "Bug created sucessfully")
+            messages.success(request, "Bug/Feature created sucessfully")
             return redirect('detail-bug', pk=bug.uuid)
         else:
             messages.error(request, "Error occured in Bug creation")
@@ -55,8 +63,13 @@ def add_bug(request, id):
 
     context['bug_form'] = bug_form
     context['user__type'] = get_designation(get_user_profile(request.user))
-    context['form_title'] = "Please add bug information below"
-    context['button_text'] = "Add Bug"
+    if entity_type == BUG:
+        context['form_title'] = "Please add bug information below"
+        context['button_text'] = "Add Bug"
+    elif entity_type == FEATURE:
+        context['form_title'] = "Please add feature information below"
+        context['button_text'] = "Add Feature"
+
     return render(request, 'add_bug.html', context)
 
 
@@ -65,7 +78,7 @@ def add_bug(request, id):
 def update_bug(request, pk):
     designation = get_user_profile(request.user).designation
     if designation not in (MANAGER, QAENGINEER):
-        raise Http404
+        raise HttpResponseForbidden()
 
     context = {}
 
@@ -74,7 +87,7 @@ def update_bug(request, pk):
         context['manager'] = True
     else:
         if bug.creator.user != request.user:
-            raise Http404
+            raise HttpResponseForbidden
 
     if request.method == 'POST':
         bug_form = BugForm(request.POST, request.FILES, instance=bug,
@@ -98,8 +111,13 @@ def update_bug(request, pk):
 
     context['bug_form'] = bug_form
     context['user__type'] = get_designation(get_user_profile(request.user))
-    context['form_title'] = "Please update bug information below"
-    context['button_text'] = "Update Bug"
+    if bug.type == BUG:
+        context['form_title'] = "Please update bug information below"
+        context['button_text'] = "Update Bug"
+    elif bug.type == FEATURE:
+        context['form_title'] = "Please update feature information below"
+        context['button_text'] = "Update Feature"
+
     return render(request, 'add_bug.html', context)
 
 
@@ -107,13 +125,13 @@ def update_bug(request, pk):
 def delete_bug(request, pk):
 
     if not is_manager(request.user):
-        raise Http404
+        raise HttpResponseForbidden()
     bug = get_object_or_404(Bug, pk=pk)
     try:
         bug.delete()
     except:  # ProtectedError was not working so I have just used except
         return render(request, "delete_bug.html",  {'title': 'Deletion Failed',
-                                                    'msg': "Deletion Failed. Bug can't be deleted."})
+                                                    'msg': "Bug/Feature deletion could not be completed. This should not happen."})
     messages.success(request, "Bug Removed!")
     return redirect('list-bug')
 
@@ -122,14 +140,14 @@ def assign_bug(request, bug_id, user_id):
     user_profile = get_user_profile(request.user)
     desgination = user_profile.designation
     if request.user.id != user_id or desgination != DEVELOPER:
-        raise Http404
+        raise HttpResponseForbidden
 
     bug = get_object_or_404(Bug, uuid=bug_id)
     if not bug.assigned_to:
         bug.assigned_to = user_profile
         bug.save()
     else:
-        raise Http404
+        raise HttpResponseForbidden
     return redirect('detail-bug', pk=bug.uuid)
 
 
@@ -202,7 +220,7 @@ class DetailBug(LoginRequiredMixin, FormMixin, DetailView):
         if current_user.designation in (MANAGER, QAENGINEER) or current_user.project == bug.project:
             return bug
         else:
-            raise Http404
+            raise HttpResponseForbidden
 
 
 class ListBug(LoginRequiredMixin, ListView):

@@ -1,0 +1,8 @@
+{% extends 'base.html' %} {% block content%}
+
+<h4 class="display-6 larger_font mx-5 mt-5">{{title}}</h4>
+{% if exception %}
+  <h4 class="display-6 large_font mx-5 mt-5">{{exception}}</h4>
+{% endif %}
+
+{% endblock %}

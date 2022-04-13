@@ -53,9 +53,17 @@ def get_user_profile_by_id(user_id):
     return get_object_or_404(Profile, user=user)
 
 
-def page_not_found(request, exception):
+def page_not_found(request, exception=None):
+    return render(request, "errors/generic.html", {'title': "Page not found. 404", 'exception':exception})
 
-    return render(request, "errors/404.html", {})
+def bad_request(request, exception=None):
+    return render(request, "errors/generic.html", {'title': "Bad Request. 400", 'exception':exception})
+
+def error(request, exception=None):
+    return render(request, "errors/generic.html", {'title': "Server Error. 500", 'exception':exception})
+
+def permission_denied(request, exception=None):
+    return render(request, "errors/generic.html", {'title': "Permission Denied. 403", 'exception':exception})
 
 
 def index_page(request):

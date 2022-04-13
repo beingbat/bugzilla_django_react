@@ -16,10 +16,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 # DEBUG = False TODO: Uncomment for Deployment
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ["0.0.0.0", "localhost", "127.0.0.1",]
 
 
 # Application definition
@@ -69,25 +69,25 @@ WSGI_APPLICATION = 'bugzilla.wsgi.application'
 
 
 # TODO: Comment for Deployment
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': env('DB_NAME'),
-#         'USER': env('DB_USER'),
-#         'PASSWORD': env('DB_PASSWORD'),
-#         'HOST': 'localhost',
-#         'PORT': '5432',
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': env('DB_NAME'),
+        'USER': env('DB_USER'),
+        'PASSWORD': env('DB_PASSWORD'),
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
+}
 
 
 # TODO: Uncomment for Deployment
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME':'dbsqlite',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME':'dbsqlite',
+#     }
+# }
 
 
 # AUTH_USER_MODEL = 'usersauth.User'
@@ -131,15 +131,15 @@ LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
-
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [
-     os.path.join(BASE_DIR, 'static/'),
+     os.path.join(BASE_DIR, 'static'),
 ]
 
 MEDIA_URL = 'media/'
 # MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static", "media")
-MEDIA_ROOT = os.path.join(BASE_DIR,"static","media")
+MEDIA_ROOT = os.path.join(BASE_DIR,"static", "media")
 
 # TODO: commment for deployment
 EMAIL_USE_TLS = env('EMAIL_USE_TLS')

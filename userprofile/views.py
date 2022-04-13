@@ -77,8 +77,21 @@ def index_page(request):
             context["project_id"] = profileobj.project.id
             if profile == constants.DEVELOPER:
                 bugs = Bug.objects.filter(assigned_to=profileobj)
+                features = bugs.filter(type=constants.FEATURE)
+                bugs = bugs.filter(type=constants.BUG)
                 if bugs.count() > 0:
                     context['bugs_assigned'] = bugs
+                if features.count() > 0:
+                    context['features_assigned'] = features
+
+            elif profile == constants.QAENGINEER:
+                bugs = Bug.objects.filter(creator=profileobj)
+                features = bugs.filter(type=constants.FEATURE)
+                bugs = bugs.filter(type=constants.BUG)
+                if bugs.count() > 0:
+                    context['bugs_created'] = bugs
+                if features.count() > 0:
+                    context['features_created'] = features
 
         context["user_type"] = profile
         context["user__type"] = get_designation(profileobj)
@@ -220,7 +233,7 @@ def delete_user(request, id):
     try:
         u.delete()
     except:
-        return HttpResponse("Deleting User Failed!")
+        return render(request, "errors/generic.html", {'title':'User deletion failed because it is linked to a bug or feature. Remove its link to delete it.'})
     messages.success(request, "The user is deleted")
 
     return redirect(index_page)
@@ -251,8 +264,10 @@ class UserDetailView(LoginRequiredMixin, FormMixin, DetailView):
         self.object = self.get_object()
         form = self.get_form()
         if form.is_valid():
+            messages.success(request, "Project Changed Successfully!")
             return self.form_valid(form)
         else:
+            messages.error(request, "Project Change Failed")
             return self.form_invalid(form)
 
     def form_valid(self, form):

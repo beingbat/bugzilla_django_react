@@ -1,6 +1,14 @@
 {% extends 'base.html' %} {% load widget_tweaks %} {% block content %}
 
 <div class="mx-3 mt-3">
+  {% if messages %}
+      {% for message in messages %}
+          <div class="mb-2 alert alert-{{ message.tags }}">
+              <a class="close" data-dismiss="alert">×</a>
+              {{ message|safe }}
+          </div>
+      {% endfor %}
+  {% endif %}
   {% if project_list %}
 
   <h4 class="display-6 mb-5">{{list_title}}</h4>

@@ -180,8 +180,10 @@ class DetailBug(LoginRequiredMixin, FormMixin, DetailView):
         self.object = self.get_object()
         form = self.get_form()
         if form.is_valid():
+            messages.success(request, "Status Changed Sucessfully")
             return self.form_valid(form)
         else:
+            messages.error(request, "Status Change Failed")
             return self.form_invalid(form)
 
     def form_valid(self, form):

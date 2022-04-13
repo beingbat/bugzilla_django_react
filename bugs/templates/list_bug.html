@@ -1,4 +1,12 @@
 {% extends 'base.html' %} {% block content %}
+  {% if messages %}
+      {% for message in messages %}
+          <div class="mb-2 alert alert-{{ message.tags }}">
+              <a class="close" data-dismiss="alert">×</a>
+              {{ message|safe }}
+          </div>
+      {% endfor %}
+  {% endif %}
 
 <div class="mx-3 mt-3">
   <h4 class="display-6 mb-5">{{list_title}}</h4>

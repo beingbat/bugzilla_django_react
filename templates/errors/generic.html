@@ -4,5 +4,9 @@
 {% if exception %}
   <h4 class="display-6 large_font mx-5 mt-5">{{exception}}</h4>
 {% endif %}
-
+<a class="mx-5 mt-3 mb-5 btn btn-outline-secondary sqr_btn"
+        href="{% url 'dashboard'%}"
+    >
+    Dashboard
+  </a>
 {% endblock %}

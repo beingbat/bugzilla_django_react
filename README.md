@@ -34,6 +34,7 @@ Password for admin user is 'admin' without quotes and for every other employee i
 - Project has 3 models each having its seperate app [project:Project, userprofile:Profile, bug:Bug]
 - Function based views have been used for add/update features in every model and Generic Class Based views are used for List, and Detail views
 - ModelForms are used for every form except the UserCreation for which UserCreationForm is used
+
 Profile:
 - Profile model is for extending the built-in User model with some extra fields. To extend User, Profile model uses OneToOne key correspondence to the User model, this foreign key is also the primary key of the model, initially signals were used to linke User and Profile models but they I wanted to cascade profile on deletion.
 - Profile has two other fields: designation i.e. User Type and project i.e. User assigned Project
@@ -41,6 +42,15 @@ Profile:
 - When user is created a confirmation email is sent which changes the status of user to active, unless user open the link in the email, they cannot sign in.
 
 Project:
--
+- Project model has two fields title and description
+- Only Managers can create/modify/delete projects
+- Project should not have any employees in it to delete it
+- Each project has its own Bugs and Features. Bug model holds the foreign key to the project for linking itself to a project.
+- Each employee is also linked to a project so Profile model defines a foreign key relation with project
+- A project can have more than 1 bugs/feature and more than 1 developers/qaes but a bug/feature and developer/qae can only belong to a single project.
+
 Bug:
 -
+- Managers can create/modify in any project
+- QAE can create bugs in any project bug only modify bugs it created itself
+- Developer assigned to a project can modify bugs in it

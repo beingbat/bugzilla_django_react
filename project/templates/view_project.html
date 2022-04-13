@@ -1,7 +1,16 @@
 {% extends 'base.html' %} {% load widget_tweaks %} {% block content %}
 
 <div class="pt-4 mx-5">
+  {% if messages %}
+      {% for message in messages %}
+          <div class="mb-2 alert alert-{{ message.tags }}">
+              <a class="close" data-dismiss="alert">×</a>
+              {{ message|safe }}
+          </div>
+      {% endfor %}
+  {% endif %}
   <h4 class="display-6 mb-5">Project Detailed Information</h4>
+
 
   <h4 class="display-6 larger_font">{{project.name}}</h4>
 
@@ -10,7 +19,33 @@
   </h5>
 
   <hr>
+  {% if features %}
+  <h4 class="display-6 largee_font mb-3 mt-4">Reported Features</h4>
+  <div class='container'>
+    <div class='row justify-content-start'
+        style="width:100%; margin:0px; max-height:350px; overflow:scroll;"
+    >
+      {% for bug in features%}
+        <div class='col'>
+          <a
+            class="btn btn-outline-warning sqr_btn pb-4 mb-4 mx-1"
+            style="min-height:150px; width: 450px; text-align:left; padding-left:30px; padding-right:30px;"
+            href="{% url 'detail-bug' pk=bug.uuid%}"
+          >
+            <div class="large_font pt-3 pb-3 px-0" >
+              {{bug.title}}
+            </div>
+            id: &emsp;&emsp;&ensp;{{bug.uuid}}<br>
+            status: &ensp;{{bug.status}}
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
 
+  <hr>
+  {% endif %}
+  {% if bugs %}
   <h4 class="display-6 largee_font mb-3 mt-4">Reported Bugs</h4>
   <div class='container'>
     <div class='row justify-content-start'
@@ -35,10 +70,11 @@
   </div>
 
   <hr>
+  {% endif %}
 
   {% if designation == manager or designation == qaengineer %}
     <div class='container mt-5'
-      style="margin-left:0px; max-width:500px;">
+      style="margin-left:0px; max-width:800px;">
       <div class='row'>
         <div class='col'>
           <h4 class="display-6 largee_font mb-3 mt-2 pb-4"
@@ -46,8 +82,9 @@
         </div>
         <div class='col'>
           <a
-          class="btn btn-outline-warning sqr_btn"
+          class="btn btn-outline-danger sqr_btn"
           href="{% url 'add-bug' id=project.id type='bug'%}"
+          style="width:200px;"
           >
             Add Bug
           </a>

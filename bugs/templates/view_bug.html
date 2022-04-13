@@ -5,6 +5,14 @@
   <div class="pt-4 mx-5">
     <h4 class="display-6 mb-5">{{ bug.type }} detailed information</h4>
 
+    {% if messages %}
+      {% for message in messages %}
+          <div class="mb-2 alert alert-{{ message.tags }}">
+              <a class="close" data-dismiss="alert">×</a>
+              {{ message|safe }}
+          </div>
+      {% endfor %}
+    {% endif %}
 
     <h4 class="display-6 larger_font mb-4">Title - {{bug.title}}</h4>
 

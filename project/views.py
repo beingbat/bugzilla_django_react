@@ -104,7 +104,12 @@ class DetailProject(LoginRequiredMixin, DetailView):
         qaes = employees.filter(designation=QAENGINEER)
         devs = employees.filter(designation=DEVELOPER)
         bugs = Bug.objects.filter(project=project)
-        context['bugs'] = bugs
+        features = bugs.filter(type=FEATURE)
+        bugs = bugs.filter(type=BUG)
+        if bugs.count()>0:
+            context['bugs'] =  bugs
+        if features.count() > 0:
+            context['features'] = features
         context['qaes'] = qaes
         context['devs'] = devs
         context['qaengineer'] = QAENGINEER

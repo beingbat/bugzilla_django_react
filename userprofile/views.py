@@ -272,11 +272,13 @@ class UserDetailView(LoginRequiredMixin, FormMixin, DetailView):
 
     def form_valid(self, form):
         chosen_project = form.cleaned_data['projects_field']
+        my_profile = get_user_profile_by_id(self.kwargs['pk'])
         if chosen_project != '-1':
-            my_profile = get_user_profile_by_id(self.kwargs['pk'])
-            my_project = my_profile.project
             my_project = get_object_or_404(Project, id=chosen_project)
             my_profile.project = my_project
+            my_profile.save()
+        else:
+            my_profile.project = None
             my_profile.save()
 
         return super().form_valid(form)

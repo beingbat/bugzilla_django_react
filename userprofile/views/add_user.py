@@ -18,7 +18,9 @@ from userprofile.tokens import account_activation_token
 from userprofile.models.profile import Profile
 from django.contrib.auth.models import User
 
-import userprofile.forms as profileforms
+from userprofile.forms.profile_registration import ProfileForm
+from userprofile.forms.user_registration import *
+
 
 from utilities.user_utils import *
 
@@ -32,8 +34,8 @@ def add_user(request):
 
     if request.method == 'POST':
 
-        user_form = profileforms.UserRegisterForm(request.POST)
-        profile_form = profileforms.ProfileForm(request.POST)
+        user_form = UserRegisterForm(request.POST)
+        profile_form = ProfileForm(request.POST)
 
         if user_form.is_valid() and profile_form.is_valid():
             user = user_form.save(commit=False)
@@ -64,8 +66,8 @@ def add_user(request):
 
     else:  # GET
 
-        user_form = profileforms.UserRegisterForm()
-        profile_form = profileforms.ProfileForm()
+        user_form = UserRegisterForm()
+        profile_form = ProfileForm()
 
     profile = get_object_or_404(Profile, user=request.user)
     context = {'form_title': "please enter new employee information",
@@ -89,10 +91,10 @@ def update_user(request, id):
         raise PermissionDenied()
 
     if request.method == 'POST':
-        user_form = profileforms.UserUpdateForm(request.POST, instance=user)
+        user_form = UserUpdateForm(request.POST, instance=user)
         valid = True
         if man:
-            profile_form = profileforms.ProfileForm(
+            profile_form = ProfileForm(
                 request.POST, instance=profile)
             valid = profile_form.is_valid()
 
@@ -109,8 +111,8 @@ def update_user(request, id):
 
     else:  # GET
 
-        user_form = profileforms.UserUpdateForm(instance=user)
-        profile_form = profileforms.ProfileForm(instance=profile)
+        user_form = UserUpdateForm(instance=user)
+        profile_form = ProfileForm(instance=profile)
     context = {'form_title': "please update employee information",
                'button_text': "Update Employee", 'user_form': user_form, 'profile_form': profile_form}
     context["user__type"] = get_designation(profile)

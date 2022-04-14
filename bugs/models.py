@@ -7,7 +7,7 @@ from django.core.validators import FileExtensionValidator
 import uuid
 from django.utils.timezone import now
 
-from project.models import Project
+from project.models.project import Project
 from userprofile.models.profile import Profile
 from constants.constants import *
 

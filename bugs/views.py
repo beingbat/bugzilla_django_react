@@ -16,7 +16,7 @@ from django.views.generic.edit import FormMixin
 
 from django.contrib.auth.models import User
 from userprofile.models.profile import Profile
-from project.models import Project
+from project.models.project import Project
 from .models import Bug
 
 from django.views.generic.detail import DetailView

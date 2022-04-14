@@ -4,7 +4,7 @@ from django import forms
 
 from constants.constants import *
 from userprofile.models.profile import Profile
-from project.models import Project
+from project.models.project import Project
 from .models import Bug
 
 

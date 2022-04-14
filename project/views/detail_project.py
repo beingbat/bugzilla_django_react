@@ -12,7 +12,7 @@ from project.forms.project_form import *
 from project.models.project import *
 
 from userprofile.models.profile import Profile
-from bugs.models import Bug
+from bugs.models.bug import Bug
 
 from utilities.user_utils import get_user_profile, get_designation
 

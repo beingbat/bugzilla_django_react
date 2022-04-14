@@ -16,7 +16,7 @@ from django.core.mail import EmailMessage
 from userprofile.tokens import account_activation_token
 
 from userprofile.models.profile import Profile
-from bugs.models import Bug
+from bugs.models.bug import Bug
 
 
 from utilities.user_utils import *

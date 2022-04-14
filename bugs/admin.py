@@ -1,4 +1,4 @@
 from django.contrib import admin
-from .models import Bug
+from bugs.models.bug import Bug
 
 admin.site.register(Bug)

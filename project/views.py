@@ -16,10 +16,10 @@ from constants.constants import *
 from .forms import *
 
 from .models import *
-from userprofile.models import Profile
+from userprofile.models.profile import Profile
 from bugs.models import Bug
 
-from userprofile.views import is_manager, get_user_profile, get_designation
+from utilities.user_utils import is_manager, get_user_profile, get_designation
 
 
 @login_required

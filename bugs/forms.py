@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404
 from django import forms
 
 from constants.constants import *
-from userprofile.models import Profile
+from userprofile.models.profile import Profile
 from project.models import Project
 from .models import Bug
 

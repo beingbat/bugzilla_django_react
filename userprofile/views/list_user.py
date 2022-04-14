@@ -5,7 +5,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from django.views.generic import ListView
 
-from userprofile.models import Profile
+from userprofile.models.profile import Profile
 
 from utilities import constants
 from django.contrib.auth import login, authenticate

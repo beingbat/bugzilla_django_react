@@ -3,7 +3,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
-from userprofile.views import index_page
+from views.index_page import index_page
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -16,7 +16,7 @@ urlpatterns = [
 
 
 
-handler404 = 'userprofile.views.page_not_found'
-handler403 = 'userprofile.views.permission_denied'
-handler400 = 'userprofile.views.bad_request'
-handler500 = 'userprofile.views.server_error'
+handler404 = 'views.error_page.page_not_found'
+handler403 = 'views.error_page.permission_denied'
+handler400 = 'views.error_page.bad_request'
+handler500 = 'views.error_page.server_error'

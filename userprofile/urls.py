@@ -1,6 +1,9 @@
 from django.urls import path, re_path
-from userprofile.views import UserDetailView, UserListView, add_user, delete_user, update_user, activate
-
+from userprofile.views.activate_user import *
+from userprofile.views.add_user import *
+from userprofile.views.delete_user import *
+from userprofile.views.detail_user import *
+from userprofile.views.list_user import *
 
 urlpatterns = [
     path('add/', add_user, name='add-user'),

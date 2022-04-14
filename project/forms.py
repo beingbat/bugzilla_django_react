@@ -2,7 +2,7 @@ from django import forms
 from django.shortcuts import get_object_or_404
 
 from .models import Project
-from userprofile.models import Profile
+from userprofile.models.profile import Profile
 
 from django.contrib.auth.models import User
 

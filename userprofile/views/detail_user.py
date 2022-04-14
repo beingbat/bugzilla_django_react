@@ -12,7 +12,7 @@ from django.views.generic.edit import FormMixin
 from project.forms import ProjectChooseForm
 
 from django.contrib.auth.models import User
-from userprofile.models import Profile
+from userprofile.models.profile import Profile
 from project.models import Project
 
 from utilities import constants

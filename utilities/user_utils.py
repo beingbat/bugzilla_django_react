@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 
-from userprofile.models import Profile
+from userprofile.models.profile import Profile
 from django.contrib.auth.models import User
 
 from . import constants

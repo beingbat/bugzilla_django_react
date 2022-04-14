@@ -2,6 +2,14 @@
 <br />
 {% if user.is_authenticated %}
 <div class="mx-4">
+  {% if messages %}
+      {% for message in messages %}
+          <div class="mb-2 alert alert-{{ message.tags }}">
+              <a class="close" data-dismiss="alert">×</a>
+              {{ message|safe }}
+          </div>
+      {% endfor %}
+    {% endif %}
   <h4 class="display-6">Dashboard</h4>
 
   {% if user_type == manager or user.is_superuser%} {% if user.is_superuser %}
@@ -79,7 +87,44 @@
   {% endif %} {% else %} {% if user_type == types.0.0%}
   <div class="mb-5">
     {% if project_name %}
-    <h5 class="mt-5 display-6 large_font">Current Project</h5>
+    {% if bugs_assigned %}
+      <h5 class="mt-5 display-6 large_font">Assigned Bugs</h5>
+      {% for bug in bugs_assigned %}
+          <a
+          class="btn btn-outline-danger sqr_btn pb-4 mb-4 mt-3"
+          style="margin-left:50px; min-height:70px; width: 450px; text-align:left; padding-left:30px; padding-right:30px;"
+          href="{% url 'detail-bug' pk=bug.uuid%}"
+        >
+          <div class="large_font pt-3 pb-3 px-0" >
+            {{bug.title}}
+          </div>
+          id: &emsp;&emsp;&ensp;{{bug.uuid}}<br>
+          status: &ensp;{{bug.status}}
+        </a>
+      {% endfor %}
+      <br>
+      <hr>
+    {% endif %}
+    {% if features_assigned %}
+      <h5 class="mt-5 display-6 large_font">Assigned Features</h5>
+      {% for bug in features_assigned %}
+          <a
+          class="btn btn-outline-success sqr_btn pb-4 mb-4 mt-3"
+          style="margin-left:50px; min-height:70px; width: 450px; text-align:left; padding-left:30px; padding-right:30px;"
+          href="{% url 'detail-bug' pk=bug.uuid%}"
+        >
+          <div class="large_font pt-3 pb-3 px-0" >
+            {{bug.title}}
+          </div>
+          id: &emsp;&emsp;&ensp;{{bug.uuid}}<br>
+          status: &ensp;{{bug.status}}
+        </a>
+      {% endfor %}
+      <br>
+      <hr>
+    {% endif %}
+
+    <h5 class="mt-5 display-6 large_font">View Assigned Project</h5>
     <a
       class="mt-2 btn color_b_bg dashboard_btn"
       style="margin-left: 50px"
@@ -95,6 +140,44 @@
 
   {% elif user_type == types.1.0 %}
   <div class="mb-5">
+    {% if bugs_created %}
+    <h5 class="mt-5 display-6 large_font">Created Bugs</h5>
+    {% for bug in bugs_created %}
+        <a
+        class="btn btn-outline-danger sqr_btn pb-4 mb-4 mt-3"
+        style="margin-left:50px; min-height:70px; width: 450px; text-align:left; padding-left:30px; padding-right:30px;"
+        href="{% url 'detail-bug' pk=bug.uuid%}"
+      >
+        <div class="large_font pt-3 pb-3 px-0" >
+          {{bug.title}}
+        </div>
+        type: &emsp;&nbsp;{{bug.type}}<br>
+        status: &ensp;{{bug.status}}<br>
+        id: &emsp;&emsp;&ensp;{{bug.uuid}}
+      </a>
+    {% endfor %}
+    <br>
+    <hr>
+    {% endif %}
+    {% if features_created %}
+    <h5 class="mt-5 display-6 large_font">Created Features</h5>
+    {% for bug in features_created %}
+        <a
+        class="btn btn-outline-warning sqr_btn pb-4 mb-4 mt-3"
+        style="margin-left:50px; min-height:70px; width: 450px; text-align:left; padding-left:30px; padding-right:30px;"
+        href="{% url 'detail-bug' pk=bug.uuid%}"
+      >
+        <div class="large_font pt-3 pb-3 px-0" >
+          {{bug.title}}
+        </div>
+        type: &emsp;&nbsp;{{bug.type}}<br>
+        status: &ensp;{{bug.status}}<br>
+        id: &emsp;&emsp;&ensp;{{bug.uuid}}
+      </a>
+    {% endfor %}
+    <br>
+    <hr>
+    {% endif %}
     {% if project_name %}
     <h5 class="mt-5 display-6 large_font">Current Project</h5>
     <a

@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 
-from django.http import Http404
-from django.http import HttpResponseForbidden, HttpResponse
+from django.http import Http404, HttpResponse
+from django.core.exceptions import PermissionDenied
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -31,11 +31,13 @@ from .tokens import account_activation_token
 
 from django.contrib.auth import login, authenticate
 
+
 def get_designation(profile):
     if profile.designation == constants.MANAGER:
         return 'Manager'
     else:
         return dict(constants.USER_TYPES).get(profile.designation)
+
 
 def is_manager(user):
     current_user = get_object_or_404(Profile, user=user)
@@ -51,9 +53,19 @@ def get_user_profile_by_id(user_id):
     return get_object_or_404(Profile, user=user)
 
 
-def page_not_found(request, exception):
+def page_not_found(request, exception=None):
+    return render(request, "errors/generic.html", {'title': "Page not found. 404", 'exception':exception})
 
-    return render(request, "errors/404.html", {})
+def permission_denied(request, exception=None):
+    return render(request, "errors/generic.html", {'title': "Permission Denied. 403", 'exception':exception})
+
+def bad_request(request, exception=None):
+    return render(request, "errors/generic.html", {'title': "Bad Request. 400", 'exception':exception})
+
+def server_error(request, exception=None):
+    return render(request, "errors/generic.html", {'title': "Server Error. 500", 'exception':exception})
+
+
 
 def index_page(request):
     context = {}
@@ -64,6 +76,24 @@ def index_page(request):
         if profileobj.project:
             context["project_name"] = profileobj.project.name
             context["project_id"] = profileobj.project.id
+            if profile == constants.DEVELOPER:
+                bugs = Bug.objects.filter(assigned_to=profileobj)
+                features = bugs.filter(type=constants.FEATURE)
+                bugs = bugs.filter(type=constants.BUG)
+                if bugs.count() > 0:
+                    context['bugs_assigned'] = bugs
+                if features.count() > 0:
+                    context['features_assigned'] = features
+
+            elif profile == constants.QAENGINEER:
+                bugs = Bug.objects.filter(creator=profileobj)
+                features = bugs.filter(type=constants.FEATURE)
+                bugs = bugs.filter(type=constants.BUG)
+                if bugs.count() > 0:
+                    context['bugs_created'] = bugs
+                if features.count() > 0:
+                    context['features_created'] = features
+
         context["user_type"] = profile
         context["user__type"] = get_designation(profileobj)
         context['user_profile'] = profileobj
@@ -88,8 +118,7 @@ def index_page(request):
 def add_user(request):
 
     if not is_manager(request.user):
-        raise Http404
-
+        raise PermissionDenied()
 
     if request.method == 'POST':
 
@@ -108,18 +137,17 @@ def add_user(request):
             message = render_to_string('activate_account.html', {
                 'user': user,
                 'domain': current_site.domain,
-                'uid':urlsafe_base64_encode(force_bytes(user.pk)),
-                'token':account_activation_token.make_token(user),
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                'token': account_activation_token.make_token(user),
             })
             to_email = user_form.cleaned_data.get('email')
             email = EmailMessage(
-                        mail_subject, message, to=[to_email]
+                mail_subject, message, to=[to_email]
             )
             email.send()
             messages.success(
                 request, "New Employee has been created successfully")
-            return render(request, "confirmation_page.html",{})
-            # HttpResponse('Please confirm your email address to complete the registration!')
+            return render(request, "confirmation_page.html", {})
 
         else:
             messages.error(request, "Failed adding new employee")
@@ -130,9 +158,12 @@ def add_user(request):
         profile_form = profileforms.ProfileForm()
 
     profile = get_object_or_404(Profile, user=request.user)
-    context = {'form_title':"please enter new employee information", 'button_text':"Add Employee", 'user_form': user_form, 'profile_form': profile_form}
+    context = {'form_title': "please enter new employee information",
+               'button_text': "Add Employee", 'user_form': user_form,
+               'profile_form': profile_form
+               }
     context["user__type"] = get_designation(profile)
-    context['moderator']=True
+    context['moderator'] = True
     context['user'] = request.user
     return render(request, "user_add.html", context)
 
@@ -152,7 +183,6 @@ def activate(request, uidb64, token):
         return HttpResponse('Activation link is invalid!')
 
 
-
 @login_required
 @transaction.atomic
 def update_user(request, id):
@@ -161,13 +191,14 @@ def update_user(request, id):
     profile = get_object_or_404(Profile, user=user)
     man = is_manager(request.user)
     if not (is_manager(request.user) or profile.user == request.user):
-        raise Http404
+        raise PermissionDenied()
 
     if request.method == 'POST':
         user_form = profileforms.UserUpdateForm(request.POST, instance=user)
         valid = True
         if man:
-            profile_form = profileforms.ProfileForm(request.POST, instance=profile)
+            profile_form = profileforms.ProfileForm(
+                request.POST, instance=profile)
             valid = profile_form.is_valid()
 
         if user_form.is_valid() and valid:
@@ -185,7 +216,8 @@ def update_user(request, id):
 
         user_form = profileforms.UserUpdateForm(instance=user)
         profile_form = profileforms.ProfileForm(instance=profile)
-    context = {'form_title': "please update employee information", 'button_text': "Update Employee", 'user_form': user_form, 'profile_form': profile_form}
+    context = {'form_title': "please update employee information",
+               'button_text': "Update Employee", 'user_form': user_form, 'profile_form': profile_form}
     context["user__type"] = get_designation(profile)
     context['user'] = request.user
     if is_manager(request.user):
@@ -196,13 +228,13 @@ def update_user(request, id):
 @login_required
 def delete_user(request, id):
     if not is_manager(request.user):
-        raise Http404
+        raise PermissionDenied()
 
     u = User.objects.get(id=id)
     try:
         u.delete()
     except:
-        return HttpResponse("Deleting User Failed!")
+        return render(request, "errors/generic.html", {'title':'User deletion failed because it is linked to a bug or feature. Remove its link to delete it.'})
     messages.success(request, "The user is deleted")
 
     return redirect(index_page)
@@ -221,7 +253,6 @@ class UserDetailView(LoginRequiredMixin, FormMixin, DetailView):
         user = get_object_or_404(User, pk=self.kwargs['pk'])
         return reverse('user-detail', kwargs={'pk': user.pk})
 
-
     def get_form_kwargs(self):
         kwargs = super(UserDetailView, self).get_form_kwargs()
         kwargs['pk'] = self.kwargs['pk']
@@ -229,22 +260,26 @@ class UserDetailView(LoginRequiredMixin, FormMixin, DetailView):
 
     def post(self, request, *args, **kwargs):
         if not is_manager(request.user):
-            return HttpResponseForbidden()
+            return PermissionDenied()
 
         self.object = self.get_object()
         form = self.get_form()
         if form.is_valid():
+            messages.success(request, "Project Changed Successfully!")
             return self.form_valid(form)
         else:
+            messages.error(request, "Project Change Failed")
             return self.form_invalid(form)
 
     def form_valid(self, form):
         chosen_project = form.cleaned_data['projects_field']
+        my_profile = get_user_profile_by_id(self.kwargs['pk'])
         if chosen_project != '-1':
-            my_profile = get_user_profile_by_id(self.kwargs['pk'])
-            my_project = my_profile.project
             my_project = get_object_or_404(Project, id=chosen_project)
             my_profile.project = my_project
+            my_profile.save()
+        else:
+            my_profile.project = None
             my_profile.save()
 
         return super().form_valid(form)
@@ -257,7 +292,8 @@ class UserDetailView(LoginRequiredMixin, FormMixin, DetailView):
         if my_project:
             context['current_project'] = my_project
         context['type'] = my_profile.designation
-        context["user__type"] = get_designation(get_object_or_404(Profile, user=self.request.user))
+        context["user__type"] = get_designation(
+            get_object_or_404(Profile, user=self.request.user))
         if get_object_or_404(Profile, user=self.request.user).designation == constants.MANAGER:
             context['moderator'] = True
         return context
@@ -266,7 +302,7 @@ class UserDetailView(LoginRequiredMixin, FormMixin, DetailView):
         profile_to_view = get_user_profile_by_id(self.kwargs['pk'])
         if is_manager(self.request.user) or profile_to_view.user == self.request.user:
             return profile_to_view
-        raise Http404
+        raise PermissionDenied()
 
 
 class UserListView(LoginRequiredMixin, ListView):
@@ -279,7 +315,7 @@ class UserListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         if not is_manager(self.request.user):
-            raise Http404
+            raise PermissionDenied()
         return Profile.objects.filter(designation=self.kwargs['slug'])
 
     def get_context_data(self, **kwargs):

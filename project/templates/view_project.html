@@ -1,128 +1,164 @@
 {% extends 'base.html' %} {% load widget_tweaks %} {% block content %}
 
 <div class="pt-4 mx-5">
+  {% if messages %}
+      {% for message in messages %}
+          <div class="mb-2 alert alert-{{ message.tags }}">
+              <a class="close" data-dismiss="alert">×</a>
+              {{ message|safe }}
+          </div>
+      {% endfor %}
+  {% endif %}
   <h4 class="display-6 mb-5">Project Detailed Information</h4>
 
 
   <h4 class="display-6 larger_font">{{project.name}}</h4>
-
 
   <h5 class="display-6 large_font mb-3">
     description:&emsp;&emsp;&emsp;&emsp;&emsp;{{ project.description }}
   </h5>
 
   <hr>
+  {% if features %}
+  <h4 class="display-6 largee_font mb-3 mt-4">Reported Features</h4>
+  <div class='container'>
+    <div class='row justify-content-start'
+        style="width:100%; margin:0px; max-height:350px; overflow:scroll;"
+    >
+      {% for bug in features%}
+        <div class='col'>
+          <a
+            class="btn btn-outline-warning sqr_btn pb-4 mb-4 mx-1"
+            style="min-height:150px; width: 450px; text-align:left; padding-left:30px; padding-right:30px;"
+            href="{% url 'detail-bug' pk=bug.uuid%}"
+          >
+            <div class="large_font pt-3 pb-3 px-0" >
+              {{bug.title}}
+            </div>
+            id: &emsp;&emsp;&ensp;{{bug.uuid}}<br>
+            status: &ensp;{{bug.status}}
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
 
-
-
+  <hr>
+  {% endif %}
+  {% if bugs %}
   <h4 class="display-6 largee_font mb-3 mt-4">Reported Bugs</h4>
   <div class='container'>
     <div class='row justify-content-start'
         style="width:100%; margin:0px; max-height:350px; overflow:scroll;"
     >
-
-  {% for bug in bugs%}
-  <div class='col'>
-
-  <a
-    class="btn btn-outline-danger sqr_btn pb-4 mb-4 mx-1"
-    style="min-height:150px; width: 450px; text-align:left; padding-left:30px; padding-right:30px;"
-    href="{% url 'detail-bug' pk=bug.uuid%}"
-  >
-  <div class="large_font pt-3 pb-3 px-0" >
-    {{bug.title}}
+      {% for bug in bugs%}
+        <div class='col'>
+          <a
+            class="btn btn-outline-danger sqr_btn pb-4 mb-4 mx-1"
+            style="min-height:150px; width: 450px; text-align:left; padding-left:30px; padding-right:30px;"
+            href="{% url 'detail-bug' pk=bug.uuid%}"
+          >
+            <div class="large_font pt-3 pb-3 px-0" >
+              {{bug.title}}
+            </div>
+            id: &emsp;&emsp;&ensp;{{bug.uuid}}<br>
+            status: &ensp;{{bug.status}}
+          </a>
+        </div>
+      {% endfor %}
+    </div>
   </div>
-    id: &emsp;&emsp;&ensp;{{bug.uuid}}<br>
-    status: &ensp;{{bug.status}}
-  </a>
-</div>
-  {% endfor %}
-  </div>
-</div>
+
   <hr>
+  {% endif %}
 
-{% if designation == manager or designation == qaengineer %}
-  <div class='container mt-5'
-    style="margin-left:0px; max-width:500px;">
+  {% if designation == manager or designation == qaengineer %}
+    <div class='container mt-5'
+      style="margin-left:0px; max-width:800px;">
+      <div class='row'>
+        <div class='col'>
+          <h4 class="display-6 largee_font mb-3 mt-2 pb-4"
+            >Report A Bug</h4>
+        </div>
+        <div class='col'>
+          <a
+          class="btn btn-outline-danger sqr_btn"
+          href="{% url 'add-bug' id=project.id type='bug'%}"
+          style="width:200px;"
+          >
+            Add Bug
+          </a>
+        </div>
+        <div class='col'>
+          <a
+          class="btn btn-outline-warning sqr_btn"
+          href="{% url 'add-bug' id=project.id type='feature'%}"
+          >
+            Add Feature
+          </a>
+        </div>
+      </div>
+    </div>
+    <hr>
+  {% endif %}
+
+    <div class='container mt-5  mb-3' style= "margin-left:0px; margin-right:0px; min-width:100%;">
     <div class='row'>
-      <div class='col'>
+      <div class='col-6 '>
         <h4 class="display-6 largee_font mb-3 mt-2 pb-4"
-          >Report A Bug</h4>
+        >Developers on project</h4>
+        <div style="overflow:scroll; max-height:200px;">
+          {% if not devs %}
+          <h4 class="display-6 large_font  mx-3 mb-3 mt-2 pb-4"
+          >None</h4>
+          {% else %}
+            {% for dev in devs%}
+            <h4 class="display-6 large_font mx-3 mb-3 mt-2 pb-4"
+            >id: {{ dev.user.id }}, name: {{ dev.user.get_full_name }}</h4>
+            {% endfor %}
+          {% endif %}
+        </div>
       </div>
-      <div class='col'>
-        <a
-        class="btn btn-outline-warning sqr_btn"
-        href="{% url 'add-bug' id=project.id%}"
-        >
-          Add Bug
-        </a>
+      <div class='col-6'
+      style="margin-left:0px;">
+        <h4 class="display-6 largee_font mb-3 mt-2 pb-4"
+        >QAEs on project</h4>
+        <div style="overflow:scroll; max-height:200px;">
+          {% if not qaes %}
+            <h4 class="display-6 large_font mx-3 mb-3 mt-2 pb-4"
+            >None</h4>
+          {% else %}
+            {% for qae in qaes%}
+            <h4 class="display-6 large_font  mx-3  mb-3 mt-2 pb-4"
+            >id: {{ qae.user.id }}, name: {{ qae.user.get_full_name }}</h4>
+            {% endfor %}
+          {% endif %}
+        </div>
       </div>
     </div>
   </div>
   <hr>
+
+  {% if designation == manager or designation == qaengineer %}
+
+    <h4 class="display-6 largee_font mb-3 mt-2 pb-4"
+        >
+      Admin Controls
+    </h4>
+
+    {% if designation == manager %}
+    <a class="mb-3 btn btn-outline-info sqr_btn"
+        href="{% url 'update-project' id=project.id%}">
+      Edit
+    </a>
+
+    <a class="mb-3 mx-3 btn btn-outline-danger sqr_btn"
+        href="{% url 'delete-project' id=project.id%}"
+        onclick="return confirm('Are you sure?');">
+      Delete
+    </a>
   {% endif %}
-
-
-  <div class='container mt-5  mb-3' style= "margin-left:0px; margin-right:0px; min-width:100%;">
-  <div class='row'>
-    <div class='col-6 '>
-      <h4 class="display-6 largee_font mb-3 mt-2 pb-4"
-      >Developers on project</h4>
-      <div style="overflow:scroll; max-height:200px;">
-        {% if not devs %}
-        <h4 class="display-6 large_font  mx-3 mb-3 mt-2 pb-4"
-        >None</h4>
-        {% else %}
-          {% for dev in devs%}
-          <h4 class="display-6 large_font mx-3 mb-3 mt-2 pb-4"
-          >id: {{ dev.user.id }}, name: {{ dev.user.get_full_name }}</h4>
-          {% endfor %}
-        {% endif %}
-      </div>
-    </div>
-    <div class='col-6'
-    style="margin-left:0px;">
-      <h4 class="display-6 largee_font mb-3 mt-2 pb-4"
-      >QAEs on project</h4>
-      <div style="overflow:scroll; max-height:200px;">
-        {% if not qaes %}
-          <h4 class="display-6 large_font mx-3 mb-3 mt-2 pb-4"
-          >None</h4>
-        {% else %}
-          {% for qae in qaes%}
-          <h4 class="display-6 large_font  mx-3  mb-3 mt-2 pb-4"
-          >id: {{ qae.user.id }}, name: {{ qae.user.get_full_name }}</h4>
-          {% endfor %}
-        {% endif %}
-      </div>
-    </div>
-  </div>
-  </div>
-
-
-
-<hr>
-
-{% if designation == manager or designation == qaengineer %}
-
-<h4 class="display-6 largee_font mb-3 mt-2 pb-4"
-      >Admin Controls</h4>
-
-
-  {% if designation == manager %}
-  <a class="mb-3 btn btn-outline-info sqr_btn"
-      href="{% url 'update-project' id=project.id%}">
-    Edit
-  </a>
-
-  <a class="mb-3 mx-3 btn btn-outline-danger sqr_btn"
-      href="{% url 'delete-project' id=project.id%}"
-      onclick="return confirm('Are you sure?');">
-    Delete
-  </a>
-  {% endif %}
-
-<hr>
+  <hr>
 {% endif %}
   <a class="mt-3 mb-5 btn btn-outline-dark sqr_btn"
     {% if designation == manager or designation == qaengineer %}

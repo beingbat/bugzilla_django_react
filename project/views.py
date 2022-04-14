@@ -1,21 +1,25 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import Http404
+from django.core.exceptions import PermissionDenied
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.db import transaction
+from django.db.models import ProtectedError
+
 
 from django.views.generic.detail import DetailView
 from django.views.generic import ListView
 from constants.constants import *
 
-from userprofile.models import Profile
-from userprofile.views import is_manager, get_user_profile
-from .models import *
 from .forms import *
+
+from .models import *
+from userprofile.models import Profile
 from bugs.models import Bug
-from userprofile.views import get_designation
+
+from userprofile.views import is_manager, get_user_profile, get_designation
 
 
 @login_required
@@ -23,7 +27,7 @@ from userprofile.views import get_designation
 def add_project(request):
 
     if not is_manager(request.user):
-        raise Http404
+        raise PermissionDenied()
 
     if request.method == 'POST':
         project_form = ProjectForm(request.POST)
@@ -49,7 +53,7 @@ def add_project(request):
 def update_project(request, id):
 
     if not is_manager(request.user):
-        raise Http404
+        raise PermissionDenied()
     project = get_object_or_404(Project, id=id)
     if request.method == 'POST':
         project_form = ProjectForm(request.POST, instance=project)
@@ -73,13 +77,13 @@ def update_project(request, id):
 def delete_project(request, id):
 
     if not is_manager(request.user):
-        raise Http404
+        raise PermissionDenied()
     project = Project.objects.get(id=id)
     try:
         project.delete()
     except:  # ProtectedError was not working so I have just used except
-        return render(request, "delete_project.html", {'title': 'Deletion Failed',
-                                                       'msg': "Deletion Failed. Employees are currently working on this project, so It can't be deleted."})
+        return render(request, "delete_project.html", {'title': 'Project Deletion Failed',
+                                                       'msg': "Project has employees linked to it, please remove them first to delete it."})
     messages.success(request, "Project Removed!")
     return redirect('list-project')
 
@@ -97,13 +101,17 @@ class DetailProject(LoginRequiredMixin, DetailView):
 
         current_user = get_user_profile(self.request.user)
         context['designation'] = current_user.designation
-        employees = Profile.objects.filter(
-            project=get_object_or_404(Project, pk=self.kwargs['pk']))
+        project = get_object_or_404(Project, pk=self.kwargs['pk'])
+        employees = Profile.objects.filter(project=project)
         qaes = employees.filter(designation=QAENGINEER)
         devs = employees.filter(designation=DEVELOPER)
-        bugs = Bug.objects.filter(
-            project=get_object_or_404(Project, pk=self.kwargs['pk']))
-        context['bugs'] = bugs
+        bugs = Bug.objects.filter(project=project)
+        features = bugs.filter(type=FEATURE)
+        bugs = bugs.filter(type=BUG)
+        if bugs.count()>0:
+            context['bugs'] =  bugs
+        if features.count() > 0:
+            context['features'] = features
         context['qaes'] = qaes
         context['devs'] = devs
         context['qaengineer'] = QAENGINEER
@@ -114,10 +122,10 @@ class DetailProject(LoginRequiredMixin, DetailView):
 
     def get_object(self):
         current_user = get_user_profile(self.request.user)
-        if is_manager(self.request.user) or current_user.designation == QAENGINEER or (current_user.project and current_user.project.id == self.kwargs['pk']):
+        if current_user.designation in (QAENGINEER, MANAGER) or (current_user.project and current_user.project.id == self.kwargs['pk']):
             return Project.objects.get(id=self.kwargs['pk'])
         else:
-            raise Http404
+            raise PermissionDenied()
 
 
 class ListProjects(LoginRequiredMixin, ListView):
@@ -129,10 +137,10 @@ class ListProjects(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         current_user = get_user_profile(self.request.user)
-        if is_manager(self.request.user) or current_user.designation == QAENGINEER:
+        if current_user.designation in (QAENGINEER, MANAGER):
             return Project.objects.all()
         else:
-            raise Http404
+            raise PermissionDenied()
 
     def get_context_data(self, **kwargs):
         context = super(ListProjects, self).get_context_data(**kwargs)

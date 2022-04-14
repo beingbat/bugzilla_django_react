@@ -1,10 +1,8 @@
-
-from sqlite3 import IntegrityError
-from xml.dom import ValidationErr
-from django.shortcuts import render, redirect, get_object_or_404, render_to_response
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 
-from django.http import Http404, HttpResponseForbidden
+from django.http import Http404
+from django.core.exceptions import PermissionDenied
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
@@ -27,39 +25,52 @@ from django.views.generic import ListView
 
 @login_required
 @transaction.atomic
-def add_bug(request, id):
+def add_bug(request, id, type):
     if not (is_manager(request.user) or get_user_profile(request.user).designation == QAENGINEER):
+        raise PermissionDenied()
+
+    if type not in ('bug', 'feature'):
         raise Http404
+    elif type == 'bug':
+        entity_type = BUG
+    elif type == 'feature':
+        entity_type = FEATURE
 
     context = {}
     if is_manager(request.user):
         context['manager'] = True
     if request.method == 'POST':
-        bug_form = BugForm(request.POST, project_id=id)
+        bug_form = BugForm(request.POST, request.FILES, count_allowed=0, project_id=id)
         project = get_object_or_404(Project, id=id)
         if bug_form.is_valid():
             bug = bug_form.save(commit=False)
             bug.project = project
             bug.status = NEW
             bug.creator = get_user_profile(request.user)
-            bug.screenshot = bug_form.cleaned_data.get("screenshot")
+            bug.type = entity_type
             dev_id = bug_form.cleaned_data.get("assigned_dev")
 
             if bug_form.cleaned_data.get("assigned_dev") != '-1':
                 bug.assigned_to = get_object_or_404(
                     Profile, user=get_object_or_404(User, id=dev_id))
+
             bug.save()
-            messages.success(request, "Bug created sucessfully")
+            messages.success(request, "Bug/Feature created sucessfully")
             return redirect('detail-bug', pk=bug.uuid)
         else:
             messages.error(request, "Error occured in Bug creation")
     else:  # GET
-        bug_form = BugForm(project_id=id)
+        bug_form = BugForm(count_allowed=0, project_id=id)
 
     context['bug_form'] = bug_form
     context['user__type'] = get_designation(get_user_profile(request.user))
-    context['form_title'] = "Please add bug information below"
-    context['button_text'] = "Add Bug"
+    if entity_type == BUG:
+        context['form_title'] = "Please add bug information below"
+        context['button_text'] = "Add Bug"
+    elif entity_type == FEATURE:
+        context['form_title'] = "Please add feature information below"
+        context['button_text'] = "Add Feature"
+
     return render(request, 'add_bug.html', context)
 
 
@@ -68,7 +79,7 @@ def add_bug(request, id):
 def update_bug(request, pk):
     designation = get_user_profile(request.user).designation
     if designation not in (MANAGER, QAENGINEER):
-        raise Http404
+        raise PermissionDenied()
 
     context = {}
 
@@ -77,11 +88,11 @@ def update_bug(request, pk):
         context['manager'] = True
     else:
         if bug.creator.user != request.user:
-            raise Http404
+            raise PermissionDenied()
 
     if request.method == 'POST':
         bug_form = BugForm(request.POST, request.FILES, instance=bug,
-                           project_id=bug.project.id)
+                            count_allowed=1, project_id=bug.project.id)
         if bug_form.is_valid():
             bug = bug_form.save(commit=False)
             dev_id = bug_form.cleaned_data.get("assigned_dev")
@@ -91,19 +102,23 @@ def update_bug(request, pk):
                     Profile, user=get_object_or_404(User, id=dev_id))
 
             bug.screenshot = bug_form.cleaned_data.get("screenshot")
-            print("************", bug.screenshot)
             bug.save()
             messages.success(request, "Bug Updated Successfully")
             return redirect('detail-bug', bug.uuid)
         else:
             messages.error(request, "Bug Updation Failed")
     else:
-        bug_form = BugForm(instance=bug, project_id=bug.project.id)
+        bug_form = BugForm(instance=bug, count_allowed=1, project_id=bug.project.id)
 
     context['bug_form'] = bug_form
     context['user__type'] = get_designation(get_user_profile(request.user))
-    context['form_title'] = "Please update bug information below"
-    context['button_text'] = "Update Bug"
+    if bug.type == BUG:
+        context['form_title'] = "Please update bug information below"
+        context['button_text'] = "Update Bug"
+    elif bug.type == FEATURE:
+        context['form_title'] = "Please update feature information below"
+        context['button_text'] = "Update Feature"
+
     return render(request, 'add_bug.html', context)
 
 
@@ -111,29 +126,29 @@ def update_bug(request, pk):
 def delete_bug(request, pk):
 
     if not is_manager(request.user):
-        raise Http404
+        raise PermissionDenied()
     bug = get_object_or_404(Bug, pk=pk)
     try:
         bug.delete()
     except:  # ProtectedError was not working so I have just used except
         return render(request, "delete_bug.html",  {'title': 'Deletion Failed',
-                                                    'msg': "Deletion Failed. Bug can't be deleted."})
+                                                    'msg': "Bug/Feature deletion could not be completed. This should not happen."})
     messages.success(request, "Bug Removed!")
     return redirect('list-bug')
 
 
 def assign_bug(request, bug_id, user_id):
     user_profile = get_user_profile(request.user)
-    des = user_profile.designation
-    if request.user.id != user_id or des != DEVELOPER:
-        raise Http404
+    desgination = user_profile.designation
+    if request.user.id != user_id or desgination != DEVELOPER:
+        raise PermissionDenied()
 
     bug = get_object_or_404(Bug, uuid=bug_id)
     if not bug.assigned_to:
         bug.assigned_to = user_profile
         bug.save()
     else:
-        raise Http404
+        raise PermissionDenied()
     return redirect('detail-bug', pk=bug.uuid)
 
 
@@ -159,15 +174,17 @@ class DetailBug(LoginRequiredMixin, FormMixin, DetailView):
         profile_user = get_user_profile(self.request.user)
         bug = get_object_or_404(Bug, uuid=self.kwargs['pk'])
         if profile_user.designation not in (MANAGER, QAENGINEER, DEVELOPER):
-            return HttpResponseForbidden()
+            return PermissionDenied()
         if profile_user.designation == DEVELOPER and bug.assigned_to != profile_user:
-            return HttpResponseForbidden()
+            return PermissionDenied()
 
         self.object = self.get_object()
         form = self.get_form()
         if form.is_valid():
+            messages.success(request, "Status Changed Sucessfully")
             return self.form_valid(form)
         else:
+            messages.error(request, "Status Change Failed")
             return self.form_invalid(form)
 
     def form_valid(self, form):
@@ -182,18 +199,18 @@ class DetailBug(LoginRequiredMixin, FormMixin, DetailView):
         bug = get_object_or_404(Bug, uuid=self.kwargs['pk'])
         context['status_form'] = self.get_form
         user_profile = get_user_profile(self.request.user)
-        des = user_profile.designation
+        desgination = user_profile.designation
         context['user__type'] = get_designation(user_profile)
         if bug.type == BUG:
             context['bug__status'] = dict(BUG_STATUS).get(bug.status)
         else:
             context['bug__status'] = dict(FEATURE_STATUS).get(bug.status)
 
-        if des == MANAGER:
+        if desgination == MANAGER:
             context['moderator'] = True
         elif user_profile == bug.creator:
             context['creator'] = True
-        elif des in DEVELOPER:
+        elif desgination in DEVELOPER:
             context['developer'] = True
             if user_profile == bug.assigned_to:
                 context['cuser'] = True
@@ -206,7 +223,7 @@ class DetailBug(LoginRequiredMixin, FormMixin, DetailView):
         if current_user.designation in (MANAGER, QAENGINEER) or current_user.project == bug.project:
             return bug
         else:
-            raise Http404
+            raise PermissionDenied()
 
 
 class ListBug(LoginRequiredMixin, ListView):
@@ -256,7 +273,7 @@ class ListBug(LoginRequiredMixin, ListView):
                 else:
                     raise Http404
 
-            if 'filter' not in self.kwargs:
+            if 'filter' not in self.kwargs or self.kwargs['filter'] == ALL:
                 return bug_list
             elif self.kwargs['filter'] == NEW:
                 return bug_list.filter(status=NEW)

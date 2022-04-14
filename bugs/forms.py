@@ -1,10 +1,11 @@
 from django.shortcuts import get_object_or_404
 
 from django import forms
+
 from constants.constants import *
 from userprofile.models import Profile
-from .models import Bug
 from project.models import Project
+from .models import Bug
 
 
 class BugStatusForm(forms.ModelForm):
@@ -35,20 +36,23 @@ class BugForm(forms.ModelForm):
     class Meta:
         model = Bug
         fields = ('title', 'description', 'assigned_dev',
-                  'deadline', 'type', 'screenshot')
+                  'deadline', 'screenshot')
 
-    def __init__(self, *args, project_id, **kwargs):
+    def __init__(self, *args, count_allowed, project_id, **kwargs):
         super(BugForm, self).__init__(*args, **kwargs)
         self.fields['assigned_dev'] = forms.ChoiceField(
             label="Assign a Developer ", choices=self.get_choices(project_id))
         self.initial['deadline'] = self.instance.deadline.isoformat()
-        self.p_id = project_id
+
+        self.count_allowed = count_allowed
+        self.project_id = project_id
 
     def clean(self):
         if self.cleaned_data.get('title'):
             same_count = Bug.objects.filter(title=self.cleaned_data.get(
-                'title')).filter(project=self.p_id).count()
-            if same_count > 0:
+                'title')).filter(project=self.project_id).count()
+
+            if same_count > self.count_allowed:
                 self.add_error(
                     'title', "Bug name should be unique in a project")
 

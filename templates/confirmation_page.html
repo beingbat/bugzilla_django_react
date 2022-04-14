@@ -1,5 +1,18 @@
 {% extends 'base.html' %} {% block content%}
+{% if messages %}
+  {% for message in messages %}
+      <div class=" mt-3 alert alert-{{ message.tags }}">
+          <a class="close" data-dismiss="alert">×</a>
+          {{ message|safe }}
+      </div>
+{% endfor %}
+{% endif %}
 <h5 class="display-6 large_font mx-3 mt-5">
   Please let user know to confirm his/her email address to complete the registration!
 </h5>
+<a class="mx-5 mt-3 mb-5 btn btn-outline-secondary sqr_btn"
+        href="{% url 'dashboard'%}"
+    >
+    Go Back
+  </a>
 {%endblock%}

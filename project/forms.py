@@ -1,9 +1,9 @@
+from django import forms
 from django.shortcuts import get_object_or_404
 
-
-from django import forms
 from .models import Project
 from userprofile.models import Profile
+
 from django.contrib.auth.models import User
 
 
@@ -26,10 +26,10 @@ class ProjectChooseForm(forms.ModelForm):
 
     def __init__(self, *args, pk, **kwargs):
         super(ProjectChooseForm, self).__init__(*args, **kwargs)
-        profile = get_object_or_404(
+        self.profile = get_object_or_404(
             Profile, user=get_object_or_404(User, id=pk))
-        if profile.project:
-            p_id = profile.project.id
+        if self.profile.project:
+            p_id = self.profile.project.id
         else:
             p_id = -1
 

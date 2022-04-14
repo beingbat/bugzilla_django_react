@@ -1,7 +1,7 @@
 {% extends 'base.html' %} {% load widget_tweaks %} {% block content %}
 
 <div class="pt-4 forms_div">
-  {% comment %} <h4 class="display-4">please enter new employee information</h4> {% endcomment %}
+
   <h4 class="display-4">{{form_title}}</h4>
   <br />
 
@@ -45,7 +45,7 @@
     {% endfor %}
     {% endif %}
 
-    <button class="btn btn-outline-dark mt-5 mb-5 sqr_btn type="submit">{{button_text}}</button>
+    <button class="btn btn-outline-dark mt-5 mb-5 sqr_btn" type="submit">{{button_text}}</button>
   </form>
 </div>
 

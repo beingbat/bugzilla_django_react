@@ -1,0 +1,25 @@
+{% extends 'base.html' %} {% block content%}
+{% if messages %}
+{% for message in messages %}
+    <div class="mb-2 alert alert-{{ message.tags }}">
+        <a class="close" data-dismiss="alert">×</a>
+        {{ message|safe }}
+    </div>
+{% endfor %}
+{% endif %}
+
+<div class="pt-1 mx-5">
+
+  <h4>{{title}}</h4>
+  <br />
+    {{msg}}
+  <br />
+  <form method="post">{% csrf_token %}
+    <h4 class="display-6 large_font mb-3">Are you sure you want to delete "{{ object }}"?</h4>
+    <input class="sqr_btn btn btn-outline-warning mb-5" type="submit" value="Confirm">
+  </form>
+
+  <a class="mt-3 btn btn-outline-dark sqr_btn" href="{% url 'dashboard'%}"> Dashboard </a>
+</div>
+
+{%endblock%}

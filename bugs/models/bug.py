@@ -13,7 +13,7 @@ from constants.constants import *
 
 
 class Bug(models.Model):
-    uuid = models.UUIDField(verbose_name="Bug ID", default=uuid.uuid4,
+    uuid = models.UUIDField(verbose_name="ID", default=uuid.uuid4,
                             editable=False, unique=True, blank=False, null=False, primary_key=True)
     project = models.ForeignKey(Project, blank=False, null=False, editable=False,
                                 verbose_name="Found In Project", on_delete=models.CASCADE)

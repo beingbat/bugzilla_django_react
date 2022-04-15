@@ -6,5 +6,5 @@ urlpatterns = [
   path('update/<int:id>', add_project.update_project, name='update-project'),
   path('', list_project.ListProjects.as_view(), name='list-project'),
   path('<int:pk>', detail_project.DetailProject.as_view(), name='detail-project'),
-  path('delete/<int:id>', delete_project.delete_project, name='delete-project'),
+  path('delete/<int:id>', delete_project.ProjectDelete.as_view(), name='delete-project'),
 ]

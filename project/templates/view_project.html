@@ -154,7 +154,8 @@
 
     <a class="mb-3 mx-3 btn btn-outline-danger sqr_btn"
         href="{% url 'delete-project' id=project.id%}"
-        onclick="return confirm('Are you sure?');">
+        {% comment %} onclick="return confirm('Are you sure?');" {% endcomment %}
+        >
       Delete
     </a>
   {% endif %}

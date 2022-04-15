@@ -57,7 +57,7 @@
         <a
           class="btn btn-outline-secondary sqr_btn"
           href="{% url 'delete-user' id=user_profile.user.id%}"
-          onclick="return confirm('Are you sure?');"
+          {% comment %} onclick="return confirm('Are you sure?');" {% endcomment %}
         >
           Delete
         </a>

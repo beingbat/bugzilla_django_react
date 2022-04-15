@@ -44,7 +44,7 @@ class BugDelete(LoginRequiredMixin, DeleteView):
         success_url = self.get_success_url()
         try:
             self.object.delete()
-        except ProtectedError:
+        except:
             messages.error(request, 'Deletion Failed! Can not Delete the bug!')
             return HttpResponseRedirect(success_url)
         messages.success(

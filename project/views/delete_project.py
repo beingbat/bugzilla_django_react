@@ -30,7 +30,7 @@ class ProjectDelete(LoginRequiredMixin, DeleteView):
         project = get_object_or_404(Project, pk=self.kwargs['id'])
         if not is_manager(self.request.user):
             messages.error(
-                self.request, f"You don't have permission to delete {project.title}!")
+                self.request, f"You don't have permission to delete {project.name}!")
             raise PermissionDenied()
         return project
 
@@ -49,5 +49,5 @@ class ProjectDelete(LoginRequiredMixin, DeleteView):
             messages.error(request, 'Project Deletion Failed. Please remove all employees from project first!')
             return HttpResponseRedirect(success_url)
         messages.success(
-            request, f"Project '{self.object.title}' removed")
+            request, f"Project '{self.object.name}' removed")
         return HttpResponseRedirect(success_url)

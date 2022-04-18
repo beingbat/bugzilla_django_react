@@ -6,10 +6,11 @@ from userprofile.views.detail_user import *
 from userprofile.views.list_user import *
 
 urlpatterns = [
-    path('add/', add_user, name='add-user'),
-    path('update/<int:id>', update_user, name='update-user'),
+    path('add/', CreateUserProfile.as_view(), name='add-user'),
+    path('update/<int:id>', UpdateUserProfile.as_view(), name='update-user'),
     path('<slug:slug>/', UserListView.as_view(), name='user-list'),
     path('<int:pk>', UserDetailView.as_view(), name='user-detail'),
     path('delete/<int:id>', UserDelete.as_view(), name='delete-user'),
-    re_path(r'^activate/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,40})/$', activate, name='activate'),
+    re_path(
+        r'^activate/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,40})/$', activate, name='activate'),
 ]

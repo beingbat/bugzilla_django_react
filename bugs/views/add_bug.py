@@ -16,8 +16,6 @@ from bugs.models.bug import Bug
 from django.views.generic import CreateView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-import logging
-
 
 class CreateBug(LoginRequiredMixin, CreateView):
     model = Bug
@@ -37,7 +35,6 @@ class CreateBug(LoginRequiredMixin, CreateView):
 
     def get(self, request, *args, **kwargs):
         context = self.get_context_data()
-        logging.debug(kwargs)
         context['bug_form'] = BugForm(
             count_allowed=0, project_id=self.project_id)
         return render(request, 'add_bug.html', context)

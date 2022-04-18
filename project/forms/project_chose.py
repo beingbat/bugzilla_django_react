@@ -1,20 +1,12 @@
+
 from django import forms
 from django.shortcuts import get_object_or_404
 
-from .models import Project
-from userprofile.models import Profile
+from project.models.project import Project
+from userprofile.models.profile import Profile
 
 from django.contrib.auth.models import User
 
-
-class ProjectForm(forms.ModelForm):
-
-    name = forms.CharField(max_length=50)
-    description = forms.TextInput()
-
-    class Meta:
-        model = Project
-        fields = ('name', 'description',)
 
 
 class ProjectChooseForm(forms.ModelForm):

@@ -1,10 +1,10 @@
 from django.urls import reverse
 
-from constants import constants
+from utilities import constants
 
 from django.db import models
 from django.contrib.auth.models import User
-from project.models import Project
+from project.models.project import Project
 
 
 class Profile(models.Model):

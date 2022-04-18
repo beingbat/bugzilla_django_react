@@ -10,13 +10,13 @@ from django.contrib import messages
 from django.db import transaction
 
 from constants.constants import *
-from userprofile.views import get_designation, is_manager, get_user_profile
+from utilities.user_utils import get_designation, is_manager, get_user_profile
 from .forms import BugForm, BugStatusForm
 from django.views.generic.edit import FormMixin
 
 from django.contrib.auth.models import User
-from userprofile.models import Profile
-from project.models import Project
+from userprofile.models.profile import Profile
+from project.models.project import Project
 from .models import Bug
 
 from django.views.generic.detail import DetailView

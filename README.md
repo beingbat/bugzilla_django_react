@@ -1,5 +1,19 @@
 ## This is the read me for Bugzilla Test Project
 
+#### Project Setup Instructions:
+Project is deployed at https://bugzilla-django.herokuapp.com/ but if you want to run it locally follow the instructions below:
+- First clone it using link: https://github.com/at-malek/bugzilla.git
+- Create a virtual environment first for running this project. Following are steps for creating virtualenv:
+  -  Go to the directory where you want to create virtualenv, here I am going to create it in the project folder itself. So, first creat project folder and open it.
+  - Open terminal in that directory and run command: <code>$ python3 -m venv ./venv --prompt bugzilla</code>
+  - Activate the virtualenv using <code>$ source venv/bin/activate</code>
+  - Then install all the requirement packages from requirements.txt <code> $ python -m pip install requirements.txt</code>
+- Then to run the project, first we need to create database and make tables i.e. migrations so run the following commands for that:
+  <code>$ cd bugzilla</code>
+  <code>$ python manage.py makemigrations</code>
+  <code>$ python manage.py migrate</code>
+- Finally, to run server run command:
+  <code>$ python manage.py runserver</code>
 ### Project Description: A management system for managing employees, projects and bugs in those projects.
 
 User Types:
@@ -50,7 +64,8 @@ Project:
 - A project can have more than 1 bugs/feature and more than 1 developers/qaes but a bug/feature and developer/qae can only belong to a single project.
 
 Bug:
--
-- Managers can create/modify in any project
+- Bugs have many fields and there is constrained on two of them i.e. screenshot [ImageField] and title. Title must be unique for a bug in a project and screenshot can only be of type 'png' or 'gif'.
+- Managers can create/modify bugs in any project
 - QAE can create bugs in any project bug only modify bugs it created itself
-- Developer assigned to a project can modify bugs in it
+- Developer assigned to a project can view bugs in it and can only modify status f bugs which are assigned to it
+- Developers can assign bugs to themselves from their current project if they are not already assigned to someone.

@@ -2,11 +2,13 @@ from django.db import models
 
 from django.urls import reverse
 
+from django.core.validators import FileExtensionValidator
+
 import uuid
 from django.utils.timezone import now
 
-from project.models import Project
-from userprofile.models import Profile
+from project.models.project import Project
+from userprofile.models.profile import Profile
 from constants.constants import *
 
 
@@ -30,7 +32,7 @@ class Bug(models.Model):
     assigned_to = models.ForeignKey(Profile, verbose_name="Developer Assigned To", on_delete=models.DO_NOTHING,
                                     blank=True, null=True, limit_choices_to={'designation': DEVELOPER}, related_name="developer_assigned")
     screenshot = models.ImageField(
-        upload_to='bugs_imgs', null=True, blank=True)
+        upload_to='bugs_imgs', null=True, blank=True,  validators=[FileExtensionValidator( ['png', 'gif'] ) ])
 
     class Meta:
         unique_together = (

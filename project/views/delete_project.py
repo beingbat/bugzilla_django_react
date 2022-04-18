@@ -3,20 +3,18 @@ from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
 
 from django.core.exceptions import PermissionDenied
-from django.db.models import ProtectedError
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from django.contrib import messages
 
-from utilities.constants import *
-from utilities.user_utils import *
+from utilities import *
 
 from django.views.generic.edit import DeleteView
 
-from project.forms.project_chose import *
-from project.forms.project_form import *
-from project.models.project import *
+from project.forms import *
+from project.models import Project
+
 
 class ProjectDelete(LoginRequiredMixin, DeleteView):
     queryset = Project.objects.all()
@@ -46,7 +44,8 @@ class ProjectDelete(LoginRequiredMixin, DeleteView):
         try:
             self.object.delete()
         except:
-            messages.error(request, 'Project Deletion Failed. Please remove all employees from project first!')
+            messages.error(
+                request, 'Project Deletion Failed. Please remove all employees from project first!')
             return HttpResponseRedirect(success_url)
         messages.success(
             request, f"Project '{self.object.name}' removed")

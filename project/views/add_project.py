@@ -5,9 +5,9 @@ from django.contrib import messages
 
 from utilities.constants import *
 
-from project.forms.project_chose import *
-from project.forms.project_form import *
-from project.models.project import *
+from project.forms import *
+from project.models import Project
+from userprofile.models import Profile
 
 from django.views.generic import CreateView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -54,7 +54,6 @@ class UpdateProject(LoginRequiredMixin, UpdateView):
     model = Project
     fields = '__all__'
     success_message = 'Updated Project Successfully'
-
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()

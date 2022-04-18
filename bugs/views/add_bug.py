@@ -5,13 +5,13 @@ from django.core.exceptions import PermissionDenied
 
 from django.contrib import messages
 
-from constants.constants import *
-from bugs.forms.bug_form import BugForm
+from utilities import *
+from bugs.forms import BugForm
 
 from django.contrib.auth.models import User
-from userprofile.models.profile import Profile
-from project.models.project import Project
-from bugs.models.bug import Bug
+from userprofile.models import Profile
+from project.models import Project
+from bugs.models import Bug
 
 from django.views.generic import CreateView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin

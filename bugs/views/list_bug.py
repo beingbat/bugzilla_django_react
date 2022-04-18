@@ -2,10 +2,10 @@ from django.http import Http404
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from constants.constants import *
+from utilities import *
 from utilities.user_utils import get_designation, get_user_profile
 
-from project.models.project import Project
+from project.models import Project
 from bugs.models.bug import Bug
 
 from django.views.generic import ListView

@@ -1,9 +1,6 @@
 from django.urls import path, re_path
-from userprofile.views.activate_user import *
-from userprofile.views.add_user import *
-from userprofile.views.delete_user import *
-from userprofile.views.detail_user import *
-from userprofile.views.list_user import *
+from .views import *
+
 
 urlpatterns = [
     path('add/', CreateUserProfile.as_view(), name='add-user'),

@@ -27,7 +27,7 @@ class BugDelete(LoginRequiredMixin, DeleteView):
 
     def get_object(self):
         bug = get_object_or_404(Bug, uuid=self.kwargs['pk'])
-        if not is_manager(self.request.user):
+        if not (is_manager(self.request.user) or self.request.user==bug.creator):
             messages.error(
                 self.request, f"You don't have permission to delete {bug.type}: {bug.title}!")
             raise PermissionDenied()

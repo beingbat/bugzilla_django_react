@@ -1,15 +1,11 @@
-from urllib import request
 from django.shortcuts import render, redirect, get_object_or_404
 
 from django.http import Http404
 from django.core.exceptions import PermissionDenied
 
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.db import transaction
 
 from constants.constants import *
-from utilities.user_utils import get_designation, is_manager, get_user_profile
 from bugs.forms.bug_form import BugForm
 
 from django.contrib.auth.models import User
@@ -19,10 +15,9 @@ from bugs.models.bug import Bug
 
 from django.views.generic import CreateView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.messages.views import SuccessMessageMixin
-from django.views.generic.edit import FormMixin
 
 import logging
+
 
 class CreateBug(LoginRequiredMixin, CreateView):
     model = Bug
@@ -43,11 +38,13 @@ class CreateBug(LoginRequiredMixin, CreateView):
     def get(self, request, *args, **kwargs):
         context = self.get_context_data()
         logging.debug(kwargs)
-        context['bug_form'] = BugForm(count_allowed=0, project_id=self.project_id)
+        context['bug_form'] = BugForm(
+            count_allowed=0, project_id=self.project_id)
         return render(request, 'add_bug.html', context)
 
     def post(self, request, *args, **kwargs):
-        bug_form = BugForm(request.POST, request.FILES, count_allowed=0, project_id=self.project_id)
+        bug_form = BugForm(request.POST, request.FILES,
+                           count_allowed=0, project_id=self.project_id)
         if bug_form.is_valid():
             bug = bug_form.save(commit=False)
             bug.project = get_object_or_404(Project, id=self.project_id)
@@ -65,9 +62,8 @@ class CreateBug(LoginRequiredMixin, CreateView):
             return redirect('detail-bug', pk=bug.uuid)
         messages.error(request, "Error occured in Bug creation")
         context = self.get_context_data()
-        context['bug_form']=bug_form
+        context['bug_form'] = bug_form
         return render(request, 'add_bug.html', context)
-
 
     def get_context_data(self, **kwargs):
         context = super(CreateBug, self).get_context_data(**kwargs)
@@ -91,13 +87,14 @@ class UpdateBug(LoginRequiredMixin, UpdateView):
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         context = self.get_context_data()
-        logging.debug(kwargs)
-        context['bug_form'] = BugForm(instance=self.object, count_allowed=1, project_id=self.object.project.id)
+        context['bug_form'] = BugForm(
+            instance=self.object, count_allowed=1, project_id=self.object.project.id)
         return render(request, 'add_bug.html', context)
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        bug_form = BugForm(request.POST, request.FILES, instance=self.object, count_allowed=1, project_id=self.object.project.id)
+        bug_form = BugForm(request.POST, request.FILES, instance=self.object,
+                           count_allowed=1, project_id=self.object.project.id)
         if bug_form.is_valid():
             bug = bug_form.save(commit=False)
             dev_id = bug_form.cleaned_data.get("assigned_dev")
@@ -110,9 +107,8 @@ class UpdateBug(LoginRequiredMixin, UpdateView):
             return redirect('detail-bug', pk=bug.uuid)
         messages.error(request, "Error occured in Bug updation")
         context = self.get_context_data()
-        context['bug_form']=bug_form
+        context['bug_form'] = bug_form
         return render(request, 'add_bug.html', context)
-
 
     def get_context_data(self, **kwargs):
         context = super(UpdateBug, self).get_context_data(**kwargs)

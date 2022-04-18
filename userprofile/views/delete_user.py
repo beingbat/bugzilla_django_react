@@ -9,8 +9,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from django.contrib import messages
 
-from utilities.constants import *
-from utilities.user_utils import *
+from utilities import *
 
 from django.views.generic.edit import DeleteView
 

@@ -6,9 +6,8 @@ from django.core.exceptions import PermissionDenied
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 
-from constants.constants import *
-from utilities.user_utils import get_designation, get_user_profile
-from bugs.forms.bug_status import BugStatusForm
+from utilities import *
+from bugs.forms import BugStatusForm
 from django.views.generic.edit import FormMixin
 
 from bugs.models.bug import Bug

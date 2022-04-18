@@ -2,10 +2,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 
 from django.core.exceptions import PermissionDenied
 
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
-from django.db import transaction
 
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes
@@ -18,15 +16,13 @@ from userprofile.tokens import account_activation_token
 from userprofile.models.profile import Profile
 from django.contrib.auth.models import User
 
-from userprofile.forms.profile_registration import ProfileForm
-from userprofile.forms.user_registration import *
+from userprofile.forms import *
 
 from django.views.generic import CreateView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 
-from utilities.user_utils import *
-from utilities.constants import *
+from utilities import *
 
 
 class CreateUserProfile(LoginRequiredMixin, CreateView):

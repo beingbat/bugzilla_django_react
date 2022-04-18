@@ -2,11 +2,10 @@ from django.core.exceptions import PermissionDenied
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView
-from utilities.constants import *
+from utilities import *
 
-from project.forms.project_chose import *
-from project.forms.project_form import *
-from project.models.project import *
+from project.forms import *
+from project.models import Project
 
 from utilities.user_utils import get_user_profile, get_designation
 

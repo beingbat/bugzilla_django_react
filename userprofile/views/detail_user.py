@@ -9,15 +9,14 @@ from django.contrib import messages
 from django.views.generic.detail import DetailView
 
 from django.views.generic.edit import FormMixin
-from project.forms.project_chose import ProjectChooseForm
+from project.forms import ProjectChooseForm
 
 from django.contrib.auth.models import User
-from userprofile.models.profile import Profile
-from project.models.project import Project
+from userprofile.models import Profile
+from project.models import Project
 
-from utilities import constants
+from utilities import *
 
-from utilities.user_utils import *
 
 class UserDetailView(LoginRequiredMixin, FormMixin, DetailView):
 
@@ -73,7 +72,7 @@ class UserDetailView(LoginRequiredMixin, FormMixin, DetailView):
         context['type'] = my_profile.designation
         context["user__type"] = get_designation(
             get_object_or_404(Profile, user=self.request.user))
-        if get_object_or_404(Profile, user=self.request.user).designation == constants.MANAGER:
+        if get_object_or_404(Profile, user=self.request.user).designation == MANAGER:
             context['moderator'] = True
         return context
 
@@ -82,4 +81,3 @@ class UserDetailView(LoginRequiredMixin, FormMixin, DetailView):
         if is_manager(self.request.user) or profile_to_view.user == self.request.user:
             return profile_to_view
         raise PermissionDenied()
-

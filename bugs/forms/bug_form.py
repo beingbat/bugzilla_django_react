@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404
 
 from django import forms
 
-from constants.constants import *
+from utilities import *
 from userprofile.models.profile import Profile
 from project.models.project import Project
 from bugs.models.bug import Bug

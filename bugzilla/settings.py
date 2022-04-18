@@ -1,5 +1,8 @@
 import os
 import environ
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 
 env = environ.Env()
 
@@ -16,7 +19,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 # DEBUG = False TODO: Uncomment for Deployment
 
 ALLOWED_HOSTS = ["*"]
@@ -31,6 +34,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'cloudinary',
     'userprofile',
     'project',
     'bugs',
@@ -69,25 +73,25 @@ WSGI_APPLICATION = 'bugzilla.wsgi.application'
 
 
 # TODO: Comment for Deployment
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': env('DB_NAME'),
-        'USER': env('DB_USER'),
-        'PASSWORD': env('DB_PASSWORD'),
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': env('DB_NAME'),
+#         'USER': env('DB_USER'),
+#         'PASSWORD': env('DB_PASSWORD'),
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
+# }
 
 
 # TODO: Uncomment for Deployment
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME':'dbsqlite',
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME':'dbsqlite',
+    }
+}
 
 
 # AUTH_USER_MODEL = 'usersauth.User'
@@ -153,6 +157,11 @@ MESSAGE_TAGS = {
     messages.ERROR: 'danger',
 }
 
+cloudinary.config(
+  cloud_name = "beingbat",
+  api_key = "788157988663397",
+  api_secret = env('CLOUDINARY_SECRET')
+)
 
 import django_heroku
 django_heroku.settings(locals())

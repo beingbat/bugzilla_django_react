@@ -5,13 +5,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from django.views.generic import ListView
 
-from userprofile.models.profile import Profile
+from userprofile.models import Profile
 
-from utilities import constants
-from django.contrib.auth import login, authenticate
-
-from utilities.user_utils import *
-
+from utilities import *
 
 
 class UserListView(LoginRequiredMixin, ListView):
@@ -34,9 +30,9 @@ class UserListView(LoginRequiredMixin, ListView):
         context = super(UserListView, self).get_context_data(**kwargs)
         my_profile = get_user_profile_by_id(self.request.user.id)
         context['type'] = my_profile.designation
-        if self.kwargs['slug'] == constants.DEVELOPER:
+        if self.kwargs['slug'] == DEVELOPER:
             context['list_title'] = "Manage Developers"
-        elif self.kwargs['slug'] == constants.QAENGINEER:
+        elif self.kwargs['slug'] == QAENGINEER:
             context['list_title'] = "Manage QAEngineers"
         context['user__type'] = get_designation(my_profile)
         return context

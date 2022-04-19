@@ -1,28 +1,52 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404
+from django.urls import reverse_lazy
+from django.http import HttpResponseRedirect
+
 from django.core.exceptions import PermissionDenied
 
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 from django.contrib import messages
-from utilities.constants import *
 
-from project.forms.project_chose import *
-from project.forms.project_form import *
-from project.models.project import *
+from utilities import *
 
-from utilities.user_utils import is_manager
+from django.views.generic.edit import DeleteView
+
+from project.forms import *
+from project.models import Project
 
 
+class ProjectDelete(LoginRequiredMixin, DeleteView):
+    queryset = Project.objects.all()
+    template_name = "delete_confirmation.html"
+    context_object_name = 'object'
+    success_url = reverse_lazy('list-project')
+    redirect_field_name = 'rt'
+    allow_empty = False
 
-@login_required
-def delete_project(request, id):
+    def get_object(self):
+        project = get_object_or_404(Project, pk=self.kwargs['id'])
+        if not is_manager(self.request.user):
+            messages.error(
+                self.request, f"You don't have permission to delete {project.name}!")
+            raise PermissionDenied()
+        return project
 
-    if not is_manager(request.user):
-        raise PermissionDenied()
-    project = Project.objects.get(id=id)
-    try:
-        project.delete()
-    except:  # ProtectedError was not working so I have just used except
-        return render(request, "delete_project.html", {'title': 'Project Deletion Failed',
-                                                       'msg': "Project has employees linked to it, please remove them first to delete it."})
-    messages.success(request, "Project Removed!")
-    return redirect('list-project')
+    def get_context_data(self, **kwargs):
+        context = super(ProjectDelete, self).get_context_data(**kwargs)
+        user_profile = get_user_profile(self.request.user)
+        context['user__type'] = get_designation(user_profile)
+        return context
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+        try:
+            self.object.delete()
+        except:
+            messages.error(
+                request, 'Project Deletion Failed. Please remove all employees from project first!')
+            return HttpResponseRedirect(success_url)
+        messages.success(
+            request, f"Project '{self.object.name}' removed")
+        return HttpResponseRedirect(success_url)

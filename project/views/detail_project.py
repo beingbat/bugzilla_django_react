@@ -5,14 +5,13 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 from django.views.generic.detail import DetailView
-from utilities.constants import *
+from utilities import *
 
-from project.forms.project_chose import *
-from project.forms.project_form import *
-from project.models.project import *
+from project.forms import *
+from project.models import Project
 
-from userprofile.models.profile import Profile
-from bugs.models.bug import Bug
+from userprofile.models import Profile
+from bugs.models import Bug
 
 from utilities.user_utils import get_user_profile, get_designation
 
@@ -37,8 +36,8 @@ class DetailProject(LoginRequiredMixin, DetailView):
         bugs = Bug.objects.filter(project=project)
         features = bugs.filter(type=FEATURE)
         bugs = bugs.filter(type=BUG)
-        if bugs.count()>0:
-            context['bugs'] =  bugs
+        if bugs.count() > 0:
+            context['bugs'] = bugs
         if features.count() > 0:
             context['features'] = features
         context['qaes'] = qaes

@@ -1,8 +1,9 @@
 from django import forms
 
-from userprofile.models.profile import Profile
+from userprofile.models import Profile
 
-from constants.constants import USER_TYPES
+from utilities import USER_TYPES
+
 
 class ProfileForm(forms.ModelForm):
 

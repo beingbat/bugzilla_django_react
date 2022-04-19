@@ -2,10 +2,9 @@ from django.shortcuts import redirect, get_object_or_404
 
 from django.core.exceptions import PermissionDenied
 
-from utilities.constants import *
-from utilities.user_utils import get_user_profile
+from utilities import *
 
-from bugs.models.bug import Bug
+from bugs.models import Bug
 
 
 def assign_bug(request, bug_id, user_id):

@@ -102,6 +102,12 @@ class UpdateBug(LoginRequiredMixin, UpdateView):
         if bug_form.is_valid():
             bug = bug_form.save(commit=False)
             dev_id = bug_form.cleaned_data.get("assigned_dev")
+
+            if bug_form.cleaned_data.get("screenshot"):
+                bug.screenshot = bug_form.cleaned_data.get("screenshot")
+            else:
+                bug.screenshot = None
+
             if bug_form.cleaned_data.get("assigned_dev") != "-1":
                 bug.assigned_to = get_object_or_404(
                     Profile, user=get_object_or_404(User, id=dev_id)

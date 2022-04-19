@@ -12,7 +12,6 @@ def index_page(request):
     if request.user.is_authenticated:
         profileobj = Profile.objects.get(pk=request.user)
         profile = profileobj.designation
-
         if profileobj.project:
             context["project_name"] = profileobj.project.name
             context["project_id"] = profileobj.project.id
@@ -25,14 +24,14 @@ def index_page(request):
                 if features.count() > 0:
                     context["features_assigned"] = features
 
-            elif profile == QAENGINEER:
-                bugs = Bug.objects.filter(creator=profileobj)
-                features = bugs.filter(type=FEATURE)
-                bugs = bugs.filter(type=BUG)
-                if bugs.count() > 0:
-                    context["bugs_created"] = bugs
-                if features.count() > 0:
-                    context["features_created"] = features
+        if profile == QAENGINEER:
+            bugs = Bug.objects.filter(creator=profileobj)
+            features = bugs.filter(type=FEATURE)
+            bugs = bugs.filter(type=BUG)
+            if bugs.count() > 0:
+                context["bugs_created"] = bugs
+            if features.count() > 0:
+                context["features_created"] = features
 
         context["user_type"] = profile
         context["user__type"] = get_designation(profileobj)

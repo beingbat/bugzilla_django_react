@@ -75,8 +75,13 @@ class Bug(models.Model):
         limit_choices_to={"designation": DEVELOPER},
         related_name="developer_assigned",
     )
-    
-    screenshot = cloudinary.models.CloudinaryField("Image", null=True, blank=True,  validators=[FileExtensionValidator( ['png', 'gif'] ) ])
+
+    screenshot = cloudinary.models.CloudinaryField(
+        "Image",
+        null=True,
+        blank=True,
+        validators=[FileExtensionValidator(["png", "gif"])],
+    )
 
     class Meta:
         unique_together = (("project", "title"),)

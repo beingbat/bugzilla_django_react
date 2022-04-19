@@ -1,4 +1,4 @@
-from add_project import CreateProject, UpdateProject
-from delete_project import ProjectDelete
-from detail_project import DetailProject
-from list_project import ListProjects
+from project.views.add_project import CreateProject, UpdateProject
+from project.views.delete_project import ProjectDelete
+from project.views.detail_project import DetailProject
+from project.views.list_project import ListProjects

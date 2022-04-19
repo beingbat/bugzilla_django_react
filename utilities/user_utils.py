@@ -1,26 +1,31 @@
 from django.shortcuts import get_object_or_404
 
-from userprofile.models.profile import Profile
 from django.contrib.auth.models import User
+from .constants import MANAGER, USER_TYPES
 
-from . import constants
 
 def get_designation(profile):
-    if profile.designation == constants.MANAGER:
-        return 'Manager'
+    if profile.designation == MANAGER:
+        return "Manager"
     else:
-        return dict(constants.USER_TYPES).get(profile.designation)
+        return dict(USER_TYPES).get(profile.designation)
 
 
 def is_manager(user):
+    from userprofile.models import Profile
+
     current_user = get_object_or_404(Profile, user=user)
-    return True if current_user.designation == constants.MANAGER else False
+    return True if current_user.designation == MANAGER else False
 
 
 def get_user_profile(user):
+    from userprofile.models import Profile
+
     return get_object_or_404(Profile, user=user)
 
 
 def get_user_profile_by_id(user_id):
+    from userprofile.models import Profile
+
     user = get_object_or_404(User, id=user_id)
     return get_object_or_404(Profile, user=user)

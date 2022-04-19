@@ -1,2 +1,2 @@
-from bug_form import BugForm
-from bug_status import BugStatusForm
+from bugs.forms.bug_form import BugForm
+from bugs.forms.bug_status import BugStatusForm

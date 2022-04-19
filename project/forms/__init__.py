@@ -1,2 +1,2 @@
-from project_chose import ProjectChooseForm
-from project_form import ProjectForm
+from project.forms.project_chose import ProjectChooseForm
+from project.forms.project_form import ProjectForm

@@ -1,2 +1,2 @@
-from profile_registration import ProfileForm
-from user_registration import UserCreationForm, UserRegisterForm
+from userprofile.forms.profile_registration import ProfileForm
+from userprofile.forms.user_registration import UserUpdateForm, UserRegisterForm

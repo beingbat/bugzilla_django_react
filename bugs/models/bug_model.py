@@ -10,6 +10,7 @@ from django.utils.timezone import now
 from project.models import Project
 from userprofile.models import Profile
 from utilities import *
+import cloudinary
 
 
 class Bug(models.Model):
@@ -74,8 +75,9 @@ class Bug(models.Model):
         limit_choices_to={"designation": DEVELOPER},
         related_name="developer_assigned",
     )
-    screenshot = models.ImageField(
-        upload_to="bugs_imgs",
+
+    screenshot = cloudinary.models.CloudinaryField(
+        "Image",
         null=True,
         blank=True,
         validators=[FileExtensionValidator(["png", "gif"])],

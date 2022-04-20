@@ -1,4 +1,3 @@
-from enum import unique
 from django.test import TestCase
 
 from django.core.validators import FileExtensionValidator

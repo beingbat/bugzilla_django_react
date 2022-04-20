@@ -1,7 +1,6 @@
 from django.utils.timezone import now
 from django.test import TestCase, Client
 from django.urls import reverse
-from bugs.models import Bug
 from project.models import Project
 from userprofile.models import Profile
 from django.contrib.auth.models import User

@@ -1,0 +1,1 @@
+from .bug_create_view_test import TestBugAddView

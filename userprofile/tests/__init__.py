@@ -1,1 +1,1 @@
-from .model_tests import UserProfileTest
+from .models_tests import UserProfileTest

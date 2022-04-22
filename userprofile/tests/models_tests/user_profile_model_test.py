@@ -1,10 +1,12 @@
 from django.test import TestCase
+
 from django.contrib.auth.models import User
-from project.tests.factories.project import ProjectFactory
 from userprofile.models import Profile
-from project.models import Project
+
+from project.tests.factories.project import ProjectFactory
 from userprofile.tests.factories.profile import ProfileFactory
 from userprofile.tests.factories.user import UserFactory
+
 from utilities import USER_TYPES, MANAGER
 
 

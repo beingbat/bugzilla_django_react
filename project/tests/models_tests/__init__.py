@@ -1,1 +1,1 @@
-from .project_model_test import ProjectTest
+from .test_project_model import ProjectModelTest

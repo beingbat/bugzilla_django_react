@@ -16,6 +16,9 @@ class BugFactory(factory.django.DjangoModelFactory):
             "project",
             "creator",
             "assigned_to",
+            "status",
+            "type",
+            "title",
         )
 
     title = faker.sentence()

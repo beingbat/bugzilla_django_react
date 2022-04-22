@@ -35,7 +35,6 @@ class Bug(models.Model):
         max_length=100, verbose_name="Title", null=False, blank=False
     )
     description = models.TextField(
-        max_length=500,
         verbose_name="Describe bug/feature in a paragraph",
         blank=True,
         null=True,

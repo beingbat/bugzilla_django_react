@@ -43,11 +43,11 @@ class TestBugAddView(TestCase):
         self.assertTemplateUsed(response, "add_bug.html")
 
     def test_post_for_bug(self):
-        bug_description = faker.text()
+        bug_description = faker.text(200)
         response = self.client.post(
             reverse("add-bug", kwargs={"pk": self.project.id, "slug": BUG}),
             {
-                "title": faker.sentence(100),
+                "title": faker.sentence(10),
                 "description": bug_description,
                 "status": random.choice([NEW, INPROGRESS, COMPLETED]),
                 "screenshot": "",
@@ -59,11 +59,11 @@ class TestBugAddView(TestCase):
         self.assertTrue(bytes(bug_description, "utf-8") in response.content)
 
     def test_post_for_feature(self):
-        feature_description = faker.text()
+        feature_description = faker.text(200)
         response = self.client.post(
             reverse("add-bug", kwargs={"pk": self.project.id, "slug": FEATURE}),
             {
-                "title": faker.sentence(100),
+                "title": faker.sentence(10),
                 "description": feature_description,
                 "status": random.choice([NEW, INPROGRESS, COMPLETED]),
                 "screenshot": "",

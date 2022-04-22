@@ -9,5 +9,5 @@ class ProjectFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Project
 
-    name = faker.sentence()
-    description = faker.text()
+    name = faker.text(50)
+    description = faker.text(200)

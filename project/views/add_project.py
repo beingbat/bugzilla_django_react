@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.exceptions import PermissionDenied
+from django.urls import reverse
+from django.http import HttpResponse
 
 from django.contrib import messages
 
@@ -32,11 +34,12 @@ class CreateProject(LoginRequiredMixin, CreateView):
 
     def post(self, request, *args, **kwargs):
         project_form = ProjectForm(request.POST)
-        print(project_form.is_valid())
         if project_form.is_valid():
             project = project_form.save()
+            project.save()
+            print("Project id: ", project.id)
             messages.success(request, "Project Created Successfully")
-            return redirect("detail-project", project.id)
+            return redirect("detail-project", pk=project.pk)
         else:
             print(project_form.errors)
 

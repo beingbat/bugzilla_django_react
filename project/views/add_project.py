@@ -15,7 +15,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 class CreateProject(LoginRequiredMixin, CreateView):
     model = Project
-    fields = '__all__'
+    fields = "__all__"
     template_name = "add_project.html"
 
     def dispatch(self, request, *args, **kwargs):
@@ -27,40 +27,42 @@ class CreateProject(LoginRequiredMixin, CreateView):
 
     def get(self, request, *args, **kwargs):
         context = self.get_context_data()
-        context['form'] = ProjectForm()
-        return render(request, 'add_project.html', context)
+        context["form"] = ProjectForm()
+        return render(request, "add_project.html", context)
 
     def post(self, request, *args, **kwargs):
         project_form = ProjectForm(request.POST)
+        print(project_form.is_valid())
         if project_form.is_valid():
             project = project_form.save()
             messages.success(request, "Project Created Successfully")
-            return redirect('detail-project', project.id)
+            return redirect("detail-project", project.id)
+        else:
+            print(project_form.errors)
 
         messages.error(request, "Project Creation Failed.")
         context = self.get_context_data()
-        context['form'] = project_form
-        return render(request, 'add_project.html', context)
+        context["form"] = project_form
+        return render(request, "add_project.html", context)
 
     def get_context_data(self, **kwargs):
         context = super(CreateProject, self).get_context_data(**kwargs)
-        context['user__type'] = self.profile.designation
-        context['button_text'] = "Add Project"
-        context['form_title'] = "Please add project information below"
+        context["user__type"] = self.profile.designation
+        context["button_text"] = "Add Project"
+        context["form_title"] = "Please add project information below"
         return context
 
 
 class UpdateProject(LoginRequiredMixin, UpdateView):
     model = Project
-    fields = '__all__'
-    success_message = 'Updated Project Successfully'
+    fields = "__all__"
+    success_message = "Updated Project Successfully"
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         context = self.get_context_data()
-        context['form'] = ProjectForm(
-            instance=self.object)
-        return render(request, 'add_project.html', context)
+        context["form"] = ProjectForm(instance=self.object)
+        return render(request, "add_project.html", context)
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -69,18 +71,18 @@ class UpdateProject(LoginRequiredMixin, UpdateView):
         if project_form.is_valid():
             project = project_form.save()
             messages.success(request, "Project Created Successfully")
-            return redirect('detail-project', project.id)
+            return redirect("detail-project", project.id)
 
         messages.error(request, "Error occured in Project updation")
         context = self.get_context_data()
-        context['form'] = project_form
-        return render(request, 'add_project.html', context)
+        context["form"] = project_form
+        return render(request, "add_project.html", context)
 
     def get_context_data(self, **kwargs):
         context = super(UpdateProject, self).get_context_data(**kwargs)
         profile = get_object_or_404(Profile, user=self.request.user)
-        context['user__type'] = profile.designation
-        context['button_text'] = "Update Project"
-        context['form_title'] = "Please update project information below"
+        context["user__type"] = profile.designation
+        context["button_text"] = "Update Project"
+        context["form_title"] = "Please update project information below"
 
         return context

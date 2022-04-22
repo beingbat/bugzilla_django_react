@@ -1,25 +1,32 @@
-from django.utils.timezone import now
 from django.test import TestCase, Client
-from django.urls import reverse
-from project.models import Project
+from project.tests.factories import ProjectFactory
+from userprofile.tests.factories import UserFactory, ProfileFactory
+
 from userprofile.models import Profile
 from django.contrib.auth.models import User
 
-from utilities import FEATURE, BUG, MANAGER, NEW
+import random
+from faker import Factory
+
+from django.urls import reverse
+
+from utilities import FEATURE, BUG, MANAGER, NEW, QAENGINEER, COMPLETED, INPROGRESS
+
+faker = Factory.create()
 
 
 class TestBugAddView(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        user = UserFactory()
+        ProfileFactory(user=user, designation=random.choice([MANAGER, QAENGINEER]))
+
     def setUp(self):
-        self.user = User.objects.create_user(
-            username="testUser",
-            password="testPassword",
-        )
-        self.profile = Profile.objects.create(
-            user=self.user, designation=MANAGER, project=None
-        )
+        self.user = User.objects.last()
+        self.profile = Profile.objects.last()
         self.client = Client()
-        self.client.login(username="testUser", password="testPassword")
-        self.project = Project.objects.create(name="Test Project")
+        self.client.login(username=self.user.username, password="test")
+        self.project = ProjectFactory()
 
     def test_get_response_for_bug(self):
         response = self.client.get(
@@ -36,32 +43,33 @@ class TestBugAddView(TestCase):
         self.assertTemplateUsed(response, "add_bug.html")
 
     def test_post_for_bug(self):
+        bug_description = faker.text()
         response = self.client.post(
-            f"/bugs/add/{self.project.id}/bug",
+            reverse("add-bug", kwargs={"pk": self.project.id, "slug": BUG}),
             {
-                "title": "Bug Title Test",
-                "description": "Bug Test Description",
-                "status": NEW,
+                "title": faker.sentence(100),
+                "description": bug_description,
+                "status": random.choice([NEW, INPROGRESS, COMPLETED]),
                 "screenshot": "",
                 "assigned_to": "",
-                "deadline": now,
+                "deadline": faker.date(),
             },
         )
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(b"Bug Test Description" in response.content)
+        self.assertTrue(bytes(bug_description, "utf-8") in response.content)
 
     def test_post_for_feature(self):
+        feature_description = faker.text()
         response = self.client.post(
-            f"/bugs/add/{self.project.id}/feature",
+            reverse("add-bug", kwargs={"pk": self.project.id, "slug": FEATURE}),
             {
-                "title": "Feature Title Test",
-                "description": "Feature Test Description",
-                "status": NEW,
+                "title": faker.sentence(100),
+                "description": feature_description,
+                "status": random.choice([NEW, INPROGRESS, COMPLETED]),
                 "screenshot": "",
                 "assigned_to": "",
-                "deadline": now,
+                "deadline": faker.date(),
             },
         )
-
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(b"Feature Test Description" in response.content)
+        self.assertTrue(bytes(feature_description, "utf-8") in response.content)

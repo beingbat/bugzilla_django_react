@@ -114,9 +114,8 @@ class BugTest(TestCase):
 
     def test_bug_with_duplicate_name_in_same_project(self):
         try:
-            BugFactory(
-                creator=self.bug.creator, project=self.bug.project, title=self.bug.title
-            )
+            Bug.objects.create(creator=self.bug.creator, project=self.bug.project, title=self.bug.title)
+            print(Bug.objects.all())
             self.fail("Bug existing with dupicate name in same project")
         except IntegrityError as e:
             pass

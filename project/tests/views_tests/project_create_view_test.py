@@ -9,6 +9,7 @@ from django.test import TestCase, Client
 from userprofile.tests.factories import UserFactory, ProfileFactory
 
 from utilities import MANAGER
+from utilities.constants import DEVELOPER
 
 
 faker = Factory.create()
@@ -26,14 +27,42 @@ class ProjectCreateViewTest(TestCase):
         self.client = Client()
         self.client.login(username=self.user.username, password="test")
 
-    def test_user_authentication(self):
+    def test_happy_cases(self):
+
+        # test_user_authentication
         user = get_user(self.client)
         assert user.is_authenticated
 
-    def test_user_and_profile_match(self):
+        # test_user_and_profile_match
         self.assertTrue(self.profile.user.username == self.user.username)
 
-    def test_get_response(self):
+        # test_get_response
         response = self.client.get(reverse("add-project"))
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, "add_project.html")
+
+    def test_unauthenticated_user(self):
+        self.client.logout()
+        try:
+            response = self.client.get(reverse("add-project"))
+            self.fail("Anonymous User creating Project")
+        except TypeError as e:
+            pass
+
+    def test_invalid_user(self):
+        self.profile.designation = DEVELOPER
+        self.profile.save()
+        response = self.client.get(reverse("add-project"))
+        self.assertTemplateUsed(response, "errors/generic.html")
+
+    def test_title_exceed_limit(self):
+        response = self.client.post(
+            reverse("add-project"),
+            {
+                "title": faker.sentence(51),
+                "description": faker.text(200),
+            },
+        )
+        self.assertTemplateUsed(response, "add_project.html")
+
+

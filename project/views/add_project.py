@@ -41,7 +41,8 @@ class CreateProject(LoginRequiredMixin, CreateView):
             messages.success(request, "Project Created Successfully")
             return redirect("detail-project", pk=project.pk)
         else:
-            print(project_form.errors)
+            # print(project_form.errors)
+            pass
 
         messages.error(request, "Project Creation Failed.")
         context = self.get_context_data()

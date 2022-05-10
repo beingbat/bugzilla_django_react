@@ -47,4 +47,4 @@ def index_page(request):
 
     if Bug.objects.all().count() > 0:
         context["bugs"] = True
-    return render(request, "index.html", context)
+    return render(request, "index_dashboard.html", context)

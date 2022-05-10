@@ -1,4 +1,6 @@
-## This is the read me for Bugzilla Test Project
+## THIS IS THE EXTENSION OF BUGZILLA DJANGO PROJECT TO INTEGRATE REACT JS USING DJANGO REST API
+
+Partial modification is to be done to implement listing views using React JS.
 
 #### Project Setup Instructions:
 

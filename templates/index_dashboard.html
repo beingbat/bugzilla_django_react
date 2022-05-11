@@ -62,6 +62,12 @@
       href="{% url 'list-project' %}"
       >Manage Projects</a
     >
+    <a
+      class="mt-2 btn btn-outline-danger dashboard_btn"
+      style="margin-left: 20px"
+      href="{% url 'list-projects-api' %}"
+      >Manage API Projects</a
+    >
   </div>
   {% if bugs %}
   <div class="mb-5">
@@ -201,6 +207,12 @@
       href="{% url 'list-project' %}"
       >List Projects
     </a>
+    <a
+    class="mt-2 btn btn-outline-danger dashboard_btn"
+    style="margin-left: 20px"
+    href="{% url 'list-projects-api' %}"
+    >List API Projects</a
+  >
   </div>
 
     {% if bugs %}

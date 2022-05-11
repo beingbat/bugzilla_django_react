@@ -35,7 +35,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
-    "corsheaders",
     "cloudinary",
     "userprofile",
     "project",
@@ -44,7 +43,6 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -145,7 +143,6 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 STATIC_URL = "static/"
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
-    os.path.join(BASE_DIR, "reactapp/build/static"),
 ]
 
 MEDIA_URL = "media/"
@@ -175,9 +172,3 @@ cloudinary.config(
 import django_heroku
 
 django_heroku.settings(locals())
-
-
-CORS_ALLOWED_ORIGINS = [
-    "http://127.0.0.1:8000",
-    # "*",
-]

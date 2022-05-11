@@ -9,7 +9,6 @@ from views.index_page import index_page
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("accounts/", include("django.contrib.auth.urls")),
-    path("react", TemplateView.as_view(template_name="index.html")),
     path("", index_page, name="dashboard"),
     path("api/", include("api.urls")),
     path("users/", include("userprofile.urls")),

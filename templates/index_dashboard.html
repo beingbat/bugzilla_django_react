@@ -108,22 +108,22 @@
   >
   <br>
   <a
-  class="mt-2 btn btn-outline-warning dashboard_btn"
+  class="mt-2 btn btn-outline-danger dashboard_btn"
   style="margin-left: 50px"
   href="{% url 'bug-list-api'%}"
-  >Manage All</a
+  >All API</a
   >
   <a
     class="mt-2 btn btn-outline-danger dashboard_btn"
     style="margin-left: 20px"
     href="{% url 'bug-list-api' slug='bug'%}"
-    >Manage Bugs</a
+    >Bugs API</a
   >
   <a
-  class="mt-2 btn btn-outline-secondary dashboard_btn"
+  class="mt-2 btn btn-outline-danger dashboard_btn"
   style="margin-left: 20px"
   href="{% url 'bug-list-api' slug='feature'%}"
-  >Manage Features</a
+  >Features API</a
   >
   </div>
   {% endif %} {% else %} {% if user_type == types.0.0%}

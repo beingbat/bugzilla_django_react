@@ -1,6 +1,5 @@
 ## THIS IS THE EXTENSION OF BUGZILLA DJANGO PROJECT TO HOOK REST API ENDPOINTS WITH REACT FRONTEND
 
-
 #### Project Setup Instructions:
 
 Project is deployed at https://bugzilla-django.herokuapp.com/ but if you want to run it locally follow the instructions below:
@@ -22,4 +21,3 @@ Project is deployed at https://bugzilla-django.herokuapp.com/ but if you want to
   <code>$ python manage.py migrate</code>
 - Finally, to run server run command:
   <code>$ python manage.py runserver</code>
-

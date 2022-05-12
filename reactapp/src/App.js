@@ -4,6 +4,7 @@ import './App.css';
 
 const App = () => {
   const [projectlist, setProjectList] = useState('');
+  const [errorlist, setErrorList] = useState('');
 
   useEffect(() => {
     const url = 'http://127.0.0.1:8000/api/projects';
@@ -13,8 +14,12 @@ const App = () => {
         const response = await fetch(url);
         const json = await response.json();
         console.log(json);
+        // if ('error_message' in json){
+        //   setErrorList(json.error_message);
+        // }
         setProjectList(json);
-        console.log(projectlist);
+        // console.log("Error Messages: ", errorlist);
+        console.log("project list: ", projectlist);
       } catch (error) {
         console.log('error', error);
       }

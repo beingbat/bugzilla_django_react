@@ -11,6 +11,7 @@ urlpatterns = [
     path("accounts/", include("django.contrib.auth.urls")),
     path("", index_page, name="dashboard"),
     path("api/", include("api.urls")),
+    path("react", TemplateView.as_view(template_name="index.html")),
     path("users/", include("userprofile.urls")),
     path("projects/", include("project.urls")),
     path("bugs/", include("bugs.urls")),

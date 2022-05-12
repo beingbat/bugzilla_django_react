@@ -4,7 +4,6 @@ import './App.css';
 
 const App = () => {
   const [projectlist, setProjectList] = useState('');
-  const [errorlist, setErrorList] = useState('');
 
   useEffect(() => {
     const url = 'http://127.0.0.1:8000/api/projects';
@@ -14,11 +13,7 @@ const App = () => {
         const response = await fetch(url);
         const json = await response.json();
         console.log(json);
-        // if ('error_message' in json){
-        //   setErrorList(json.error_message);
-        // }
         setProjectList(json);
-        // console.log("Error Messages: ", errorlist);
         console.log("project list: ", projectlist);
       } catch (error) {
         console.log('error', error);
@@ -26,45 +21,43 @@ const App = () => {
     }
 
     fetchData()
-  }, []);
+  });
 
   const getData =()=>
   {
     if (projectlist !== '')
     {
-      return (<>{projectlist.map((project)=>(<div className="listItem">
-        <li>{project.name}</li>
-        <li>{project.description}</li>
+      const keys = Object.keys(projectlist)
+      console.log(projectlist)
+      console.log(keys)
+      return (<>{keys.map((key)=>
+      {
+        if (key==="error_message")
+        {
+          return (<div className="badge bg-danger error_message"><div className="text_div">Error Message: {projectlist[key]}</div></div>)
+        }
+        else
+        {
+          return (<div className="listItem">
+          <li>{projectlist[key].name}</li>
+            <li>{projectlist[key].description}</li>
+            </div>)
+        }
 
-        </div>))}</>);
+          })}</>);
+
     }
-    else
-    {
-      return <></>
-    }
+
   }
+
 
   return (
     <div>
       <p>
         {getData()}
-
       </p>
     </div>
   )
 }
 
 export default App;
-
-// const Wrapper = styled.div`
-// paddint-top:100px;
-// margin: 0 auto;
-// `;
-
-// const Paragraph = styled.h2`
-// font-style:normal;
-// font-weight:bold;
-// font-size:20px;
-// line-height: 48px;
-// text-align:center;
-// `;

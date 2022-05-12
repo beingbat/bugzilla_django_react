@@ -3,10 +3,8 @@ from rest_framework import status
 from rest_framework.views import APIView
 
 from api.serializers import BugSerializer
-from userprofile.models import Profile
 from bugs.models import Bug
-from utilities import MANAGER, QAENGINEER, BUG, FEATURE, NEW, INPROGRESS, COMPLETED
-from .api_utils import validate_user
+from utilities import MANAGER, QAENGINEER, BUG, FEATURE, NEW, INPROGRESS, COMPLETED, validate_user
 
 
 class BugCollectionAPIView(APIView):

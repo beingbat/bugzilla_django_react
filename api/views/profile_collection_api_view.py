@@ -5,8 +5,7 @@ from rest_framework import status
 from userprofile.models import Profile
 from api.serializers import ProfileSerializer
 
-from utilities import MANAGER, QAENGINEER, DEVELOPER
-from .api_utils import validate_user
+from utilities import MANAGER, QAENGINEER, DEVELOPER, validate_user
 
 
 class ProfileCollectionAPIView(APIView):

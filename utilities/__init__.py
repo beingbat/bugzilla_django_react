@@ -21,3 +21,5 @@ from utilities.user_utils import (
     get_user_profile_by_id,
     is_manager,
 )
+
+from utilities.api_utils import validate_user

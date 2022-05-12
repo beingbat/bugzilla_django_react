@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404
 
 from django.contrib.auth.models import User
-from .constants import MANAGER, USER_TYPES
+from .constants import MANAGER, USER_TYPES, QAENGINEER
 
 
 def get_designation(profile):

@@ -1,0 +1,13 @@
+.color-nav
+{
+    color:white !important;
+    background-color: rgb(113, 56, 227);
+    /* height: 80px; */
+    text-align: center;
+    margin: auto;
+}
+
+.white
+{
+    color:white;
+}

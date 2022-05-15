@@ -8,7 +8,7 @@ const Collection = () => {
   let type = "";
   if (id === "project-collection") {
     type = "projects";
-  } else if (id === "bug-collection-all") {
+  } else if (id === "bug-collection") {
     type = "bugs";
   } else if (id === "developer-collection") {
     type = "users/developer";

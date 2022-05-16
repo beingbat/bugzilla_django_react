@@ -168,7 +168,8 @@ MESSAGE_TAGS = {
 cloudinary.config(
     cloud_name="beingbat",
     api_key="788157988663397",
-    api_secret=env("CLOUDINARY_SECRET"),
+    # api_secret=env("CLOUDINARY_SECRET"),
+    api_secret='Qgft4pRo6rutwFx9NIRTGqhfw-8',
 )
 
 

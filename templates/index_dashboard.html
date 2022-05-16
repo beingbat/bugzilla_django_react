@@ -1,5 +1,6 @@
 {% extends 'base.html' %} {% block content%}
 <br />
+
 {% if user.is_authenticated %}
 <div class="mx-4">
   {% if messages %}
@@ -47,6 +48,22 @@
       >Manage QAEngineers</a
     >
     {% endif %}
+    <br>
+    {% if dev_list %}
+    <a
+      class="mt-2 btn  btn-outline-warning dashboard_btn"
+      style="margin-left: 50px"
+      href="{% url 'user-list-api' slug=types.0.0 %}"
+      >Manage Developers API</a
+    >
+    {% endif %} {% if qae_list %}
+    <a
+      class="mt-2 btn btn-outline-warning dashboard_btn"
+      style="margin-left: 20px"
+      href="{% url 'user-list-api' slug=types.1.0 %}"
+      >Manage QAE API</a
+    >
+    {% endif %}
   </div>
   <div class="mb-5">
     <h5 class="mt-5 display-6 large_font">Projects</h5>
@@ -60,6 +77,12 @@
       style="margin-left: 20px"
       href="{% url 'list-project' %}"
       >Manage Projects</a
+    >
+    <a
+      class="mt-2 btn btn-outline-danger dashboard_btn"
+      style="margin-left: 20px"
+      href="{% url 'list-projects-api' %}"
+      >Manage API Projects</a
     >
   </div>
   {% if bugs %}
@@ -82,6 +105,25 @@
     style="margin-left: 20px"
     href="{% url 'list-bug-filter' slug='feature'%}"
     >Manage Features</a
+  >
+  <br>
+  <a
+  class="mt-2 btn btn-outline-danger dashboard_btn"
+  style="margin-left: 50px"
+  href="{% url 'bug-list-api'%}"
+  >All API</a
+  >
+  <a
+    class="mt-2 btn btn-outline-danger dashboard_btn"
+    style="margin-left: 20px"
+    href="{% url 'bug-list-api' slug='bug'%}"
+    >Bugs API</a
+  >
+  <a
+  class="mt-2 btn btn-outline-danger dashboard_btn"
+  style="margin-left: 20px"
+  href="{% url 'bug-list-api' slug='feature'%}"
+  >Features API</a
   >
   </div>
   {% endif %} {% else %} {% if user_type == types.0.0%}
@@ -200,6 +242,12 @@
       href="{% url 'list-project' %}"
       >List Projects
     </a>
+    <a
+    class="mt-2 btn btn-outline-danger dashboard_btn"
+    style="margin-left: 20px"
+    href="{% url 'list-projects-api' %}"
+    >List API Projects</a
+  >
   </div>
 
     {% if bugs %}

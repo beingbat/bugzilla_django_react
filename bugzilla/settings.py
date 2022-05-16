@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "rest_framework",
     "cloudinary",
     "userprofile",
     "project",
@@ -56,7 +57,10 @@ ROOT_URLCONF = "bugzilla.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(BASE_DIR, "templates/")],
+        "DIRS": [
+            os.path.join(BASE_DIR, "templates/"),
+            os.path.join(BASE_DIR, "reactapp/build"),
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -163,6 +167,7 @@ cloudinary.config(
     api_key="788157988663397",
     api_secret=env("CLOUDINARY_SECRET"),
 )
+
 
 import django_heroku
 

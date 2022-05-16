@@ -18,7 +18,7 @@ db.sqlite
 .idea/**/dictionaries
 .idea/**/shelf
 migrations/
-
+node_modules/
 # AWS User-specific
 .idea/**/aws.xml
 

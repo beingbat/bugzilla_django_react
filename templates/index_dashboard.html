@@ -48,22 +48,6 @@
       >Manage QAEngineers</a
     >
     {% endif %}
-    <br>
-    {% if dev_list %}
-    <a
-      class="mt-2 btn  btn-outline-warning dashboard_btn"
-      style="margin-left: 50px"
-      href="{% url 'user-list-api' slug=types.0.0 %}"
-      >Manage Developers API</a
-    >
-    {% endif %} {% if qae_list %}
-    <a
-      class="mt-2 btn btn-outline-warning dashboard_btn"
-      style="margin-left: 20px"
-      href="{% url 'user-list-api' slug=types.1.0 %}"
-      >Manage QAE API</a
-    >
-    {% endif %}
   </div>
   <div class="mb-5">
     <h5 class="mt-5 display-6 large_font">Projects</h5>
@@ -78,12 +62,8 @@
       href="{% url 'list-project' %}"
       >Manage Projects</a
     >
-    <a
-      class="mt-2 btn btn-outline-danger dashboard_btn"
-      style="margin-left: 20px"
-      href="{% url 'list-projects-api' %}"
-      >Manage API Projects</a
-    >
+
+
   </div>
   {% if bugs %}
   <div class="mb-5">
@@ -106,12 +86,39 @@
     href="{% url 'list-bug-filter' slug='feature'%}"
     >Manage Features</a
   >
+  </div>
+  {% endif %}
+  {% comment %} <br> {% endcomment %}
+  <h5 class="mt-5 display-6 large_font">REST APIs</h5>
+  {% if dev_list %}
+  <a
+    class="mt-2 btn  btn-outline-warning dashboard_btn"
+    style="margin-left: 50px"
+    href="{% url 'user-list-api' slug=types.0.0 %}"
+    >Manage Developers API</a
+  >
+  {% endif %} {% if qae_list %}
+  <a
+    class="mt-2 btn btn-outline-warning dashboard_btn"
+    style="margin-left: 20px"
+    href="{% url 'user-list-api' slug=types.1.0 %}"
+    >Manage QAE API</a
+  >
+  {% endif %}
+
+  <br>
+  <a
+    class="mt-2 btn btn-outline-danger dashboard_btn"
+    style="margin-left: 50px"
+    href="{% url 'list-projects-api' %}"
+    >Manage API Projects</a
+  >
   <br>
   <a
   class="mt-2 btn btn-outline-danger dashboard_btn"
   style="margin-left: 50px"
   href="{% url 'bug-list-api'%}"
-  >All API</a
+  >All Requests API</a
   >
   <a
     class="mt-2 btn btn-outline-danger dashboard_btn"
@@ -123,10 +130,41 @@
   class="mt-2 btn btn-outline-danger dashboard_btn"
   style="margin-left: 20px"
   href="{% url 'bug-list-api' slug='feature'%}"
-  >Features API</a
+  >Features API</a>
+  <div class="mb-5">
+    <h5 class="mt-5 display-6 large_font">React Pages</h5>
+    {% if dev_list %}
+    <a
+      class="mt-2 btn  btn-outline-info dashboard_btn"
+      style="margin-left: 50px"
+      href="/react/developer-collection/"
+      >Developers Collection</a
+    >
+    {% endif %} {% if qae_list %}
+    <a
+      class="mt-2 btn btn-outline-info dashboard_btn"
+      style="margin-left: 20px"
+      href="/react/qae-collection/"
+      >QAE Collection</a
+    >
+    {% endif %}
+    <br>
+    <a
+    class="mt-2 btn btn-outline-info dashboard_btn"
+    style="margin-left: 50px"
+    href="/react/project-collection/"
+    >Project Collection</a
   >
+  <a
+    class="mt-2 btn btn-outline-info dashboard_btn"
+    style="margin-left: 20px"
+    href="/react/bug-collection/"
+    >Bugs Collection</a
+  >
+
   </div>
-  {% endif %} {% else %} {% if user_type == types.0.0%}
+
+  {% else %} {% if user_type == types.0.0%}
   <div class="mb-5">
     {% if project_name %}
     {% if bugs_assigned %}

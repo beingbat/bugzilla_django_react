@@ -5,7 +5,7 @@ import { Container, Row, Col, Navbar, NavbarBrand, Nav, NavLink } from "reactstr
 const Navigation = () => {
   return (
     <Navbar className="color-nav" sticky='top' >
-      <NavbarBrand className="mx-3 pt-2" href="#">
+      <NavbarBrand className="mx-3 pt-2" href="/">
         <Container className="">
           <Row className="">
             <Col>

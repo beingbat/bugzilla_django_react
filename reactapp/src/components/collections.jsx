@@ -54,7 +54,10 @@ const Collection = () => {
 
   const getCollection = () => {
     if (collection === "") {
-      return <div>Nothing Found!</div>;
+      return (<div className="spinner-container">
+      <div className="loading-spinner">
+      </div>
+    </div>);
     } else {
       const collection_keys = Object.keys(collection);
       return (

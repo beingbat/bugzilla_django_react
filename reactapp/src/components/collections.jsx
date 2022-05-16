@@ -58,27 +58,29 @@ const Collection = () => {
     } else {
       const collection_keys = Object.keys(collection);
       return (
-        <Container>
+        <Container className="mt-5">
           <Row>
-            {collection_keys.map((key) => {
+            {
+              collection_keys.map((key) => {
               if (key === "error_message") {
-                return <ErrorMessage msg={collection_keys[key]} />;
+                return <ErrorMessage msg={collection[key]} />;
               } else {
                 let url = "/"
+                console.log(collection[key])
                 if (id === "project-collection") {
-                  url += object_url + collection_keys[key]["id"];
+                  url += object_url + collection[key]["id"];
                 } else if (id === "bug-collection") {
-                  url += object_url + collection_keys[key]["uuid"];
+                  url += object_url + collection[key]["uuid"];
                 } else if (
                   id === "qae-collection" ||
                   id === "developer-collection"
                 ) {
-                  url += object_url + collection_keys[key]["user"]["id"];
+                  url += object_url + collection[key]["user"]["id"];
                 } else {
                   url = "#";
                 }
 
-                return <Record obj={collection_keys[key]} href={url} />;
+                return <Record key={url} obj={collection[key]} href={url} />;
               }
             })}
           </Row>

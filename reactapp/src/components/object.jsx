@@ -3,12 +3,14 @@ import {Button} from "reactstrap";
 import "./collections.css"
 
 const Record = (props) => {
-  return (
-    <Button
+    console.log("From Object: ", props.obj)
+  const keys = Object.keys(props.obj)
+    return (
+    <Button outline color="danger"
         href={props.url}
-        className="listItem"
+        className="listItem mx-3 mb-4"
         >
-        {props.obj.map((field) => {
+        {keys.map((field) => {
             if (props.obj[field] === null) {
                 return <div key={field}>{field}: N/A</div>;
             } else if (
@@ -51,7 +53,7 @@ const Record = (props) => {
             } else {
             return (
                 <div key={field}>
-                {field}:{" "}{props.obj[field][field]}
+                {field}:{" "}{props.obj[field]}
                 </div>
             );
             }

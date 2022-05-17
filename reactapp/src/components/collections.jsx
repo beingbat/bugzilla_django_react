@@ -35,7 +35,6 @@ const Collection = () => {
   const url = "https://bugzilla-django.herokuapp.com/api/" + api_url;
 
   useEffect(() => {
-    console.log(url);
     const fetchData = async () => {
       try {
         const response = await fetch(url);
@@ -70,7 +69,6 @@ const Collection = () => {
                 return <ErrorMessage msg={collection[key]} />;
               } else {
                 let url = "/";
-                // console.log(collection[key])
                 if (id === "project-collection") {
                   url += object_url + collection[key]["id"];
                 } else if (id === "bug-collection") {

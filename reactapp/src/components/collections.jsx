@@ -55,21 +55,21 @@ const Collection = () => {
 
   const getCollection = () => {
     if (collection === "") {
-      return (<div className="spinner-container">
-      <div className="loading-spinner">
-      </div>
-    </div>);
+      return (
+        <div className="spinner-container">
+          <div className="loading-spinner"></div>
+        </div>
+      );
     } else {
       const collection_keys = Object.keys(collection);
       return (
         <Container className="mt-5">
           <Row>
-            {
-              collection_keys.map((key) => {
+            {collection_keys.map((key) => {
               if (key === "error_message") {
                 return <ErrorMessage msg={collection[key]} />;
               } else {
-                let url = "/"
+                let url = "/";
                 // console.log(collection[key])
                 if (id === "project-collection") {
                   url += object_url + collection[key]["id"];

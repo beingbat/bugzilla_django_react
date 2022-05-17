@@ -31,8 +31,8 @@ const Collection = () => {
     url_correct = true;
   }
 
-  // const url = "http://127.0.0.1:8000/api/" + api_url;
-  const url = "https://bugzilla-django.herokuapp.com/api/" + api_url;
+  const url = "http://127.0.0.1:8000/api/" + api_url;
+  // const url = "https://bugzilla-django.herokuapp.com/api/" + api_url;
 
   useEffect(() => {
     const fetchData = async () => {

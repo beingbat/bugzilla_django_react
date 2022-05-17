@@ -31,7 +31,8 @@ const Collection = () => {
     url_correct = true;
   }
 
-  const url = "http://127.0.0.1:8000/api/" + api_url;
+  // const url = "http://127.0.0.1:8000/api/" + api_url;
+  const url = "https://bugzilla-django.herokuapp.com/api/" + api_url;
 
   useEffect(() => {
     console.log(url);
@@ -69,7 +70,7 @@ const Collection = () => {
                 return <ErrorMessage msg={collection[key]} />;
               } else {
                 let url = "/"
-                console.log(collection[key])
+                // console.log(collection[key])
                 if (id === "project-collection") {
                   url += object_url + collection[key]["id"];
                 } else if (id === "bug-collection") {

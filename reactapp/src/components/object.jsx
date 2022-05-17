@@ -3,11 +3,10 @@ import {Button} from "reactstrap";
 import "./collections.css"
 
 const Record = (props) => {
-    console.log("From Object: ", props.obj)
   const keys = Object.keys(props.obj)
     return (
     <Button outline color="danger"
-        href={props.url}
+        href={props.href}
         className="listItem mx-3 mb-4"
         >
         {keys.map((field) => {

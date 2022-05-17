@@ -62,6 +62,7 @@ TEMPLATES = [
         "DIRS": [
             os.path.join(BASE_DIR, "templates/"),
             os.path.join(BASE_DIR, "reactapp/build"),
+            os.path.join(BASE_DIR, "reactapp/public"),
         ],
         "APP_DIRS": True,
         "OPTIONS": {
@@ -79,25 +80,25 @@ WSGI_APPLICATION = "bugzilla.wsgi.application"
 
 
 # TODO: Comment for Deployment
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": env("DB_NAME"),
-        "USER": env("DB_USER"),
-        "PASSWORD": env("DB_PASSWORD"),
-        "HOST": "localhost",
-        "PORT": "5432",
-    }
-}
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "NAME": env("DB_NAME"),
+#         "USER": env("DB_USER"),
+#         "PASSWORD": env("DB_PASSWORD"),
+#         "HOST": "localhost",
+#         "PORT": "5432",
+#     }
+# }
 
 
 # TODO: Uncomment for Deployment
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME':'dbsqlite',
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME':'dbsqlite',
+    }
+}
 
 
 # AUTH_USER_MODEL = 'usersauth.User'
@@ -168,7 +169,8 @@ MESSAGE_TAGS = {
 cloudinary.config(
     cloud_name="beingbat",
     api_key="788157988663397",
-    api_secret=env("CLOUDINARY_SECRET"),
+    # api_secret=env("CLOUDINARY_SECRET"),
+    api_secret = 'Qgft4pRo6rutwFx9NIRTGqhfw-8'
 )
 
 

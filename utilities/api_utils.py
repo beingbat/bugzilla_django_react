@@ -1,11 +1,9 @@
 from rest_framework.response import Response
 from rest_framework import status
 
-from userprofile.models import Profile
-from utilities import MANAGER, QAENGINEER, BUG, FEATURE, NEW, INPROGRESS, COMPLETED
+from utilities import MANAGER
 
-
-def is_not_user_authenticated(request):
+def check_authenticated(request):
     if not request.user.is_authenticated:
         return Response(
             {"error_message": str("You must be signed in to access this page")},
@@ -14,7 +12,7 @@ def is_not_user_authenticated(request):
     return False
 
 
-def is_not_authorized(designation, list):
+def check_authorized(designation, list):
 
     if designation not in list:
         return Response(
@@ -29,7 +27,7 @@ def is_not_authorized(designation, list):
     return False
 
 
-def is_not_manager(designation):
+def check_manager(designation):
     if designation != MANAGER:
         return Response(
             {"error_message": str("You must be a Manager to access this page")},
@@ -40,11 +38,13 @@ def is_not_manager(designation):
 
 
 def validate_user(request, list):
-    response = is_not_user_authenticated(request)
+    response = check_authenticated(request)
     if response:
         return response
+
+    from userprofile.models import Profile
     profile = Profile.objects.get(user=request.user)
-    response = is_not_authorized(profile.designation, list)
+    response = check_authorized(profile.designation, list)
     if response:
         return response
     return False

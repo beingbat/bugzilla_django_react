@@ -1,3 +1,3 @@
-from .list_bug import BugCollectionAPIView
-from .list_profile import ProfileCollectionAPIView
-from .list_project import ProjectCollectionAPIView
+from .bug_collection_api_view import BugCollectionAPIView
+from .profile_collection_api_view import ProfileCollectionAPIView
+from .project_collection_api_view import ProjectCollectionAPIView

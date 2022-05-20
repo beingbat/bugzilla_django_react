@@ -17,8 +17,7 @@
   <div class="mb-5">
     <h5 class="mt-5 display-6 large_font">Administrator Management</h5>
     <a
-      class="mt-2 btn btn-outline-warning dashboard_btn"
-      style="margin-left: 50px"
+      class="mt-2 btn btn-outline-warning dashboard_btn ml-lg"
       href="{% url 'admin:index' %}"
       >Admin Panel</a
     >
@@ -28,48 +27,28 @@
   <div class="mb-5">
     <h5 class="mt-5 display-6 large_font">Employees</h5>
     <a
-      class="mt-2 btn color_b_bg dashboard_btn"
-      style="margin-left: 50px"
+      class="mt-2 btn color_b_bg dashboard_btn ml-lg"
       href="{% url 'add-user' %}"
       >Add Employee</a
     >
     {% if dev_list %}
     <a
-      class="mt-2 btn  btn-outline-info dashboard_btn"
-      style="margin-left: 20px"
+      class="mt-2 btn  btn-outline-info dashboard_btn ml-sm"
       href="{% url 'user-list' slug=types.0.0 %}"
       >Manage Developers</a
     >
     {% endif %} {% if qae_list %}
     <a
-      class="mt-2 btn btn-outline-info dashboard_btn"
-      style="margin-left: 20px"
+      class="mt-2 btn btn-outline-info dashboard_btn ml-sm"
       href="{% url 'user-list' slug=types.1.0 %}"
       >Manage QAEngineers</a
-    >
-    {% endif %}
-    <br>
-    {% if dev_list %}
-    <a
-      class="mt-2 btn  btn-outline-warning dashboard_btn"
-      style="margin-left: 50px"
-      href="{% url 'user-list-api' slug=types.0.0 %}"
-      >Manage Developers API</a
-    >
-    {% endif %} {% if qae_list %}
-    <a
-      class="mt-2 btn btn-outline-warning dashboard_btn"
-      style="margin-left: 20px"
-      href="{% url 'user-list-api' slug=types.1.0 %}"
-      >Manage QAE API</a
     >
     {% endif %}
   </div>
   <div class="mb-5">
     <h5 class="mt-5 display-6 large_font">Projects</h5>
     <a
-      class="mt-2 btn color_b_bg dashboard_btn"
-      style="margin-left: 50px"
+      class="mt-2 btn color_b_bg dashboard_btn ml-lg"
       href="{% url 'add-project' %}"
       >Add Project</a
     ><a
@@ -78,55 +57,96 @@
       href="{% url 'list-project' %}"
       >Manage Projects</a
     >
-    <a
-      class="mt-2 btn btn-outline-danger dashboard_btn"
-      style="margin-left: 20px"
-      href="{% url 'list-projects-api' %}"
-      >Manage API Projects</a
-    >
+
+
   </div>
   {% if bugs %}
   <div class="mb-5">
     <h5 class="mt-5 display-6 large_font">Bugs and Features</h5>
     <a
-      class="mt-2 btn btn-outline-warning dashboard_btn"
-      style="margin-left: 50px"
+      class="mt-2 btn btn-outline-warning dashboard_btn ml-lg"
       href="{% url 'list-bug'%}"
       >Manage All</a
     >
     <a
-      class="mt-2 btn btn-outline-danger dashboard_btn"
-      style="margin-left: 20px"
+      class="mt-2 btn btn-outline-danger dashboard_btn ml-sm"
       href="{% url 'list-bug-filter' slug='bug'%}"
       >Manage Bugs</a
     >
     <a
-    class="mt-2 btn btn-outline-secondary dashboard_btn"
-    style="margin-left: 20px"
+    class="mt-2 btn btn-outline-secondary dashboard_btn ml-sm"
     href="{% url 'list-bug-filter' slug='feature'%}"
     >Manage Features</a
   >
+  </div>
+  {% endif %}
+  {% comment %} <br> {% endcomment %}
+  <h5 class="mt-5 display-6 large_font">REST APIs</h5>
+  {% if dev_list %}
+  <a
+    class="mt-2 btn  btn-outline-warning dashboard_btn ml-lg"
+    href="{% url 'user-list-api' slug=types.0.0 %}"
+    >Manage Developers API</a
+  >
+  {% endif %} {% if qae_list %}
+  <a
+    class="mt-2 btn btn-outline-warning dashboard_btn ml-sm"
+    href="{% url 'user-list-api' slug=types.1.0 %}"
+    >Manage QAE API</a
+  >
+  {% endif %}
+
   <br>
   <a
-  class="mt-2 btn btn-outline-danger dashboard_btn"
-  style="margin-left: 50px"
+    class="mt-2 btn btn-outline-danger dashboard_btn ml-lg"
+    href="{% url 'list-projects-api' %}"
+    >Manage API Projects</a
+  >
+  <br>
+  <a
+  class="mt-2 btn btn-outline-danger dashboard_btn ml-lg"
   href="{% url 'bug-list-api'%}"
-  >All API</a
+  >All Requests API</a
   >
   <a
-    class="mt-2 btn btn-outline-danger dashboard_btn"
-    style="margin-left: 20px"
+    class="mt-2 btn btn-outline-danger dashboard_btn ml-sm"
     href="{% url 'bug-list-api' slug='bug'%}"
     >Bugs API</a
   >
   <a
-  class="mt-2 btn btn-outline-danger dashboard_btn"
-  style="margin-left: 20px"
+  class="mt-2 btn btn-outline-danger dashboard_btn ml-sm"
   href="{% url 'bug-list-api' slug='feature'%}"
-  >Features API</a
+  >Features API</a>
+  <div class="mb-5">
+    <h5 class="mt-5 display-6 large_font">React Pages</h5>
+    {% if dev_list %}
+    <a
+      class="mt-2 btn  btn-outline-info dashboard_btn ml-lg"
+      href="/react/developer-collection/"
+      >Developers Collection</a
+    >
+    {% endif %} {% if qae_list %}
+    <a
+      class="mt-2 btn btn-outline-info dashboard_btn ml-sm"
+      href="/react/qae-collection/"
+      >QAE Collection</a
+    >
+    {% endif %}
+    <br>
+    <a
+    class="mt-2 btn btn-outline-info dashboard_btn ml-lg"
+    href="/react/project-collection/"
+    >Project Collection</a
   >
+  <a
+    class="mt-2 btn btn-outline-info dashboard_btn ml-sm"
+    href="/react/bug-collection/"
+    >Bugs Collection</a
+  >
+
   </div>
-  {% endif %} {% else %} {% if user_type == types.0.0%}
+
+  {% else %} {% if user_type == types.0.0%}
   <div class="mb-5">
     {% if project_name %}
     {% if bugs_assigned %}
@@ -168,8 +188,7 @@
 
     <h5 class="mt-5 display-6 large_font">View Assigned Project</h5>
     <a
-      class="mt-2 btn color_b_bg dashboard_btn"
-      style="margin-left: 50px"
+      class="mt-2 btn color_b_bg dashboard_btn ml-lg"
       href="{% url 'detail-project' pk=project_id %}"
       >View Project
     </a>
@@ -223,8 +242,7 @@
     {% if project_name %}
     <h5 class="mt-5 display-6 large_font">Current Project</h5>
     <a
-      class="mt-2 btn color_b_bg dashboard_btn"
-      style="margin-left: 50px"
+      class="mt-2 btn color_b_bg dashboard_btn ml-lg"
       href="{% url 'detail-project' pk=project_id %}"
       >View Project
     </a>
@@ -237,14 +255,12 @@
   <div class="mb-5">
     <h5 class="mt-5 display-6 large_font">View Projects</h5>
     <a
-      class="mt-2 btn color_a_bg dashboard_btn"
-      style="margin-left: 50px"
+      class="mt-2 btn color_a_bg dashboard_btn ml-lg"
       href="{% url 'list-project' %}"
       >List Projects
     </a>
     <a
-    class="mt-2 btn btn-outline-danger dashboard_btn"
-    style="margin-left: 20px"
+    class="mt-2 btn btn-outline-danger dashboard_btn ml-sm"
     href="{% url 'list-projects-api' %}"
     >List API Projects</a
   >
@@ -254,20 +270,17 @@
   <div class="mb-5">
     <h5 class="mt-5 display-6 large_font">Bugs and Features</h5>
     <a
-      class="mt-2 btn btn-outline-warning dashboard_btn"
-      style="margin-left: 50px"
+      class="mt-2 btn btn-outline-warning dashboard_btn ml-lg"
       href="{% url 'list-bug'%}"
       >Manage All</a
     >
     <a
-      class="mt-2 btn btn-outline-danger dashboard_btn"
-      style="margin-left: 20px"
+      class="mt-2 btn btn-outline-danger dashboard_btn ml-sm"
       href="{% url 'list-bug-filter' slug='bug'%}"
       >Manage Bugs</a
     >
     <a
-    class="mt-2 btn btn-outline-secondary dashboard_btn"
-    style="margin-left: 20px"
+    class="mt-2 btn btn-outline-secondary dashboard_btn ml-sm"
     href="{% url 'list-bug-filter' slug='feature'%}"
     >Manage Features</a
   >
@@ -284,8 +297,7 @@
   <div class="mb-5">
     <h5 class="mt-5 display-6 large_font">Manage Profile</h5>
     <a
-      class="mt-2 btn btn-success dashboard_btn"
-      style="margin-left: 50px"
+      class="mt-2 btn btn-success dashboard_btn ml-lg"
       href="{{user_profile.get_absolute_url}}"
       >View Profile</a
     >

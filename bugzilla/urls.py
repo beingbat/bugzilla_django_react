@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
+from django.urls import re_path
 from django.conf import settings
 from django.conf.urls.static import static
 from django.views.generic import TemplateView
@@ -14,6 +15,7 @@ urlpatterns = [
     path("users/", include("userprofile.urls")),
     path("projects/", include("project.urls")),
     path("bugs/", include("bugs.urls")),
+    re_path(r"react/*", TemplateView.as_view(template_name="index.html"), name='react-project'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 

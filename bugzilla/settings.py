@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "corsheaders",
     "cloudinary",
     "userprofile",
     "project",
@@ -43,6 +44,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -60,6 +62,7 @@ TEMPLATES = [
         "DIRS": [
             os.path.join(BASE_DIR, "templates/"),
             os.path.join(BASE_DIR, "reactapp/build"),
+            # os.path.join(BASE_DIR, "reactapp/public"),
         ],
         "APP_DIRS": True,
         "OPTIONS": {
@@ -77,25 +80,25 @@ WSGI_APPLICATION = "bugzilla.wsgi.application"
 
 
 # TODO: Comment for Deployment
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": env("DB_NAME"),
-        "USER": env("DB_USER"),
-        "PASSWORD": env("DB_PASSWORD"),
-        "HOST": "localhost",
-        "PORT": "5432",
-    }
-}
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "NAME": env("DB_NAME"),
+#         "USER": env("DB_USER"),
+#         "PASSWORD": env("DB_PASSWORD"),
+#         "HOST": "localhost",
+#         "PORT": "5432",
+#     }
+# }
 
 
 # TODO: Uncomment for Deployment
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME':'dbsqlite',
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME':'dbsqlite',
+    }
+}
 
 
 # AUTH_USER_MODEL = 'usersauth.User'
@@ -143,6 +146,7 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 STATIC_URL = "static/"
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
+    os.path.join(BASE_DIR, "reactapp/build/static"),
 ]
 
 MEDIA_URL = "media/"
@@ -165,10 +169,18 @@ MESSAGE_TAGS = {
 cloudinary.config(
     cloud_name="beingbat",
     api_key="788157988663397",
-    api_secret=env("CLOUDINARY_SECRET"),
+    # api_secret=env("CLOUDINARY_SECRET"),
+    api_secret='Qgft4pRo6rutwFx9NIRTGqhfw-8'
 )
 
 
 import django_heroku
 
 django_heroku.settings(locals())
+
+# CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ALLOWED_ORIGINS = [
+    "http://127.0.0.1:8000",
+    "http://localhost:3000",
+ ]

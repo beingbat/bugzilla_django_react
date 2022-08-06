@@ -2,7 +2,7 @@
 
 #### Project Setup Instructions:
 
-Project is deployed at https://bugzilla-django.herokuapp.com/ but if you want to run it locally follow the instructions below:
+Project is deployed at https://bugzilla-django.herokuapp.com/ (admin user: admin, pass: admin) but if you want to run it locally follow the instructions below:
 
 - First clone it using link: https://github.com/at-malek/bugzilla.git
 - Create a virtual environment first for running this project. Following are steps for creating virtualenv:
